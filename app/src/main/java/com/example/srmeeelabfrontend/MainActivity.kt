@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.*
 import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,34 +25,82 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    // Global Auth State
+    var isLoggedIn by remember { mutableStateOf(false) }
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "home") {
         composable("login") {
             LoginScreen(onLoginSuccess = {
+                isLoggedIn = true
                 navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
+                    popUpTo("home") { inclusive = true }
                 }
             })
         }
         composable("home") {
-            HomeScreen(onExploreExperiments = {
-                navController.navigate("experiments")
-            }, onNavigate = { route ->
-                navController.navigate(route)
-            })
+            HomeScreen(
+                isLoggedIn = isLoggedIn,
+                onExploreExperiments = { navController.navigate("experiments") },
+                onNavigate = { route ->
+                    if (route == "logout") {
+                        isLoggedIn = false
+                        navController.navigate("login")
+                    } else {
+                        navController.navigate(route)
+                    }
+                }
+            )
         }
         composable("experiments") {
             ExperimentsScreen(
+                isLoggedIn = isLoggedIn,
                 onBack = { navController.popBackStack() },
                 onNavigate = { route ->
-                    navController.navigate(route)
+                    if (route == "logout") {
+                        isLoggedIn = false
+                        navController.navigate("login")
+                    } else {
+                        navController.navigate(route)
+                    }
                 }
             )
         }
         composable("study") {
             StudyRoomScreen(
+                isLoggedIn = isLoggedIn,
                 onNavigate = { route ->
-                    navController.navigate(route)
+                    if (route == "logout") {
+                        isLoggedIn = false
+                        navController.navigate("login")
+                    } else {
+                        navController.navigate(route)
+                    }
+                }
+            )
+        }
+        composable("quizzes") {
+            QuizScreen(
+                isLoggedIn = isLoggedIn,
+                onNavigate = { route ->
+                    if (route == "logout") {
+                        isLoggedIn = false
+                        navController.navigate("login")
+                    } else {
+                        navController.navigate(route)
+                    }
+                }
+            )
+        }
+        composable("team") {
+            TeamScreen(
+                isLoggedIn = isLoggedIn,
+                onNavigate = { route ->
+                    if (route == "logout") {
+                        isLoggedIn = false
+                        navController.navigate("login")
+                    } else {
+                        navController.navigate(route)
+                    }
                 }
             )
         }

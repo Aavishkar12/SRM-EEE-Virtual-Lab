@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
@@ -35,7 +36,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ExperimentsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
+fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var searchQuery by remember { mutableStateOf("") }
     var isMenuOpen by remember { mutableStateOf(false) }
@@ -216,7 +217,7 @@ fun ExperimentsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(onClose = { isMenuOpen = false }, onNavigate = { route ->
+                    HamburgerMenu(isLoggedIn = isLoggedIn, onClose = { isMenuOpen = false }, onNavigate = { route ->
                         onNavigate(route)
                         isMenuOpen = false
                     })

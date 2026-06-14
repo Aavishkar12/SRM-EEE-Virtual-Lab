@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun StudyRoomScreen(onNavigate: (String) -> Unit) {
+fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     
@@ -222,7 +222,7 @@ fun StudyRoomScreen(onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(onClose = { isMenuOpen = false }, onNavigate = { route ->
+                    HamburgerMenu(isLoggedIn = isLoggedIn, onClose = { isMenuOpen = false }, onNavigate = { route ->
                         onNavigate(route)
                         isMenuOpen = false
                     })

@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -37,7 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun HomeScreen(onExploreExperiments: () -> Unit, onNavigate: (String) -> Unit) {
+fun HomeScreen(isLoggedIn: Boolean, onExploreExperiments: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
 
@@ -105,7 +106,7 @@ fun HomeScreen(onExploreExperiments: () -> Unit, onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(onClose = { isMenuOpen = false }, onNavigate = { route ->
+                    HamburgerMenu(isLoggedIn = isLoggedIn, onClose = { isMenuOpen = false }, onNavigate = { route ->
                         onNavigate(route)
                         isMenuOpen = false
                     })
@@ -116,7 +117,7 @@ fun HomeScreen(onExploreExperiments: () -> Unit, onNavigate: (String) -> Unit) {
 }
 
 @Composable
-fun HamburgerMenu(onClose: () -> Unit, onNavigate: (String) -> Unit) {
+fun HamburgerMenu(isLoggedIn: Boolean, onClose: () -> Unit, onNavigate: (String) -> Unit) {
     Surface(
         modifier = Modifier
             .width(230.dp),
@@ -135,7 +136,11 @@ fun HamburgerMenu(onClose: () -> Unit, onNavigate: (String) -> Unit) {
                 MenuItemData("About", Icons.Outlined.Info, Color.White, "about"),
                 MenuItemData("Profile", Icons.Outlined.Person, Color.White, "profile"),
                 MenuItemData("Settings", Icons.Outlined.Settings, Color.White, "settings"),
-                MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFF60A5FA), "login", isLast = true)
+                if (isLoggedIn) {
+                    MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFFEF4444), "logout", isLast = true)
+                } else {
+                    MenuItemData("Sign In", Icons.AutoMirrored.Outlined.Login, Color(0xFF60A5FA), "login", isLast = true)
+                }
             )
 
             menuItems.forEach { item ->
