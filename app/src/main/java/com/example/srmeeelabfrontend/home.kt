@@ -1,0 +1,397 @@
+package com.example.srmeeelabfrontend
+
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+
+@Composable
+fun HomeScreen(onExploreExperiments: () -> Unit, onNavigate: (String) -> Unit) {
+    var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
+    var isMenuOpen by remember { mutableStateOf(false) }
+
+    val contentAlpha = remember { Animatable(0f) }
+    val contentScale = remember { Animatable(0.95f) }
+    
+    LaunchedEffect(Unit) {
+        launch {
+            contentAlpha.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing))
+        }
+        launch {
+            contentScale.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing))
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+            delay(1000)
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+        AnimatedBackground()
+
+        Scaffold(
+            containerColor = Color.Transparent,
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .alpha(contentAlpha.value)
+                    .scale(contentScale.value),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(bottom = 32.dp)
+            ) {
+                item { Header(currentTime, onMenuClick = { isMenuOpen = !isMenuOpen }) }
+                item { HeroSection(onExploreClick = onExploreExperiments) }
+                item { FeaturesSection() }
+                item { ExperimentsHeader(onViewAllClick = onExploreExperiments) }
+                items(experimentListShort) { experiment ->
+                    ExperimentCardHome(experiment)
+                    Spacer(Modifier.height(16.dp))
+                }
+                item { Footer() }
+            }
+        }
+
+        // Floating Hamburger Menu Overlay
+        if (isMenuOpen) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { isMenuOpen = false }
+            ) {
+                AnimatedVisibility(
+                    visible = isMenuOpen,
+                    enter = scaleIn(initialScale = 0.8f) + fadeIn(),
+                    exit = scaleOut(targetScale = 0.8f) + fadeOut(),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 75.dp, end = 16.dp)
+                ) {
+                    HamburgerMenu(onClose = { isMenuOpen = false }, onNavigate = { route ->
+                        onNavigate(route)
+                        isMenuOpen = false
+                    })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HamburgerMenu(onClose: () -> Unit, onNavigate: (String) -> Unit) {
+    Surface(
+        modifier = Modifier
+            .width(230.dp),
+        color = Color(0xFF080C14).copy(alpha = 0.95f),
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, Color(0xFF1E293B)),
+        shadowElevation = 12.dp
+    ) {
+        Column(modifier = Modifier.padding(vertical = 10.dp)) {
+            val menuItems = listOf(
+                MenuItemData("Home", Icons.Outlined.Home, Color(0xFF60A5FA), "home", true),
+                MenuItemData("Experiments", Icons.Outlined.Science, Color.White, "experiments"),
+                MenuItemData("Study Room", Icons.Outlined.MenuBook, Color.White, "study"),
+                MenuItemData("Quizzes", Icons.Outlined.Quiz, Color.White, "quizzes"),
+                MenuItemData("Team", Icons.Outlined.People, Color.White, "team"),
+                MenuItemData("About", Icons.Outlined.Info, Color.White, "about"),
+                MenuItemData("Profile", Icons.Outlined.Person, Color.White, "profile"),
+                MenuItemData("Settings", Icons.Outlined.Settings, Color.White, "settings"),
+                MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFF60A5FA), "login", isLast = true)
+            )
+
+            menuItems.forEach { item ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onNavigate(item.route) }
+                        .padding(vertical = 12.dp, horizontal = 18.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = null,
+                        tint = item.color,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Text(
+                        text = item.text,
+                        color = if (item.isSelected) Color(0xFF60A5FA) else Color.White,
+                        fontSize = 15.sp,
+                        fontWeight = if (item.isSelected) FontWeight.Bold else FontWeight.Medium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (item.isSelected) {
+                        Box(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .background(Color(0xFF3B82F6), CircleShape)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+data class MenuItemData(
+    val text: String, 
+    val icon: ImageVector, 
+    val color: Color, 
+    val route: String,
+    val isSelected: Boolean = false,
+    val isLast: Boolean = false
+)
+
+@Composable
+fun Header(time: String, onMenuClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .border(width = 1.dp, brush = Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFFA855F7))), shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("SRM", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold)
+            }
+            Text("VIRTUAL LAB", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp, modifier = Modifier.padding(top = 4.dp))
+        }
+
+        IconButton(
+            onClick = onMenuClick,
+            modifier = Modifier
+                .size(48.dp)
+                .background(Color(0xFF1E293B).copy(alpha = 0.6f), CircleShape)
+                .border(1.dp, Color(0xFF334155), CircleShape)
+        ) {
+            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(24.dp))
+        }
+
+        Surface(
+            color = Color(0xFF0F172A),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+        ) {
+            Text(text = time, color = Color(0xFF60A5FA), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.2.sp)
+        }
+    }
+}
+
+@Composable
+fun HeroSection(onExploreClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 48.dp, horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
+            color = Color(0xFF1E293B).copy(alpha = 0.5f),
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(24.dp))
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+                Box(modifier = Modifier.size(8.dp).background(Color(0xFF6366F1), CircleShape))
+                Spacer(Modifier.width(10.dp))
+                Text("26EEE1001T · Virtual Lab", color = Color(0xFF94A3B8), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            }
+        }
+        Spacer(Modifier.height(32.dp))
+        Text(text = "Learn EEE", color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-1).sp)
+        Text(text = "Interactively", style = TextStyle(brush = Brush.horizontalGradient(listOf(Color(0xFF60A5FA), Color(0xFFA78BFA))), fontSize = 48.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-1).sp))
+        Spacer(Modifier.height(28.dp))
+        Text(text = "A student-built virtual laboratory for SRM's 26EEE1001T course. Perform experiments, take quizzes, and master electrical engineering concepts — all from your browser.", color = Color(0xFF94A3B8), fontSize = 16.sp, textAlign = TextAlign.Center, lineHeight = 26.sp, modifier = Modifier.padding(horizontal = 12.dp))
+        Spacer(Modifier.height(48.dp))
+        Button(onClick = onExploreClick, modifier = Modifier.fillMaxWidth().height(60.dp).border(width = 1.dp, brush = Brush.linearGradient(listOf(Color(0xFF3B82F6), Color(0xFF8B5CF6))), shape = RoundedCornerShape(30.dp)), shape = RoundedCornerShape(30.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
+            Text("Explore Experiments →", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+        Spacer(Modifier.height(20.dp))
+        TextButton(onClick = { }) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Quiz, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(10.dp))
+                Text("Take a Quiz", color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.Medium)
+            }
+        }
+    }
+}
+
+@Composable
+fun FeaturesSection() {
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(color = Color(0xFF1E1B4B).copy(alpha = 0.8f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF312E81), RoundedCornerShape(20.dp))) {
+            Text("Why SRM EEE Virtual Lab?", color = Color(0xFF818CF8), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp))
+        }
+        Spacer(Modifier.height(24.dp))
+        Text("Built for Engineering Students", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center, lineHeight = 42.sp, letterSpacing = (-0.5).sp)
+        Spacer(Modifier.height(20.dp))
+        Text("Everything you need to complete your EEE lab course — experiments, simulations, theory, and assessments.", color = Color(0xFF94A3B8), fontSize = 16.sp, textAlign = TextAlign.Center, lineHeight = 24.sp, modifier = Modifier.padding(horizontal = 8.dp))
+        Spacer(Modifier.height(40.dp))
+        FeatureCard(Icons.Default.Science, "12 Lab Experiments", "Covering all units of 26EEE1001T — from DC circuits to power generation", Color(0xFF60A5FA))
+        Spacer(Modifier.height(20.dp))
+        FeatureCard(Icons.Default.Bolt, "Interactive Simulations", "Tinkercad-powered circuit simulations with real-time component interaction", Color(0xFFFBBF24))
+        Spacer(Modifier.height(20.dp))
+        FeatureCard(Icons.Default.Psychology, "Knowledge Quizzes", "Post-experiment MCQ quizzes to reinforce learning and test understanding", Color(0xFFA78BFA))
+        Spacer(Modifier.height(20.dp))
+        FeatureCard(Icons.Default.AccessTime, "24/7 Access", "Practice anytime — the virtual lab is always open from any device", Color(0xFF34D399))
+    }
+}
+
+@Composable
+fun FeatureCard(icon: ImageVector, title: String, desc: String, iconTint: Color) {
+    var isHovered by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(if (isHovered) 1.02f else 1f, label = "scale")
+    Surface(color = Color(0xFF0F172A).copy(alpha = 0.7f), shape = RoundedCornerShape(20.dp), modifier = Modifier.fillMaxWidth().scale(scale).border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp)).clickable { isHovered = !isHovered }) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(48.dp)) {
+                Box(contentAlignment = Alignment.Center) { Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(24.dp)) }
+            }
+            Spacer(Modifier.height(20.dp))
+            Text(title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+            Spacer(Modifier.height(10.dp))
+            Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp, fontWeight = FontWeight.Medium)
+        }
+    }
+}
+
+@Composable
+fun ExperimentsHeader(onViewAllClick: () -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp)) {
+        Surface(color = Color(0xFF172554).copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp), modifier = Modifier.border(1.dp, Color(0xFF1E3A8A), RoundedCornerShape(8.dp))) {
+            Text("Interactive Learning", color = Color(0xFF60A5FA), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp))
+        }
+        Spacer(Modifier.height(20.dp))
+        Text("Hands-on Experiments", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp)
+        Spacer(Modifier.height(16.dp))
+        Text("Six core experiments from your lab manual — with theory, interactive simulations, and quizzes.", color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(28.dp))
+        TextButton(onClick = onViewAllClick, contentPadding = PaddingValues(0.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("View all 12 experiments", color = Color(0xFF3B82F6), fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.width(10.dp))
+                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(22.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun ExperimentCardHome(exp: ExperimentHome) {
+    var isExpanded by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(if (isExpanded) 0.98f else 1f, label = "scale")
+    Surface(color = Color(0xFF0F172A).copy(alpha = 0.9f), shape = RoundedCornerShape(20.dp), modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).scale(scale).border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp)).clickable { isExpanded = !isExpanded }) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(10.dp), modifier = Modifier.size(36.dp)) {
+                    Box(contentAlignment = Alignment.Center) { Text(exp.id.toString(), color = Color(0xFF60A5FA), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp) }
+                }
+                Spacer(Modifier.width(14.dp))
+                Surface(color = Color(0xFF1E293B).copy(alpha = 0.5f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(20.dp))) {
+                    Text(exp.category, color = Color(0xFFFBBF24), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
+                }
+                Spacer(Modifier.weight(1f))
+                Surface(color = Color(0xFF064E3B).copy(alpha = 0.3f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF065F46), RoundedCornerShape(20.dp))) {
+                    Text(exp.difficulty, color = Color(0xFF34D399), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+            Text(exp.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
+            Spacer(Modifier.height(12.dp))
+            Text(exp.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp, fontWeight = FontWeight.Medium)
+            Spacer(Modifier.height(32.dp))
+            HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
+            Spacer(Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(exp.duration, color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.weight(1f))
+                TextButton(onClick = { }, contentPadding = PaddingValues(0.dp)) {
+                    Text("Start Lab", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
+                    Spacer(Modifier.width(6.dp))
+                    Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Footer() {
+    Column(modifier = Modifier.fillMaxWidth().padding(24.dp).padding(top = 60.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
+        Spacer(Modifier.height(48.dp))
+        Text("Interactive Electrical Engineering Experiments ·\n26EEE1001T", color = Color(0xFF64748B), fontSize = 15.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 22.sp)
+        Spacer(Modifier.height(40.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            FooterLink("Experiments")
+            FooterLink("Quizzes")
+            FooterLink("Team")
+            FooterLink("About")
+        }
+        Spacer(Modifier.height(56.dp))
+        Text("© 2026 SRM Institute of Science and Technology —\nDepartment of EEE. All rights reserved.", color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, lineHeight = 20.sp)
+    }
+}
+
+@Composable
+fun FooterLink(text: String) {
+    Text(text = text, color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { })
+}
+
+data class ExperimentHome(val id: Int, val title: String, val desc: String, val category: String, val difficulty: String, val duration: String)
+
+val experimentListShort = listOf(
+    ExperimentHome(1, "Kirchhoff's Voltage Law", "Verify KVL by measuring voltages in a closed-loop DC circuit and confirming their algebraic sum is...", "Circuit Analysis", "Beginner", "45 min"),
+    ExperimentHome(2, "Thevenin's Theorem", "Simplify complex linear circuits into a single voltage source and series resistance.", "Circuit Analysis", "Intermediate", "60 min"),
+    ExperimentHome(3, "House Wiring", "Implement residential wiring using switches, energy meter, lamps, and fan in parallel circuits.", "Electrical Installation", "Intermediate", "90 min"),
+    ExperimentHome(4, "Fluorescent Lamp Wiring", "Study the choke-starter mechanism and wire a 40W fluorescent tube lamp correctly.", "Electrical Installation", "Intermediate", "60 min"),
+    ExperimentHome(5, "Staircase Wiring", "Control a single lamp from two locations using two-way switches for staircase circuits.", "Electrical Installation", "Intermediate", "75 min"),
+    ExperimentHome(6, "Full Wave Rectifier", "Build a bridge rectifier using 4 diodes and observe waveforms with and without filter capacitor.", "Power Electronics", "Intermediate", "60 min")
+)
