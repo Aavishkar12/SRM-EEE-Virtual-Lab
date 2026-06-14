@@ -194,7 +194,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
 
                 // Footer
                 item {
-                    FooterExtended()
+                    FooterExtendedExperiments(onNavigate)
                 }
             }
         }
@@ -251,7 +251,7 @@ fun FilterChip(text: String, isSelected: Boolean = false) {
 @Composable
 fun ExperimentCardDetailed(exp: ExperimentData) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.9f),
+        color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -356,7 +356,7 @@ fun StatItem(value: String, label: String) {
 }
 
 @Composable
-fun FooterExtended() {
+fun FooterExtendedExperiments(onNavigate: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -371,10 +371,10 @@ fun FooterExtended() {
         )
         Spacer(Modifier.height(24.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text("Home", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-            Text("Team", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-            Text("About", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+            Text("Home", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("home") })
+            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("quizzes") })
+            Text("Team", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("team") })
+            Text("About", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("about") })
         }
         Spacer(Modifier.height(60.dp))
         Text(

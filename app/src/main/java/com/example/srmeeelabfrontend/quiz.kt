@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -187,12 +186,12 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 if (!isLoggedIn) {
                     item {
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0F172A).copy(alpha = 0.85f),
                             shape = RoundedCornerShape(16.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
-                                .border(1.dp, Color(0xFF1E293B).copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
                         ) {
                             Column(
                                 modifier = Modifier.padding(24.dp),
@@ -235,7 +234,7 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                 // Footer
                 item {
-                    FooterExtended()
+                    FooterExtended(onNavigate)
                 }
             }
         }
@@ -271,7 +270,7 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 @Composable
 fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.9f),
+        color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -300,18 +299,18 @@ fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) 
                         color = quiz.diffColor,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                     )
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
             Text(quiz.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.height(12.dp))
             Text(quiz.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
             
             Spacer(Modifier.height(16.dp))
-            Text("${quiz.questions} Questions", color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            Text("${quiz.questions} Questions", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold)
 
             Spacer(Modifier.height(24.dp))
             
@@ -329,6 +328,38 @@ fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) 
                 }
             }
         }
+    }
+}
+
+@Composable
+fun FooterExtended(onNavigate: (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "SRM EEE Virtual Lab · 26EEE1001T",
+            color = Color(0xFF64748B),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.height(24.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            Text("Home", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("home") })
+            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("quizzes") })
+            Text("Team", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("team") })
+            Text("About", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("about") })
+        }
+        Spacer(Modifier.height(60.dp))
+        Text(
+            "© 2026 SRM Institute of Science and Technology. All rights reserved.",
+            color = Color(0xFF475569),
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(24.dp))
     }
 }
 

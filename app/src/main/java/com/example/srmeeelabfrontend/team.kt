@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -146,7 +149,7 @@ fun TeamScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     }
                 }
 
-                // Expertise Grid
+                // Expertise Cards
                 items(expertiseList) { exp ->
                     ExpertiseCard(exp)
                     Spacer(Modifier.height(16.dp))
@@ -190,7 +193,7 @@ fun TeamScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            AchievementCard(Icons.Outlined.LibraryBooks, "25+", "Research Projects", Color(0xFF22D3EE), Modifier.weight(1f))
+                            AchievementCard(Icons.AutoMirrored.Outlined.LibraryBooks, "25+", "Research Projects", Color(0xFF22D3EE), Modifier.weight(1f))
                             Spacer(Modifier.width(16.dp))
                             AchievementCard(Icons.Outlined.EmojiEvents, "100+", "Publications", Color(0xFFFBBF24), Modifier.weight(1f))
                         }
@@ -198,7 +201,7 @@ fun TeamScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 }
 
                 // Footer
-                item { Footer() }
+                item { Footer(onNavigate) }
             }
         }
 
@@ -233,7 +236,7 @@ fun TeamScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 @Composable
 fun FacultyCard(faculty: FacultyData) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.8f),
+        color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -241,7 +244,7 @@ fun FacultyCard(faculty: FacultyData) {
             .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
     ) {
         Column {
-            // Profile Placeholder (Big Icon as requested)
+            // Profile Placeholder (Big Icon)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -301,7 +304,7 @@ fun FacultyCard(faculty: FacultyData) {
 @Composable
 fun ExpertiseCard(exp: ExpertiseData) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0F172A).copy(alpha = 0.75f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -321,7 +324,7 @@ fun ExpertiseCard(exp: ExpertiseData) {
 @Composable
 fun AchievementCard(icon: ImageVector, value: String, label: String, color: Color, modifier: Modifier) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0F172A).copy(alpha = 0.75f),
         shape = RoundedCornerShape(20.dp),
         modifier = modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
     ) {
@@ -349,10 +352,10 @@ val facultyList = listOf(
 )
 
 val expertiseList = listOf(
-    ExpertiseData("Power Systems", "Research in smart grids, renewable energy integration, and power quality improvement", Icons.Outlined.MenuBook, Color(0xFF3B82F6)),
+    ExpertiseData("Power Systems", "Research in smart grids, renewable energy integration, and power quality improvement", Icons.AutoMirrored.Outlined.MenuBook, Color(0xFF3B82F6)),
     ExpertiseData("Power Electronics", "Expertise in converter design, motor drives, and energy-efficient systems", Icons.Outlined.School, Color(0xFFA78BFA)),
     ExpertiseData("Control Systems", "Advanced research in automation, industrial controls, and system optimization", Icons.Outlined.WorkspacePremium, Color(0xFF34D399)),
-    ExpertiseData("Electrical Machines", "Design and analysis of motors, generators, and transformers", Icons.Outlined.MenuBook, Color(0xFFFBBF24)),
+    ExpertiseData("Electrical Machines", "Design and analysis of motors, generators, and transformers", Icons.AutoMirrored.Outlined.MenuBook, Color(0xFFFBBF24)),
     ExpertiseData("Renewable Energy", "Solar, wind, and hybrid energy systems research and development", Icons.Outlined.Info, Color(0xFFFCA5A5)),
     ExpertiseData("Digital Signal Processing", "Signal analysis, filtering techniques, and embedded systems applications", Icons.Outlined.Settings, Color(0xFF60A5FA))
 )

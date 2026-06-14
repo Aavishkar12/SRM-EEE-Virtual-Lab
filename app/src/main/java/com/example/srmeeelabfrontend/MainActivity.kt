@@ -37,71 +37,66 @@ fun AppNavigation() {
                 }
             })
         }
+        
+        val navigateHandler: (String) -> Unit = { route ->
+            if (route == "logout") {
+                isLoggedIn = false
+                navController.navigate("login") {
+                    popUpTo(0) // Clear backstack
+                }
+            } else {
+                navController.navigate(route)
+            }
+        }
+
         composable("home") {
             HomeScreen(
                 isLoggedIn = isLoggedIn,
                 onExploreExperiments = { navController.navigate("experiments") },
-                onNavigate = { route ->
-                    if (route == "logout") {
-                        isLoggedIn = false
-                        navController.navigate("login")
-                    } else {
-                        navController.navigate(route)
-                    }
-                }
+                onNavigate = navigateHandler
             )
         }
         composable("experiments") {
             ExperimentsScreen(
                 isLoggedIn = isLoggedIn,
                 onBack = { navController.popBackStack() },
-                onNavigate = { route ->
-                    if (route == "logout") {
-                        isLoggedIn = false
-                        navController.navigate("login")
-                    } else {
-                        navController.navigate(route)
-                    }
-                }
+                onNavigate = navigateHandler
             )
         }
         composable("study") {
             StudyRoomScreen(
                 isLoggedIn = isLoggedIn,
-                onNavigate = { route ->
-                    if (route == "logout") {
-                        isLoggedIn = false
-                        navController.navigate("login")
-                    } else {
-                        navController.navigate(route)
-                    }
-                }
+                onNavigate = navigateHandler
             )
         }
         composable("quizzes") {
             QuizScreen(
                 isLoggedIn = isLoggedIn,
-                onNavigate = { route ->
-                    if (route == "logout") {
-                        isLoggedIn = false
-                        navController.navigate("login")
-                    } else {
-                        navController.navigate(route)
-                    }
-                }
+                onNavigate = navigateHandler
             )
         }
         composable("team") {
             TeamScreen(
                 isLoggedIn = isLoggedIn,
-                onNavigate = { route ->
-                    if (route == "logout") {
-                        isLoggedIn = false
-                        navController.navigate("login")
-                    } else {
-                        navController.navigate(route)
-                    }
-                }
+                onNavigate = navigateHandler
+            )
+        }
+        composable("about") {
+            AboutScreen(
+                isLoggedIn = isLoggedIn,
+                onNavigate = navigateHandler
+            )
+        }
+        composable("profile") {
+            ProfileScreen(
+                isLoggedIn = isLoggedIn,
+                onNavigate = navigateHandler
+            )
+        }
+        composable("settings") {
+            SettingsScreen(
+                isLoggedIn = isLoggedIn,
+                onNavigate = navigateHandler
             )
         }
     }

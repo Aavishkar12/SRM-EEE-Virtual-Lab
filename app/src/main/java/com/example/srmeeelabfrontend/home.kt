@@ -2,7 +2,6 @@ package com.example.srmeeelabfrontend
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,8 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Logout
-import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -22,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -112,118 +108,6 @@ fun HomeScreen(isLoggedIn: Boolean, onExploreExperiments: () -> Unit, onNavigate
                     })
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun HamburgerMenu(isLoggedIn: Boolean, onClose: () -> Unit, onNavigate: (String) -> Unit) {
-    Surface(
-        modifier = Modifier
-            .width(230.dp),
-        color = Color(0xFF080C14).copy(alpha = 0.95f),
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color(0xFF1E293B)),
-        shadowElevation = 12.dp
-    ) {
-        Column(modifier = Modifier.padding(vertical = 10.dp)) {
-            val menuItems = listOf(
-                MenuItemData("Home", Icons.Outlined.Home, Color(0xFF60A5FA), "home", true),
-                MenuItemData("Experiments", Icons.Outlined.Science, Color.White, "experiments"),
-                MenuItemData("Study Room", Icons.Outlined.MenuBook, Color.White, "study"),
-                MenuItemData("Quizzes", Icons.Outlined.Quiz, Color.White, "quizzes"),
-                MenuItemData("Team", Icons.Outlined.People, Color.White, "team"),
-                MenuItemData("About", Icons.Outlined.Info, Color.White, "about"),
-                MenuItemData("Profile", Icons.Outlined.Person, Color.White, "profile"),
-                MenuItemData("Settings", Icons.Outlined.Settings, Color.White, "settings"),
-                if (isLoggedIn) {
-                    MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFFEF4444), "logout", isLast = true)
-                } else {
-                    MenuItemData("Sign In", Icons.AutoMirrored.Outlined.Login, Color(0xFF60A5FA), "login", isLast = true)
-                }
-            )
-
-            menuItems.forEach { item ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onNavigate(item.route) }
-                        .padding(vertical = 12.dp, horizontal = 18.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = null,
-                        tint = item.color,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(Modifier.width(16.dp))
-                    Text(
-                        text = item.text,
-                        color = if (item.isSelected) Color(0xFF60A5FA) else Color.White,
-                        fontSize = 15.sp,
-                        fontWeight = if (item.isSelected) FontWeight.Bold else FontWeight.Medium,
-                        modifier = Modifier.weight(1f)
-                    )
-                    if (item.isSelected) {
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .background(Color(0xFF3B82F6), CircleShape)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-data class MenuItemData(
-    val text: String, 
-    val icon: ImageVector, 
-    val color: Color, 
-    val route: String,
-    val isSelected: Boolean = false,
-    val isLast: Boolean = false
-)
-
-@Composable
-fun Header(time: String, onMenuClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .border(width = 1.dp, brush = Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFFA855F7))), shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("SRM", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold)
-            }
-            Text("VIRTUAL LAB", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp, modifier = Modifier.padding(top = 4.dp))
-        }
-
-        IconButton(
-            onClick = onMenuClick,
-            modifier = Modifier
-                .size(48.dp)
-                .background(Color(0xFF1E293B).copy(alpha = 0.6f), CircleShape)
-                .border(1.dp, Color(0xFF334155), CircleShape)
-        ) {
-            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(24.dp))
-        }
-
-        Surface(
-            color = Color(0xFF0F172A),
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
-        ) {
-            Text(text = time, color = Color(0xFF60A5FA), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.2.sp)
         }
     }
 }
