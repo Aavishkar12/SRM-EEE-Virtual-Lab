@@ -139,7 +139,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            StatCard(Icons.Default.SmartToy, "AI", "Assistant", Color(0xFF818CF8), Modifier.weight(1f).clickable { /* AI Action */ })
+                            StatCard(Icons.Default.SmartToy, "AI", "Assistant", Color(0xFF818CF8), Modifier.weight(1f).clickable { onNavigate("ai_assistant") })
                             Spacer(Modifier.width(16.dp))
                             StatCard(Icons.Default.Wifi, "24/7", "Access", Color(0xFF60A5FA), Modifier.weight(1f))
                         }
@@ -158,7 +158,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         desc = "Ask any EEE concept — get instant explanations, solve circuit problems, generate practice questions, and get step-by-step help.",
                         accentColor = Color(0xFF818CF8),
                         badgeText = "AI Powered",
-                        onClick = { /* Navigate to AI */ }
+                        onClick = { onNavigate("ai_assistant") }
                     )
                 }
 
@@ -196,7 +196,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                 // Pro Tip Card
                 item {
-                    ProTipCard(onAiClick = { /* Navigate to AI */ })
+                    ProTipCard(onAiClick = { onNavigate("ai_assistant") })
                 }
 
                 // Branded Footer

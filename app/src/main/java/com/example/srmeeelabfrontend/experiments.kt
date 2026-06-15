@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Search
@@ -165,6 +166,9 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                         item { FilterChip("All", true) }
                         item { FilterChip("Circuit Analysis (2)") }
                         item { FilterChip("Analog Electronics (4)") }
+                        item { FilterChip("Digital Electronics (2)") }
+                        item { FilterChip("Electrical Machines (1)") }
+                        item { FilterChip("Electrical Installation (3)") }
                     }
                 }
 
@@ -183,7 +187,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
 
                 // Experiment List
                 items(allExperiments) { exp ->
-                    ExperimentCardDetailed(exp)
+                    ExperimentCardDetailed(exp, onClick = { onNavigate("experiment_detail/${exp.id}") })
                     Spacer(Modifier.height(16.dp))
                 }
 
@@ -194,7 +198,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
 
                 // Footer
                 item {
-                    FooterExtendedExperiments(onNavigate)
+                    Footer(onNavigate)
                 }
             }
         }
@@ -249,14 +253,36 @@ fun FilterChip(text: String, isSelected: Boolean = false) {
 }
 
 @Composable
-fun ExperimentCardDetailed(exp: ExperimentData) {
+fun ExperimentCardDetailed(exp: ExperimentData, onClick: () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition(label = "borderGlow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.7f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowAlpha"
+    )
+
     Surface(
         color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+            .border(
+                width = 1.5.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF3B82F6).copy(alpha = glowAlpha),
+                        Color(0xFF1E293B),
+                        Color(0xFF60A5FA).copy(alpha = glowAlpha)
+                    )
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clickable { onClick() }
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -310,10 +336,10 @@ fun ExperimentCardDetailed(exp: ExperimentData) {
                 Spacer(Modifier.width(6.dp))
                 Text(exp.duration, color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.weight(1f))
-                TextButton(onClick = { }) {
+                TextButton(onClick = onClick) {
                     Text("Start Lab", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
                     Spacer(Modifier.width(6.dp))
-                    Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
                 }
             }
         }
@@ -352,38 +378,6 @@ fun StatItem(value: String, label: String) {
         Text(value, color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.ExtraBold)
         Spacer(Modifier.height(8.dp))
         Text(label, color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-fun FooterExtendedExperiments(onNavigate: (String) -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            "SRM EEE Virtual Lab · 26EEE1001T",
-            color = Color(0xFF64748B),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(24.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text("Home", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("home") })
-            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("quizzes") })
-            Text("Team", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("team") })
-            Text("About", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("about") })
-        }
-        Spacer(Modifier.height(60.dp))
-        Text(
-            "© 2026 SRM Institute of Science and Technology. All rights reserved.",
-            color = Color(0xFF475569),
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(24.dp))
     }
 }
 

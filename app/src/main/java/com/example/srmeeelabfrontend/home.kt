@@ -77,10 +77,10 @@ fun HomeScreen(isLoggedIn: Boolean, onExploreExperiments: () -> Unit, onNavigate
                 item { FeaturesSection() }
                 item { ExperimentsHeader(onViewAllClick = onExploreExperiments) }
                 items(experimentListShort) { experiment ->
-                    ExperimentCardHome(experiment)
+                    ExperimentCardHome(experiment, onClick = { onNavigate("experiment_detail/${experiment.id}") })
                     Spacer(Modifier.height(16.dp))
                 }
-                item { Footer() }
+                item { Footer(onNavigate) }
             }
         }
 
@@ -211,10 +211,19 @@ fun ExperimentsHeader(onViewAllClick: () -> Unit) {
 }
 
 @Composable
-fun ExperimentCardHome(exp: ExperimentHome) {
+fun ExperimentCardHome(exp: ExperimentHome, onClick: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (isExpanded) 0.98f else 1f, label = "scale")
-    Surface(color = Color(0xFF0F172A).copy(alpha = 0.9f), shape = RoundedCornerShape(20.dp), modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).scale(scale).border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp)).clickable { isExpanded = !isExpanded }) {
+    Surface(
+        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+            .scale(scale)
+            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .clickable { onClick() }
+    ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(10.dp), modifier = Modifier.size(36.dp)) {
@@ -249,29 +258,6 @@ fun ExperimentCardHome(exp: ExperimentHome) {
             }
         }
     }
-}
-
-@Composable
-fun Footer() {
-    Column(modifier = Modifier.fillMaxWidth().padding(24.dp).padding(top = 60.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
-        Spacer(Modifier.height(48.dp))
-        Text("Interactive Electrical Engineering Experiments ·\n26EEE1001T", color = Color(0xFF64748B), fontSize = 15.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 22.sp)
-        Spacer(Modifier.height(40.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            FooterLink("Experiments")
-            FooterLink("Quizzes")
-            FooterLink("Team")
-            FooterLink("About")
-        }
-        Spacer(Modifier.height(56.dp))
-        Text("© 2026 SRM Institute of Science and Technology —\nDepartment of EEE. All rights reserved.", color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, lineHeight = 20.sp)
-    }
-}
-
-@Composable
-fun FooterLink(text: String) {
-    Text(text = text, color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { })
 }
 
 data class ExperimentHome(val id: Int, val title: String, val desc: String, val category: String, val difficulty: String, val duration: String)

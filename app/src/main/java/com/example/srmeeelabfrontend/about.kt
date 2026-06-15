@@ -279,7 +279,7 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 }
 
                 // Footer
-                item { Footer() }
+                item { Footer(onNavigate) }
             }
         }
 

@@ -9,7 +9,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -205,7 +204,7 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 }
 
                 // Footer
-                item { Footer() }
+                item { Footer(onNavigate) }
             }
         }
 
@@ -239,13 +238,34 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
 @Composable
 fun ProfileInfoCard(info: ProfileInfo) {
+    val infiniteTransition = rememberInfiniteTransition(label = "profileGlow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 0.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowAlpha"
+    )
+
     Surface(
         color = Color(0xFF0F172A).copy(alpha = 0.6f),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF1E293B),
+                        info.color.copy(alpha = glowAlpha),
+                        Color(0xFF1E293B)
+                    )
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
         Row(
             modifier = Modifier.padding(20.dp),

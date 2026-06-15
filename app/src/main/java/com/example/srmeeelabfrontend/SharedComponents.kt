@@ -257,15 +257,32 @@ fun Footer(onNavigate: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().padding(24.dp).padding(top = 60.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
         Spacer(Modifier.height(48.dp))
-        Text("Interactive Electrical Engineering Experiments ·\n26EEE1001T", color = Color(0xFF64748B), fontSize = 15.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 22.sp)
-        Spacer(Modifier.height(40.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text("Home", color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("home") })
-            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("quizzes") })
-            Text("Team", color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("team") })
-            Text("About", color = Color(0xFF94A3B8), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("about") })
+        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF64748B), fontSize = 15.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(32.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FooterLink("Home", onClick = { onNavigate("home") })
+            FooterLink("Experiments", onClick = { onNavigate("experiments") })
+            FooterLink("Quizzes", onClick = { onNavigate("quizzes") })
+            FooterLink("Team", onClick = { onNavigate("team") })
+            FooterLink("About", onClick = { onNavigate("about") })
         }
         Spacer(Modifier.height(56.dp))
         Text("© 2026 SRM Institute of Science and Technology —\nDepartment of EEE. All rights reserved.", color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, lineHeight = 20.sp)
+        Spacer(Modifier.height(24.dp))
     }
+}
+
+@Composable
+fun FooterLink(text: String, onClick: () -> Unit) {
+    Text(
+        text = text, 
+        color = Color(0xFF94A3B8), 
+        fontSize = 14.sp, 
+        fontWeight = FontWeight.SemiBold, 
+        modifier = Modifier.clickable { onClick() }
+    )
 }

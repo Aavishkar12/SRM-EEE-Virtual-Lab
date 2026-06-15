@@ -234,7 +234,7 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                 // Footer
                 item {
-                    FooterExtended(onNavigate)
+                    Footer(onNavigate)
                 }
             }
         }
@@ -315,7 +315,7 @@ fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) 
             Spacer(Modifier.height(24.dp))
             
             if (isLoggedIn) {
-                TextButton(onClick = { }, contentPadding = PaddingValues(0.dp)) {
+                TextButton(onClick = { onNavigate("quiz_attempt/${quiz.id}") }, contentPadding = PaddingValues(0.dp)) {
                     Text("Start Quiz →", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
                 }
             } else {
@@ -328,38 +328,6 @@ fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) 
                 }
             }
         }
-    }
-}
-
-@Composable
-fun FooterExtended(onNavigate: (String) -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            "SRM EEE Virtual Lab · 26EEE1001T",
-            color = Color(0xFF64748B),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(24.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text("Home", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("home") })
-            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("quizzes") })
-            Text("Team", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("team") })
-            Text("About", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("about") })
-        }
-        Spacer(Modifier.height(60.dp))
-        Text(
-            "© 2026 SRM Institute of Science and Technology. All rights reserved.",
-            color = Color(0xFF475569),
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(24.dp))
     }
 }
 

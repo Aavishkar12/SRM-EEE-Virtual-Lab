@@ -338,7 +338,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 }
 
                 // Footer
-                item { Footer() }
+                item { Footer(onNavigate) }
             }
         }
 
