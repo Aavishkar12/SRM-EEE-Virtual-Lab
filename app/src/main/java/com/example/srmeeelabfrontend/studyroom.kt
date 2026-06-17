@@ -190,7 +190,13 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 }
 
                 items(academicResourcesList) { res ->
-                    ResourceCard(res, onClick = { /* Navigate to specific resource */ })
+                    ResourceCard(res, onClick = {
+                        when (res.title) {
+                            "EEE PYQs" -> onNavigate("pyq")
+                            "CT Schedules" -> onNavigate("ct")
+                            else -> { /* Other resources */ }
+                        }
+                    })
                     Spacer(Modifier.height(16.dp))
                 }
 

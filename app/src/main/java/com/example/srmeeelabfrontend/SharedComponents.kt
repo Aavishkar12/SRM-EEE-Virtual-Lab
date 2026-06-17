@@ -32,6 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun AnimatedBackground() {
@@ -150,41 +153,124 @@ fun AnimatedBackground() {
 
 @Composable
 fun Header(time: String, onMenuClick: () -> Unit) {
+    val date = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault()).format(Date())
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 20.dp),
+            .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
+        // Logo Section - Rebalanced
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
-                    .border(width = 1.dp, brush = Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFFA855F7))), shape = CircleShape),
+                    .size(44.dp)
+                    .border(
+                        width = 1.5.dp, 
+                        brush = Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFFA855F7), Color(0xFF6366F1))), 
+                        shape = CircleShape
+                    )
+                    .background(Color(0xFF6366F1).copy(alpha = 0.1f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Text("SRM", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold)
+                Text("SRM", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
             }
-            Text("VIRTUAL LAB", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp, modifier = Modifier.padding(top = 4.dp))
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(
+                    "VIRTUAL", 
+                    color = Color.White, 
+                    fontSize = 14.sp, 
+                    fontWeight = FontWeight.ExtraBold, 
+                    letterSpacing = 1.sp
+                )
+                Text(
+                    "LAB", 
+                    color = Color(0xFFA855F7), 
+                    fontSize = 11.sp, 
+                    fontWeight = FontWeight.Bold, 
+                    letterSpacing = 2.sp
+                )
+            }
         }
 
+        // Center Menu Trigger - Premium Look
         IconButton(
             onClick = onMenuClick,
             modifier = Modifier
-                .size(48.dp)
-                .background(Color(0xFF1E293B).copy(alpha = 0.6f), CircleShape)
-                .border(1.dp, Color(0xFF334155), CircleShape)
+                .size(44.dp)
+                .background(Color(0xFF1E293B).copy(alpha = 0.4f), CircleShape)
+                .border(1.dp, Color(0xFF334155).copy(alpha = 0.5f), CircleShape)
         ) {
-            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(24.dp))
+            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(22.dp))
         }
 
-        Surface(
-            color = Color(0xFF0F172A),
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
-        ) {
-            Text(text = time, color = Color(0xFF60A5FA), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.2.sp)
+        // Time & Date Section - Rebalanced
+        Column(horizontalAlignment = Alignment.End) {
+            Surface(
+                color = Color(0xFF0F172A).copy(alpha = 0.6f),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+            ) {
+                Text(
+                    text = time, 
+                    color = Color(0xFF60A5FA), 
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp), 
+                    fontSize = 13.sp, 
+                    fontWeight = FontWeight.Bold, 
+                    letterSpacing = 1.sp
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = date, 
+                color = Color(0xFF94A3B8), 
+                fontSize = 10.sp, 
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.End
+            )
+        }
+    }
+}
+
+@Composable
+fun GlassCard(
+    modifier: Modifier = Modifier,
+    glowColor: Color = Color(0xFF1E293B),
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "glassGlow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.1f,
+        targetValue = 0.4f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowAlpha"
+    )
+
+    Surface(
+        color = Color(0xFF0F172A).copy(alpha = 0.4f),
+        shape = RoundedCornerShape(24.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF1E293B),
+                        glowColor.copy(alpha = glowAlpha),
+                        Color(0xFF1E293B)
+                    )
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            content()
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -175,36 +176,46 @@ fun FeaturesSection() {
 @Composable
 fun FeatureCard(icon: ImageVector, title: String, desc: String, iconTint: Color) {
     var isHovered by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (isHovered) 1.02f else 1f, label = "scale")
-    Surface(color = Color(0xFF0F172A).copy(alpha = 0.7f), shape = RoundedCornerShape(20.dp), modifier = Modifier.fillMaxWidth().scale(scale).border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp)).clickable { isHovered = !isHovered }) {
-        Column(modifier = Modifier.padding(24.dp)) {
-            Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(48.dp)) {
-                Box(contentAlignment = Alignment.Center) { Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(24.dp)) }
+    val scale by animateFloatAsState(if (isHovered) 1.03f else 1f, label = "scale")
+    
+    GlassCard(
+        modifier = Modifier
+            .scale(scale)
+            .clickable { isHovered = !isHovered },
+        glowColor = iconTint
+    ) {
+        Surface(color = iconTint.copy(alpha = 0.1f), shape = RoundedCornerShape(14.dp), modifier = Modifier.size(52.dp)) {
+            Box(contentAlignment = Alignment.Center) { 
+                Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(26.dp)) 
             }
-            Spacer(Modifier.height(20.dp))
-            Text(title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(10.dp))
-            Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp, fontWeight = FontWeight.Medium)
         }
+        Spacer(Modifier.height(24.dp))
+        Text(title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
+        Spacer(Modifier.height(10.dp))
+        Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp, fontWeight = FontWeight.Medium)
     }
 }
 
 @Composable
 fun ExperimentsHeader(onViewAllClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp)) {
-        Surface(color = Color(0xFF172554).copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp), modifier = Modifier.border(1.dp, Color(0xFF1E3A8A), RoundedCornerShape(8.dp))) {
-            Text("Interactive Learning", color = Color(0xFF60A5FA), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp))
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 56.dp)) {
+        Surface(
+            color = Color(0xFF60A5FA).copy(alpha = 0.1f), 
+            shape = RoundedCornerShape(10.dp), 
+            modifier = Modifier.border(1.dp, Color(0xFF60A5FA).copy(alpha = 0.2f), RoundedCornerShape(10.dp))
+        ) {
+            Text("INTERACTIVE LEARNING", color = Color(0xFF60A5FA), fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp), letterSpacing = 1.sp)
         }
-        Spacer(Modifier.height(20.dp))
-        Text("Hands-on Experiments", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp)
+        Spacer(Modifier.height(24.dp))
+        Text("Hands-on Experiments", color = Color.White, fontSize = 38.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp)
         Spacer(Modifier.height(16.dp))
-        Text("Six core experiments from your lab manual — with theory, interactive simulations, and quizzes.", color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
-        Spacer(Modifier.height(28.dp))
+        Text("Six core experiments from your lab manual — with theory, interactive simulations, and quizzes.", color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 26.sp, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(32.dp))
         TextButton(onClick = onViewAllClick, contentPadding = PaddingValues(0.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("View all 12 experiments", color = Color(0xFF3B82F6), fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                Text("View all 12 experiments", color = Color(0xFF3B82F6), fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.width(10.dp))
-                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(22.dp))
+                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
             }
         }
     }
@@ -214,47 +225,45 @@ fun ExperimentsHeader(onViewAllClick: () -> Unit) {
 fun ExperimentCardHome(exp: ExperimentHome, onClick: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (isExpanded) 0.98f else 1f, label = "scale")
-    Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
-        shape = RoundedCornerShape(20.dp),
+    
+    GlassCard(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .scale(scale)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
-            .clickable { onClick() }
+            .clickable { onClick() },
+        glowColor = Color(0xFF60A5FA)
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(10.dp), modifier = Modifier.size(36.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Text(exp.id.toString(), color = Color(0xFF60A5FA), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp) }
-                }
-                Spacer(Modifier.width(14.dp))
-                Surface(color = Color(0xFF1E293B).copy(alpha = 0.5f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(20.dp))) {
-                    Text(exp.category, color = Color(0xFFFBBF24), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
-                }
-                Spacer(Modifier.weight(1f))
-                Surface(color = Color(0xFF064E3B).copy(alpha = 0.3f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF065F46), RoundedCornerShape(20.dp))) {
-                    Text(exp.difficulty, color = Color(0xFF34D399), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(40.dp)) {
+                Box(contentAlignment = Alignment.Center) { 
+                    Text(exp.id.toString(), color = Color(0xFF60A5FA), fontWeight = FontWeight.ExtraBold, fontSize = 18.sp) 
                 }
             }
-            Spacer(Modifier.height(20.dp))
-            Text(exp.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(12.dp))
-            Text(exp.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp, fontWeight = FontWeight.Medium)
-            Spacer(Modifier.height(32.dp))
-            HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
-            Spacer(Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(exp.duration, color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.weight(1f))
-                TextButton(onClick = { }, contentPadding = PaddingValues(0.dp)) {
-                    Text("Start Lab", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
-                    Spacer(Modifier.width(6.dp))
-                    Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
-                }
+            Spacer(Modifier.width(16.dp))
+            Surface(color = Color(0xFFFBBF24).copy(alpha = 0.1f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFFFBBF24).copy(alpha = 0.2f), RoundedCornerShape(20.dp))) {
+                Text(exp.category, color = Color(0xFFFBBF24), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+            }
+            Spacer(Modifier.weight(1f))
+            Surface(color = Color(0xFF34D399).copy(alpha = 0.1f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF34D399).copy(alpha = 0.2f), RoundedCornerShape(20.dp))) {
+                Text(exp.difficulty, color = Color(0xFF34D399), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+            }
+        }
+        Spacer(Modifier.height(24.dp))
+        Text(exp.title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+        Spacer(Modifier.height(12.dp))
+        Text(exp.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(32.dp))
+        HorizontalDivider(color = Color(0xFF1E293B).copy(alpha = 0.5f), thickness = 1.dp)
+        Spacer(Modifier.height(20.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(8.dp))
+            Text(exp.duration, color = Color(0xFF64748B), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.weight(1f))
+            TextButton(onClick = { }, contentPadding = PaddingValues(0.dp)) {
+                Text("Start Lab", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(20.dp))
             }
         }
     }
