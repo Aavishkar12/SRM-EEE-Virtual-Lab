@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -162,36 +163,46 @@ fun Header(time: String, onMenuClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Logo Section - Rebalanced
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // Logo Section - Premium Vertical Alignment
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(start = 4.dp)
+        ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(42.dp)
                     .border(
                         width = 1.5.dp, 
-                        brush = Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFFA855F7), Color(0xFF6366F1))), 
+                        brush = Brush.linearGradient(listOf(Color(0xFF3B82F6), Color(0xFFA855F7))), 
                         shape = CircleShape
-                    )
-                    .background(Color(0xFF6366F1).copy(alpha = 0.1f), CircleShape),
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("SRM", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
-            }
-            Spacer(Modifier.width(12.dp))
-            Column {
                 Text(
-                    "VIRTUAL", 
+                    "SRM", 
                     color = Color.White, 
-                    fontSize = 14.sp, 
-                    fontWeight = FontWeight.ExtraBold, 
+                    fontSize = 11.sp, 
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "VIRTUAL ", 
+                    color = Color.White, 
+                    fontSize = 12.sp, 
+                    fontWeight = FontWeight.Bold, 
                     letterSpacing = 1.sp
                 )
                 Text(
                     "LAB", 
-                    color = Color(0xFFA855F7), 
-                    fontSize = 11.sp, 
-                    fontWeight = FontWeight.Bold, 
-                    letterSpacing = 2.sp
+                    style = TextStyle(
+                        brush = Brush.linearGradient(listOf(Color(0xFF3B82F6), Color(0xFFA855F7))),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold, 
+                        letterSpacing = 1.sp
+                    )
                 )
             }
         }
@@ -351,10 +362,9 @@ fun Footer(onNavigate: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             FooterLink("Home", onClick = { onNavigate("home") })
-            FooterLink("Experiments", onClick = { onNavigate("experiments") })
-            FooterLink("Quizzes", onClick = { onNavigate("quizzes") })
             FooterLink("Team", onClick = { onNavigate("team") })
             FooterLink("About", onClick = { onNavigate("about") })
+            FooterLink("Developers", onClick = { onNavigate("developers") })
         }
         Spacer(Modifier.height(56.dp))
         Text("© 2026 SRM Institute of Science and Technology —\nDepartment of EEE. All rights reserved.", color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, lineHeight = 20.sp)

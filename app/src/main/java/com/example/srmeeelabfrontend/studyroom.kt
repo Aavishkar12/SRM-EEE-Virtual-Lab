@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -41,12 +42,8 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     val contentScale = remember { Animatable(0.97f) }
     
     LaunchedEffect(Unit) {
-        launch {
-            contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
-        launch {
-            contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
+        launch { contentAlpha.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
+        launch { contentScale.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
     }
 
     LaunchedEffect(Unit) {
@@ -89,17 +86,17 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(24.dp))
 
                         Surface(
-                            color = Color(0xFF581C87).copy(alpha = 0.25f),
+                            color = Color(0xFF581C87).copy(alpha = 0.15f),
                             shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier.border(1.dp, Color(0xFF7E22CE).copy(alpha = 0.4f), RoundedCornerShape(20.dp))
+                            modifier = Modifier.border(1.dp, Color(0xFF7E22CE).copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                             ) {
                                 Icon(Icons.Default.LibraryBooks, contentDescription = null, tint = Color(0xFFA78BFA), modifier = Modifier.size(16.dp))
-                                Spacer(Modifier.width(8.dp))
-                                Text("26EEE1001T — All Study Resources", color = Color(0xFFA78BFA), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Spacer(Modifier.width(10.dp))
+                                Text("26EEE1001T — ACADEMIC RESOURCES", color = Color(0xFFA78BFA), fontSize = 11.sp, fontWeight = FontWeight.Black, letterSpacing = 0.5.sp)
                             }
                         }
                     }
@@ -115,9 +112,9 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         Text(
                             "Study Room",
                             color = Color.White,
-                            fontSize = 42.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = (-0.5).sp
+                            fontSize = 44.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = (-1).sp
                         )
                         Spacer(Modifier.height(12.dp))
                         Text(
@@ -129,90 +126,63 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     }
                 }
 
-                // Stats Grid
-                item {
-                    Column(modifier = Modifier.padding(24.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            StatCard(Icons.Default.Science, "12", "Experiments", Color(0xFF22D3EE), Modifier.weight(1f).clickable { onNavigate("experiments") })
-                            Spacer(Modifier.width(16.dp))
-                            StatCard(Icons.Default.Psychology, "12", "Quizzes", Color(0xFF4ADE80), Modifier.weight(1f).clickable { onNavigate("quizzes") })
-                        }
-                        Spacer(Modifier.height(16.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            StatCard(Icons.Default.SmartToy, "AI", "Assistant", Color(0xFF818CF8), Modifier.weight(1f).clickable { onNavigate("ai_assistant") })
-                            Spacer(Modifier.width(16.dp))
-                            StatCard(Icons.Default.Wifi, "24/7", "Access", Color(0xFF60A5FA), Modifier.weight(1f))
-                        }
-                    }
-                }
-
                 // Featured Tools
                 item {
-                    SectionHeader(Icons.Default.Star, "Featured Tools", Color(0xFFFBBF24))
+                    SectionHeader(Icons.Default.Star, "FEATURED TOOLS", Color(0xFFFBBF24))
                 }
 
                 item {
-                    FeaturedToolCard(
+                    PremiumFeaturedCard(
                         icon = Icons.Default.SmartToy,
                         title = "MyAI Lab Assistant",
-                        desc = "Ask any EEE concept — get instant explanations, solve circuit problems, generate practice questions, and get step-by-step help.",
+                        desc = "Ask any EEE concept — get instant explanations, solve circuit problems, and get step-by-step help.",
                         accentColor = Color(0xFF818CF8),
-                        badgeText = "AI Powered",
+                        badgeText = "AI POWERED",
                         onClick = { onNavigate("ai_assistant") }
                     )
                 }
 
                 item {
-                    FeaturedToolCard(
+                    PremiumFeaturedCard(
                         icon = Icons.Default.Science,
                         title = "Virtual Lab Experiments",
-                        desc = "Perform all 12 interactive lab experiments virtually with real-time simulations, truth tables, oscilloscopes, and circuit builders.",
+                        desc = "Perform all 12 interactive lab experiments virtually with real-time simulations and circuit builders.",
                         accentColor = Color(0xFF22D3EE),
-                        badgeText = "12 Labs",
+                        badgeText = "12 LABS",
                         onClick = { onNavigate("experiments") }
-                    )
-                }
-
-                item {
-                    FeaturedToolCard(
-                        icon = Icons.Default.Psychology,
-                        title = "Practice Quizzes",
-                        desc = "Test yourself with topic-wise MCQ quizzes for all 12 experiments. Instant feedback and explanations for every answer.",
-                        accentColor = Color(0xFF4ADE80),
-                        badgeText = "12 Quizzes",
-                        onClick = { onNavigate("quizzes") }
                     )
                 }
 
                 // Academic Resources
                 item {
-                    SectionHeader(Icons.Default.TrendingUp, "Academic Resources", Color(0xFF3B82F6))
+                    SectionHeader(Icons.Default.TrendingUp, "ACADEMIC RESOURCES", Color(0xFF3B82F6))
                 }
 
                 items(academicResourcesList) { res ->
-                    ResourceCard(res, onClick = {
+                    PremiumResourceCard(res, onClick = {
                         when (res.title) {
                             "EEE PYQs" -> onNavigate("pyq")
                             "CT Schedules" -> onNavigate("ct")
+                            "Lecture Notes & Slides" -> onNavigate("lecturenotes")
+                            "Reference Books" -> onNavigate("references")
+                            "Formula Cheat Sheet" -> onNavigate("formula")
+                            "Video Tutorials" -> onNavigate("tutorials")
+                            "Lab Manual" -> onNavigate("labmanual")
+                            "Component Guide" -> onNavigate("components")
                             else -> { /* Other resources */ }
                         }
                     })
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // Pro Tip Card
-                item {
-                    ProTipCard(onAiClick = { onNavigate("ai_assistant") })
-                }
-
-                // Branded Footer
+                // Footer
                 item {
                     FooterSimple(onNavigate)
                 }
             }
         }
 
-        // Floating Hamburger Menu Overlay
+        // Hamburger Menu Overlay
         if (isMenuOpen) {
             Box(
                 modifier = Modifier
@@ -241,20 +211,85 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 }
 
 @Composable
-fun StatCard(icon: ImageVector, value: String, label: String, color: Color, modifier: Modifier) {
-    Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.75f),
-        shape = RoundedCornerShape(16.dp),
-        modifier = modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+fun PremiumFeaturedCard(icon: ImageVector, title: String, desc: String, accentColor: Color, badgeText: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(listOf(Color(0xFF1E293B), accentColor.copy(alpha = 0.4f), Color(0xFF1E293B))),
+                shape = RoundedCornerShape(28.dp)
+            )
+            .clickable { onClick() }
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.height(12.dp))
+        Column(modifier = Modifier.padding(28.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(value, color = color, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                Spacer(Modifier.width(8.dp))
+                Surface(
+                    color = accentColor.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.size(56.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(icon, contentDescription = null, tint = accentColor, modifier = Modifier.size(30.dp))
+                    }
+                }
+                Spacer(Modifier.weight(1f))
+                Surface(
+                    color = accentColor.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier.border(1.dp, accentColor.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+                ) {
+                    Text(badgeText, color = accentColor, fontSize = 10.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), letterSpacing = 1.sp)
+                }
             }
-            Text(label, color = Color(0xFF94A3B8), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(24.dp))
+            Text(title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
+            Spacer(Modifier.height(12.dp))
+            Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
+            Spacer(Modifier.height(24.dp))
+            Text("Open Tool →", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Black)
+        }
+    }
+}
+
+@Composable
+fun PremiumResourceCard(res: ResourceData, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(listOf(Color(0xFF1E293B), res.color.copy(alpha = 0.3f), Color(0xFF1E293B))),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clickable { onClick() }
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    color = res.color.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.size(44.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(res.icon, contentDescription = null, tint = res.color, modifier = Modifier.size(24.dp))
+                    }
+                }
+                Spacer(Modifier.weight(1f))
+                Text(res.actionText, color = Color(0xFF475569), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(res.title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Black)
+            Spacer(Modifier.height(8.dp))
+            Text(res.desc, color = Color(0xFF94A3B8), fontSize = 14.sp, lineHeight = 20.sp)
+            Spacer(Modifier.height(16.dp))
+            Text("Explore →", color = res.color, fontSize = 14.sp, fontWeight = FontWeight.Black)
         }
     }
 }
@@ -269,151 +304,7 @@ fun SectionHeader(icon: ImageVector, title: String, color: Color) {
     ) {
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(24.dp))
         Spacer(Modifier.width(12.dp))
-        Text(title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-    }
-}
-
-@Composable
-fun FeaturedToolCard(icon: ImageVector, title: String, desc: String, accentColor: Color, badgeText: String, onClick: () -> Unit) {
-    Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
-        shape = RoundedCornerShape(24.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
-            .clickable { onClick() }
-    ) {
-        Column(modifier = Modifier.padding(24.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    color = accentColor.copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.size(56.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(icon, contentDescription = null, tint = accentColor, modifier = Modifier.size(32.dp))
-                    }
-                }
-                Spacer(Modifier.weight(1f))
-                Surface(
-                    color = accentColor.copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.border(1.dp, accentColor.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
-                ) {
-                    Text(badgeText, color = accentColor, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
-                }
-            }
-            Spacer(Modifier.height(24.dp))
-            Text(title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(12.dp))
-            Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
-            Spacer(Modifier.height(24.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Open", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.width(6.dp))
-                Text("→", color = Color.White, fontSize = 16.sp)
-            }
-        }
-    }
-}
-
-@Composable
-fun ResourceCard(res: ResourceData, onClick: () -> Unit) {
-    Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.75f),
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
-            .clickable { onClick() }
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    color = res.color.copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(res.icon, contentDescription = null, tint = res.color, modifier = Modifier.size(24.dp))
-                    }
-                }
-                Spacer(Modifier.weight(1f))
-                Surface(
-                    color = Color(0xFF1E293B).copy(alpha = 0.6f),
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(10.dp))
-                ) {
-                    Text(res.actionText, color = Color(0xFF94A3B8), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
-                }
-            }
-            Spacer(Modifier.height(16.dp))
-            Text(res.title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(8.dp))
-            Text(res.desc, color = Color(0xFF94A3B8), fontSize = 14.sp, lineHeight = 20.sp)
-            Spacer(Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Explore", color = res.color, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.width(6.dp))
-                Text("→", color = res.color, fontSize = 16.sp)
-            }
-        }
-    }
-}
-
-@Composable
-fun ProTipCard(onAiClick: () -> Unit) {
-    Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.9f),
-        shape = RoundedCornerShape(24.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Surface(
-                color = Color(0xFF3B82F6).copy(alpha = 0.15f),
-                shape = CircleShape,
-                modifier = Modifier.size(56.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Default.WorkspacePremium, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(32.dp))
-                }
-            }
-            Spacer(Modifier.height(24.dp))
-            Text(
-                "Pro Tip: Use the AI Assistant before your lab session",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.ExtraBold,
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Ask the AI to explain the theory and predict the expected results before you do the actual experiment. It drastically improves your understanding and lab report quality!",
-                color = Color(0xFF94A3B8),
-                fontSize = 15.sp,
-                lineHeight = 22.sp,
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.height(32.dp))
-            Button(
-                onClick = onAiClick,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
-            ) {
-                Icon(Icons.Default.SmartToy, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(10.dp))
-                Text("Try AI Assistant", fontWeight = FontWeight.Bold)
-            }
-        }
+        Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Black, letterSpacing = 1.5.sp)
     }
 }
 
@@ -423,28 +314,28 @@ fun FooterSimple(onNavigate: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF64748B), fontSize = 14.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(24.dp))
+        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF475569), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(32.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text("Home", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("home") })
-            Text("Quizzes", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("quizzes") })
-            Text("Team", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("team") })
-            Text("About", color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { onNavigate("about") })
+            Text("Home", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("home") })
+            Text("Quizzes", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("quizzes") })
+            Text("Team", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("team") })
+            Text("Developers", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("developers") })
         }
         Spacer(Modifier.height(48.dp))
-        Text("© 2026 SRM Institute of Science and Technology. All rights reserved.", color = Color(0xFF475569), fontSize = 12.sp, textAlign = TextAlign.Center)
+        Text("© 2026 SRM Institute of Science and Technology. All rights reserved.", color = Color(0xFF334155), fontSize = 11.sp, textAlign = TextAlign.Center)
     }
 }
 
 data class ResourceData(val title: String, val desc: String, val icon: ImageVector, val color: Color, val actionText: String)
 
 val academicResourcesList = listOf(
-    ResourceData("EEE PYQs", "Previous year question papers with solutions for all semesters. Filter by year, unit, and topic.", Icons.Outlined.Article, Color(0xFF60A5FA), "View Papers"),
-    ResourceData("CT Schedules", "Cycle Test dates, syllabus coverage, and important exam deadlines for 26EEE1001T.", Icons.Outlined.CalendarToday, Color(0xFF4ADE80), "View Schedule"),
-    ResourceData("Formula Cheat Sheet", "Quick-reference formulas for KVL, KCL, Thevenin, diode equations, logic gates, and more.", Icons.Outlined.Calculate, Color(0xFFFBBF24), "View Formulas"),
-    ResourceData("Reference Books", "Digital library of recommended textbooks and reference materials for 26EEE1001T.", Icons.Outlined.LibraryBooks, Color(0xFFF97316), "Browse Library"),
-    ResourceData("Lecture Notes & Slides", "Unit-wise lecture notes, slides, and study materials. Download PDFs for offline study.", Icons.Outlined.MenuBook, Color(0xFFF472B6), "View Notes"),
-    ResourceData("Video Tutorials", "Curated YouTube playlists for every experiment — from theory to practical demonstration.", Icons.Outlined.VideoLibrary, Color(0xFFEF4444), "Watch Videos"),
-    ResourceData("Lab Manual", "Complete digital version of the SRM EEE Virtual Lab Manual with all procedures, apparatus, and circuits.", Icons.Outlined.Book, Color(0xFF818CF8), "Read Manual"),
-    ResourceData("Component Guide", "Learn about every component used in the lab — resistors, diodes, op-amps, logic ICs, and more.", Icons.Outlined.Lightbulb, Color(0xFFFB923C), "Interactive")
+    ResourceData("EEE PYQs", "Previous year question papers with solutions for all semesters. Filter by year, unit, and topic.", Icons.Outlined.Article, Color(0xFF60A5FA), "VIEW PAPERS"),
+    ResourceData("CT Schedules", "Cycle Test dates, syllabus coverage, and important exam deadlines for 26EEE1001T.", Icons.Outlined.CalendarToday, Color(0xFF4ADE80), "VIEW SCHEDULE"),
+    ResourceData("Formula Cheat Sheet", "Quick-reference formulas for KVL, KCL, Thevenin, diode equations, and more.", Icons.Outlined.Calculate, Color(0xFFFBBF24), "VIEW FORMULAS"),
+    ResourceData("Reference Books", "Digital library of recommended textbooks and reference materials.", Icons.Outlined.LibraryBooks, Color(0xFFF97316), "BROWSE LIBRARY"),
+    ResourceData("Lecture Notes & Slides", "Unit-wise lecture notes, slides, and study materials. Download PDFs.", Icons.Outlined.MenuBook, Color(0xFFF472B6), "VIEW NOTES"),
+    ResourceData("Video Tutorials", "Curated YouTube playlists for every experiment — from theory to practical.", Icons.Outlined.VideoLibrary, Color(0xFFEF4444), "WATCH VIDEOS"),
+    ResourceData("Lab Manual", "Complete digital version of the SRM EEE Virtual Lab Manual with all procedures.", Icons.Outlined.Book, Color(0xFF818CF8), "READ MANUAL"),
+    ResourceData("Component Guide", "Learn about every component used in the lab — resistors, diodes, and more.", Icons.Outlined.Lightbulb, Color(0xFFFB923C), "INTERACTIVE")
 )

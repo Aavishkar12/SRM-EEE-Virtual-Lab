@@ -184,5 +184,54 @@ fun AppNavigation() {
                 onNavigate = navigateHandler
             )
         }
+
+        composable("lecturenotes") {
+            LectureNotesScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
+
+        composable("references") {
+            ReferencesScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
+
+        composable("components") {
+            ComponentsScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
+
+        composable("tutorials") {
+            TutorialsScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
+
+        composable("formula") {
+            FormulaScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
+
+        composable("labmanual") {
+            LabManualScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
+
+        composable("developers") {
+            DevelopersScreen(
+                onBack = { navController.popBackStack() },
+                onNavigate = navigateHandler
+            )
+        }
     }
 }

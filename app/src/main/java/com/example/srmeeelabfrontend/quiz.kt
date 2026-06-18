@@ -13,14 +13,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -43,12 +46,8 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     val contentScale = remember { Animatable(0.97f) }
     
     LaunchedEffect(Unit) {
-        launch {
-            contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
-        launch {
-            contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
+        launch { contentAlpha.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
+        launch { contentScale.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
     }
 
     LaunchedEffect(Unit) {
@@ -89,27 +88,27 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     }
                 }
 
-                // Hero Section
+                // Title Section - Premium Hero
                 item {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 20.dp),
+                            .padding(horizontal = 24.dp, vertical = 32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Surface(
-                            color = Color(0xFF1E293B).copy(alpha = 0.5f),
+                            color = Color(0xFFA78BFA).copy(alpha = 0.1f),
                             shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(20.dp))
+                            modifier = Modifier.border(1.dp, Color(0xFFA78BFA).copy(alpha = 0.2f), RoundedCornerShape(20.dp))
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-                            ) {
-                                Box(modifier = Modifier.size(6.dp).background(Color(0xFF6366F1), CircleShape))
-                                Spacer(Modifier.width(8.dp))
-                                Text("Knowledge Check", color = Color(0xFF94A3B8), fontSize = 12.sp)
-                            }
+                            Text(
+                                "ACADEMIC ASSESSMENT", 
+                                color = Color(0xFFA78BFA), 
+                                fontSize = 11.sp, 
+                                fontWeight = FontWeight.Black, 
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                                letterSpacing = 1.5.sp
+                            )
                         }
 
                         Spacer(Modifier.height(32.dp))
@@ -117,129 +116,90 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         Text(
                             text = "Test Your",
                             color = Color.White,
-                            fontSize = 42.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            textAlign = TextAlign.Center
+                            fontSize = 44.sp,
+                            fontWeight = FontWeight.Black,
+                            textAlign = TextAlign.Center,
+                            letterSpacing = (-1).sp
                         )
                         Text(
                             text = "Knowledge",
                             style = TextStyle(
                                 brush = Brush.horizontalGradient(listOf(Color(0xFF60A5FA), Color(0xFFA78BFA))),
-                                fontSize = 42.sp,
-                                fontWeight = FontWeight.ExtraBold
+                                fontSize = 44.sp,
+                                fontWeight = FontWeight.Black
                             ),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            letterSpacing = (-1).sp
                         )
 
                         Spacer(Modifier.height(24.dp))
 
                         Text(
-                            text = "A student-built virtual laboratory for SRM's 26EEE1001T course. Perform experiments, take quizzes, and master electrical engineering concepts — all from your browser.",
-                            color = Color(0xFF64748B),
+                            text = "Challenge yourself with interactive assessments designed to reinforce your understanding of Electrical Engineering concepts.",
+                            color = Color(0xFF94A3B8),
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center,
-                            lineHeight = 24.sp
-                        )
-                        
-                        Spacer(Modifier.height(32.dp))
-                        
-                        Text(
-                            text = "Assess your understanding of electrical engineering concepts with our interactive quizzes.",
-                            color = Color(0xFF94A3B8),
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 28.sp
+                            lineHeight = 26.sp,
+                            modifier = Modifier.padding(horizontal = 12.dp)
                         )
                     }
                 }
 
-                // Available Quizzes Header
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 40.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Available Quizzes",
-                            color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Box(modifier = Modifier.width(120.dp).height(3.dp).background(Color(0xFF3B82F6)))
-                        
-                        Spacer(Modifier.height(20.dp))
-                        
-                        Text(
-                            text = "Select a quiz below to test your knowledge and improve your understanding of electrical engineering concepts",
-                            color = Color(0xFF94A3B8),
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 24.sp
-                        )
-                    }
-                }
-
-                // Login Warning (Conditional)
+                // Auth Warning - Glassmorphic refined
                 if (!isLoggedIn) {
                     item {
-                        Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.85f),
-                            shape = RoundedCornerShape(16.dp),
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 24.dp, vertical = 8.dp)
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+                                .padding(horizontal = 24.dp, vertical = 16.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(Color(0xFF1E293B).copy(alpha = 0.4f))
+                                .border(
+                                    width = 1.dp,
+                                    brush = Brush.linearGradient(listOf(Color(0xFFFBBF24).copy(alpha = 0.5f), Color.Transparent)),
+                                    shape = RoundedCornerShape(24.dp)
+                                )
+                                .clickable { onNavigate("login") }
                         ) {
-                            Column(
+                            Row(
                                 modifier = Modifier.padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(12.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .size(52.dp)
+                                        .background(Color(0xFFFBBF24).copy(alpha = 0.1f), CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(Icons.Outlined.Lock, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(28.dp))
+                                }
+                                Spacer(Modifier.width(20.dp))
+                                Column {
+                                    Text("Authentication Required", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                                     Text(
-                                        text = buildAnnotatedString {
-                                            append("You must be signed in with your ")
-                                            withStyle(SpanStyle(color = Color(0xFF3B82F6))) {
-                                                append("@srmist.edu.in")
-                                            }
-                                            append(" student account to attempt the quizzes.")
-                                        },
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        textAlign = TextAlign.Center
+                                        "Sign in with your @srmist.edu.in account to attempt quizzes.", 
+                                        color = Color(0xFF94A3B8), 
+                                        fontSize = 13.sp,
+                                        lineHeight = 18.sp
                                     )
                                 }
-                                Spacer(Modifier.height(16.dp))
-                                Text(
-                                    text = "Sign in to your account",
-                                    color = Color(0xFF3B82F6),
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.clickable { onNavigate("login") }
-                                )
                             }
                         }
+                        Spacer(Modifier.height(32.dp))
                     }
                 }
 
                 // Quiz List
                 items(quizList) { quiz ->
-                    QuizCard(quiz, isLoggedIn, onNavigate)
-                    Spacer(Modifier.height(16.dp))
+                    PremiumQuizCard(quiz, isLoggedIn, onNavigate)
+                    Spacer(Modifier.height(20.dp))
                 }
 
-                // Footer
-                item {
-                    Footer(onNavigate)
-                }
+                item { Footer(onNavigate) }
             }
         }
 
-        // Floating Hamburger Menu Overlay
+        // Hamburger Menu
         if (isMenuOpen) {
             Box(
                 modifier = Modifier
@@ -268,24 +228,51 @@ fun QuizScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 }
 
 @Composable
-fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
-    Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
-        shape = RoundedCornerShape(24.dp),
+fun PremiumQuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition(label = "quizGlow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 0.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowAlpha"
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(28.dp))
+            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = if (isLoggedIn) {
+                        listOf(Color(0xFF1E293B), quiz.diffColor.copy(alpha = glowAlpha), Color(0xFF1E293B))
+                    } else {
+                        listOf(Color(0xFF1E293B), Color(0xFF334155))
+                    }
+                ),
+                shape = RoundedCornerShape(28.dp)
+            )
+            .clickable(enabled = isLoggedIn) { onNavigate("quiz_attempt/${quiz.id}") }
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier.padding(28.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    color = Color(0xFF1E293B),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.size(48.dp)
+                    color = quiz.diffColor.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.size(52.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.Bolt, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                        Icon(
+                            if (isLoggedIn) Icons.Default.Quiz else Icons.Default.Lock, 
+                            contentDescription = null, 
+                            tint = if (isLoggedIn) quiz.diffColor else Color(0xFF64748B), 
+                            modifier = Modifier.size(26.dp)
+                        )
                     }
                 }
                 Spacer(Modifier.weight(1f))
@@ -298,33 +285,45 @@ fun QuizCard(quiz: QuizData, isLoggedIn: Boolean, onNavigate: (String) -> Unit) 
                         quiz.difficulty,
                         color = quiz.diffColor,
                         fontSize = 11.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                        fontWeight = FontWeight.Black,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                        letterSpacing = 0.5.sp
                     )
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
-            Text(quiz.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(12.dp))
-            Text(quiz.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
-            
-            Spacer(Modifier.height(16.dp))
-            Text("${quiz.questions} Questions", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold)
-
             Spacer(Modifier.height(24.dp))
+            Text(quiz.title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+            Spacer(Modifier.height(12.dp))
+            Text(quiz.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 24.sp)
             
-            if (isLoggedIn) {
-                TextButton(onClick = { onNavigate("quiz_attempt/${quiz.id}") }, contentPadding = PaddingValues(0.dp)) {
-                    Text("Start Quiz →", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
-                }
-            } else {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onNavigate("login") }) {
-                    Text("Sign in to Attempt", color = Color(0xFF3B82F6), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
-                    Spacer(Modifier.width(8.dp))
-                    Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text("→", color = Color(0xFF3B82F6), fontSize = 15.sp)
+            Spacer(Modifier.height(24.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.FormatListNumbered, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("${quiz.questions} Questions", color = Color(0xFF64748B), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                
+                Spacer(Modifier.weight(1f))
+                
+                if (isLoggedIn) {
+                    Text(
+                        "Attempt Now →", 
+                        color = quiz.diffColor, 
+                        fontSize = 15.sp, 
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 0.5.sp
+                    )
+                } else {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(14.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            "Locked", 
+                            color = Color(0xFF475569), 
+                            fontSize = 14.sp, 
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
