@@ -202,10 +202,15 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = true, onClose = { isMenuOpen = false }, onNavigate = { route ->
-                        onNavigate(route)
-                        isMenuOpen = false
-                    })
+                    HamburgerMenu(
+                        isLoggedIn = true,
+                        currentRoute = "tutorials",
+                        onClose = { isMenuOpen = false },
+                        onNavigate = { route ->
+                            onNavigate(route)
+                            isMenuOpen = false
+                        }
+                    )
                 }
             }
         }

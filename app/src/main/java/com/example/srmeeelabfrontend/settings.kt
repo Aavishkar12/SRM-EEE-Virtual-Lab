@@ -360,10 +360,15 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = isLoggedIn, onClose = { isMenuOpen = false }, onNavigate = { route ->
-                        onNavigate(route)
-                        isMenuOpen = false
-                    })
+                    HamburgerMenu(
+                        isLoggedIn = true,
+                        currentRoute = "settings",
+                        onClose = { isMenuOpen = false },
+                        onNavigate = { route ->
+                            onNavigate(route)
+                            isMenuOpen = false
+                        }
+                    )
                 }
             }
         }

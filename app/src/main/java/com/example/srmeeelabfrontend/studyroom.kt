@@ -200,7 +200,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = isLoggedIn, onClose = { isMenuOpen = false }, onNavigate = { route ->
+                    HamburgerMenu(isLoggedIn = isLoggedIn, currentRoute = "study", onClose = { isMenuOpen = false }, onNavigate = { route ->
                         onNavigate(route)
                         isMenuOpen = false
                     })

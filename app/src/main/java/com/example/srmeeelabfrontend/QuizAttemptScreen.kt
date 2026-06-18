@@ -248,11 +248,15 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
-                ) {
-                    HamburgerMenu(isLoggedIn = true, onClose = { isMenuOpen = false }, onNavigate = { route ->
+                ) {HamburgerMenu(
+                    isLoggedIn = true,
+                    currentRoute = "quiz_attempt",
+                    onClose = { isMenuOpen = false },
+                    onNavigate = { route ->
                         onNavigate(route)
                         isMenuOpen = false
-                    })
+                    }
+                )
                 }
             }
         }

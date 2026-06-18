@@ -287,25 +287,25 @@ fun GlassCard(
 }
 
 @Composable
-fun HamburgerMenu(isLoggedIn: Boolean, onClose: () -> Unit, onNavigate: (String) -> Unit) {
+fun HamburgerMenu(isLoggedIn: Boolean, currentRoute: String, onClose: () -> Unit, onNavigate: (String) -> Unit) {
     Surface(
         modifier = Modifier
-            .width(230.dp),
+            .width(240.dp),
         color = Color(0xFF080C14).copy(alpha = 0.98f),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(24.dp),
         border = BorderStroke(1.dp, Color(0xFF1E293B)),
         shadowElevation = 16.dp
     ) {
-        Column(modifier = Modifier.padding(vertical = 10.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             val menuItems = listOf(
                 MenuItemData("Home", Icons.Outlined.Home, Color(0xFF60A5FA), "home"),
-                MenuItemData("Experiments", Icons.Outlined.Science, Color.White, "experiments"),
-                MenuItemData("Study Room", Icons.AutoMirrored.Outlined.MenuBook, Color.White, "study"),
-                MenuItemData("Quizzes", Icons.Outlined.Quiz, Color.White, "quizzes"),
-                MenuItemData("Team", Icons.Outlined.People, Color.White, "team"),
-                MenuItemData("About", Icons.Outlined.Info, Color.White, "about"),
-                MenuItemData("Profile", Icons.Outlined.Person, Color.White, "profile"),
-                MenuItemData("Settings", Icons.Outlined.Settings, Color.White, "settings"),
+                MenuItemData("Experiments", Icons.Outlined.Science, Color(0xFF60A5FA), "experiments"),
+                MenuItemData("Study Room", Icons.AutoMirrored.Outlined.MenuBook, Color(0xFF60A5FA), "study"),
+                MenuItemData("Quizzes", Icons.Outlined.Quiz, Color(0xFF60A5FA), "quizzes"),
+                MenuItemData("Team", Icons.Outlined.People, Color(0xFF60A5FA), "team"),
+                MenuItemData("About", Icons.Outlined.Info, Color(0xFF60A5FA), "about"),
+                MenuItemData("Profile", Icons.Outlined.Person, Color(0xFF60A5FA), "profile"),
+                MenuItemData("Settings", Icons.Outlined.Settings, Color(0xFF60A5FA), "settings"),
                 if (isLoggedIn) {
                     MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFFEF4444), "logout")
                 } else {
@@ -314,28 +314,41 @@ fun HamburgerMenu(isLoggedIn: Boolean, onClose: () -> Unit, onNavigate: (String)
             )
 
             menuItems.forEach { item ->
+                val isActive = currentRoute == item.route
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .clickable { onNavigate(item.route) }
-                        .padding(vertical = 12.dp, horizontal = 18.dp),
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(if (isActive) item.color.copy(alpha = 0.12f) else Color.Transparent)
+                        .clickable { 
+                            if (!isActive) onNavigate(item.route)
+                            onClose()
+                        }
+                        .padding(vertical = 14.dp, horizontal = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = item.icon,
                         contentDescription = null,
-                        tint = item.color,
-                        modifier = Modifier.size(20.dp)
+                        tint = if (isActive) item.color else Color(0xFF64748B),
+                        modifier = Modifier.size(22.dp)
                     )
                     Spacer(Modifier.width(16.dp))
                     Text(
                         text = item.text,
-                        color = item.color,
+                        color = if (isActive) Color.White else Color(0xFF94A3B8),
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
                         modifier = Modifier.weight(1f)
                     )
+                    if (isActive) {
+                        Box(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .background(item.color, CircleShape)
+                        )
+                    }
                 }
             }
         }

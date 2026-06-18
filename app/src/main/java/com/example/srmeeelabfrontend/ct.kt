@@ -167,10 +167,15 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = true, onClose = { isMenuOpen = false }, onNavigate = { route ->
-                        onNavigate(route)
-                        isMenuOpen = false
-                    })
+                    HamburgerMenu(
+                        isLoggedIn = true,
+                        currentRoute = "ct",
+                        onClose = { isMenuOpen = false },
+                        onNavigate = { route ->
+                            onNavigate(route)
+                            isMenuOpen = false
+                        }
+                    )
                 }
             }
         }

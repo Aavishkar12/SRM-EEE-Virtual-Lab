@@ -41,6 +41,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var searchQuery by remember { mutableStateOf("") }
     var isMenuOpen by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf("All") }
     
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
@@ -59,6 +60,13 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
         }
+    }
+
+    val categories = listOf("All", "Circuit Analysis", "Analog Electronics", "Digital Electronics", "Electrical Machines", "Electrical Installation")
+    
+    val filteredExperiments = allExperiments.filter { exp ->
+        (selectedCategory == "All" || exp.category == selectedCategory) &&
+        (searchQuery.isEmpty() || exp.title.contains(searchQuery, ignoreCase = true) || exp.desc.contains(searchQuery, ignoreCase = true))
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
@@ -163,19 +171,20 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.padding(bottom = 24.dp)
                     ) {
-                        item { FilterChip("All", true) }
-                        item { FilterChip("Circuit Analysis (2)") }
-                        item { FilterChip("Analog Electronics (4)") }
-                        item { FilterChip("Digital Electronics (2)") }
-                        item { FilterChip("Electrical Machines (1)") }
-                        item { FilterChip("Electrical Installation (3)") }
+                        items(categories) { category ->
+                            FilterChip(
+                                text = category, 
+                                isSelected = selectedCategory == category,
+                                onClick = { selectedCategory = category }
+                            )
+                        }
                     }
                 }
 
                 // Count
                 item {
                     Text(
-                        text = "Showing 12 of 12 experiments",
+                        text = "Showing ${filteredExperiments.size} of ${allExperiments.size} experiments",
                         color = Color(0xFF64748B),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -186,7 +195,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                 }
 
                 // Experiment List
-                items(allExperiments) { exp ->
+                items(filteredExperiments) { exp ->
                     ExperimentCardDetailed(exp, onClick = { onNavigate("experiment_detail/${exp.id}") })
                     Spacer(Modifier.height(16.dp))
                 }
@@ -221,7 +230,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = isLoggedIn, onClose = { isMenuOpen = false }, onNavigate = { route ->
+                    HamburgerMenu(isLoggedIn = isLoggedIn, currentRoute = "experiments", onClose = { isMenuOpen = false }, onNavigate = { route ->
                         onNavigate(route)
                         isMenuOpen = false
                     })
@@ -232,15 +241,17 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
 }
 
 @Composable
-fun FilterChip(text: String, isSelected: Boolean = false) {
+fun FilterChip(text: String, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
         color = if (isSelected) Color(0xFF1E293B) else Color.Transparent,
         shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.border(
-            width = 1.dp,
-            color = if (isSelected) Color(0xFF3B82F6) else Color(0xFF1E293B),
-            shape = RoundedCornerShape(20.dp)
-        )
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = if (isSelected) Color(0xFF3B82F6) else Color(0xFF1E293B),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .clickable { onClick() }
     ) {
         Text(
             text = text,
