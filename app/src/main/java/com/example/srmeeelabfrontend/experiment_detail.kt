@@ -28,21 +28,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.ExperimentApiModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-
+import com.example.srmeeelabfrontend.network.RetrofitClient
 @Composable
 fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("Theory") }
+    var experiment by remember {
+        mutableStateOf<ExperimentApiModel?>(null)
+    }
     
     val contentAlpha = remember { Animatable(0f) }
     
     LaunchedEffect(Unit) {
         contentAlpha.animateTo(1f, animationSpec = tween(800, easing = FastOutSlowInEasing))
+    }
+    LaunchedEffect(experimentId) {
+        try {
+            val response =
+                RetrofitClient.apiService.getExperimentById(experimentId)
+
+            if (response.isSuccessful) {
+                experiment = response.body()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -108,7 +124,7 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                                     modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(20.dp))
                                 ) {
                                     Text(
-                                        "Circuit Analysis",
+                                        experiment?.category ?: "",
                                         color = Color(0xFF60A5FA),
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
@@ -118,14 +134,14 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                             }
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                "Kirchhoff's Voltage Law",
+                                    experiment?.title ?: "Loading...",
                                 color = Color.White,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.ExtraBold
                             )
                             Spacer(Modifier.height(8.dp))
                             Text(
-                                "To verify Kirchhoff's voltage law for the given circuit.",
+                                experiment?.description ?: "",
                                 color = Color(0xFF94A3B8),
                                 fontSize = 16.sp
                             )

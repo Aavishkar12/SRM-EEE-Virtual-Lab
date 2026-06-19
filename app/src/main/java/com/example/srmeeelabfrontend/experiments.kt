@@ -1,5 +1,7 @@
 package com.example.srmeeelabfrontend
 
+import com.example.srmeeelabfrontend.network.ExperimentApiModel
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -42,6 +44,8 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
     var searchQuery by remember { mutableStateOf("") }
     var isMenuOpen by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("All") }
+    var experiments by remember { mutableStateOf<List<ExperimentApiModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
     
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
@@ -61,12 +65,48 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
             delay(1000)
         }
     }
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getExperiments()
+
+            if (response.isSuccessful) {
+                experiments = response.body() ?: emptyList()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isLoading = false
+        }
+    }
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getExperiments()
+
+            println("Response Code: ${response.code()}")
+            println("Response Body: ${response.body()}")
+
+            if (response.isSuccessful) {
+                experiments = response.body() ?: emptyList()
+                println("Experiments Loaded: ${experiments.size}")
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            println("API ERROR: ${e.message}")
+        } finally {
+            isLoading = false
+        }
+    }
 
     val categories = listOf("All", "Circuit Analysis", "Analog Electronics", "Digital Electronics", "Electrical Machines", "Electrical Installation")
-    
-    val filteredExperiments = allExperiments.filter { exp ->
+
+    val filteredExperiments = experiments.filter { exp ->
         (selectedCategory == "All" || exp.category == selectedCategory) &&
-        (searchQuery.isEmpty() || exp.title.contains(searchQuery, ignoreCase = true) || exp.desc.contains(searchQuery, ignoreCase = true))
+                (
+                        searchQuery.isEmpty() ||
+                                exp.title.contains(searchQuery, ignoreCase = true) ||
+                                exp.description.contains(searchQuery, ignoreCase = true)
+                        )
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
@@ -184,7 +224,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                 // Count
                 item {
                     Text(
-                        text = "Showing ${filteredExperiments.size} of ${allExperiments.size} experiments",
+                        text = "Showing ${filteredExperiments.size} of ${experiments.size} experiments",
                         color = Color(0xFF64748B),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -195,11 +235,36 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                 }
 
                 // Experiment List
-                items(filteredExperiments) { exp ->
-                    ExperimentCardDetailed(exp, onClick = { onNavigate("experiment_detail/${exp.id}") })
-                    Spacer(Modifier.height(16.dp))
-                }
+                if (isLoading) {
+                    item {
+                        CircularProgressIndicator(
+                            color = Color(0xFF3B82F6),
+                            modifier = Modifier.padding(24.dp)
+                        )
+                    }
+                } else {
 
+                    items(filteredExperiments) { exp ->
+
+                        val uiExp = ExperimentData(
+                            id = exp.id,
+                            title = exp.title,
+                            desc = exp.description,
+                            category = exp.category,
+                            difficulty = exp.difficulty,
+                            duration = exp.duration
+                        )
+
+                        ExperimentCardDetailed(
+                            uiExp,
+                            onClick = {
+                                onNavigate("experiment_detail/${exp.id}")
+                            }
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+                    }
+                }
                 // Stats Section
                 item {
                     StatsSection()
