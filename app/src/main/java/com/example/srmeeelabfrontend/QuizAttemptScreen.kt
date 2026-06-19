@@ -30,6 +30,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.srmeeelabfrontend.network.QuizApiModel
+import com.example.srmeeelabfrontend.network.RetrofitClient
 
 @Composable
 fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> Unit) {
@@ -37,10 +39,22 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
     var isMenuOpen by remember { mutableStateOf(false) }
     var currentQuestionIndex by remember { mutableIntStateOf(1) }
     var selectedOptionIndex by remember { mutableStateOf<Int?>(null) }
+    var showResult by remember { mutableStateOf(false) }
+
+    var isCorrect by remember { mutableStateOf(false) }
     var isQuizFinished by remember { mutableStateOf(false) }
     var score by remember { mutableIntStateOf(0) }
-    
-    val totalQuestions = 10
+    var userAnswers by remember {
+        mutableStateOf(mutableMapOf<Int, Int>())
+    }
+    var quiz by remember {
+        mutableStateOf<QuizApiModel?>(null)
+    }
+
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
+    val totalQuestions = quiz?.questions?.size ?: 0
     val progress = currentQuestionIndex.toFloat() / totalQuestions
     
     val contentAlpha = remember { Animatable(0f) }
@@ -53,6 +67,20 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
         while (true) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
+        }
+    }
+    LaunchedEffect(quizId) {
+        try {
+            val response =
+                RetrofitClient.apiService.getQuizById(quizId)
+
+            if (response.isSuccessful) {
+                quiz = response.body()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isLoading = false
         }
     }
 
@@ -73,6 +101,9 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                         currentQuestionIndex = 1
                         selectedOptionIndex = null
                         score = 0
+                        showResult = false
+                        isCorrect = false
+                        userAnswers.clear()
                     },
                     onBack = onBack
                 )
@@ -125,7 +156,7 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                     ) {
                         item {
                             Text(
-                                "Kirchhoff's Voltage Law\nQuiz",
+                                quiz?.title ?: "Loading...",
                                 color = Color.White,
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.ExtraBold,
@@ -133,7 +164,7 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                             )
                             Spacer(Modifier.height(12.dp))
                             Text(
-                                "Test your knowledge of voltage relationships in closed loop circuits",
+                                quiz?.description ?: "",
                                 color = Color(0xFF64748B),
                                 fontSize = 15.sp,
                                 lineHeight = 22.sp
@@ -144,7 +175,17 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text("Question $currentQuestionIndex of $totalQuestions", color = Color(0xFF94A3B8), fontSize = 14.sp)
                                 Spacer(Modifier.weight(1f))
-                                Text("Score: $score/$totalQuestions", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                                val percentage =
+                                    if (totalQuestions > 0)
+                                        (score * 100) / totalQuestions
+                                    else
+                                        0
+
+                                Text(
+                                    "Score: $score/$totalQuestions ($percentage%)",
+                                    color = Color(0xFF94A3B8),
+                                    fontSize = 14.sp
+                                )
                             }
                             
                             Spacer(Modifier.height(12.dp))
@@ -169,43 +210,170 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                             ) {
                                 Column(modifier = Modifier.padding(24.dp)) {
                                     Text(
-                                        "What does Kirchhoff's Voltage Law (KVL) state?",
+                                        quiz?.questions?.getOrNull(currentQuestionIndex - 1)?.question
+                                            ?: "Loading...",
                                         color = Color.White,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold,
                                         lineHeight = 26.sp
                                     )
-                                    
+
                                     Spacer(Modifier.height(32.dp))
-                                    
-                                    val options = listOf(
-                                        "The sum of all currents entering a node equals the sum of all currents leaving the node",
-                                        "The algebraic sum of all voltages around any closed loop in a circuit must equal zero",
-                                        "The voltage across a resistor is directly proportional to the current flowing through it",
-                                        "The power dissipated in a circuit equals the product of voltage and current"
-                                    )
-                                    
+
+                                    val options =
+                                        quiz?.questions?.getOrNull(currentQuestionIndex - 1)?.options
+                                            ?: emptyList()
+
                                     options.forEachIndexed { index, option ->
+
+                                        val currentQuestion =
+                                            quiz?.questions?.getOrNull(currentQuestionIndex - 1)
+
+                                        val correctAnswer =
+                                            currentQuestion?.correctAnswer
+
                                         OptionItem(
                                             text = option,
-                                            isSelected = selectedOptionIndex == index,
-                                            onClick = { selectedOptionIndex = index }
+
+                                            isSelected =
+                                                selectedOptionIndex == index && !showResult,
+
+                                            isCorrect =
+                                                showResult &&
+                                                        correctAnswer == index,
+
+                                            isWrong =
+                                                showResult &&
+                                                        selectedOptionIndex == index &&
+                                                        selectedOptionIndex != correctAnswer,
+
+                                            onClick = {
+                                                if (!showResult) {
+
+                                                    val currentQuestion =
+                                                        quiz?.questions?.getOrNull(currentQuestionIndex - 1)
+
+                                                    userAnswers[currentQuestionIndex] =
+                                                        selectedOptionIndex ?: -1
+
+                                                    isCorrect =
+                                                        selectedOptionIndex == currentQuestion?.correctAnswer
+
+                                                    if (isCorrect) {
+                                                        score++
+                                                    }
+
+                                                    showResult = true
+                                                }
+                                            }
                                         )
+
                                         Spacer(Modifier.height(16.dp))
                                     }
-                                    
+
                                     Spacer(Modifier.height(24.dp))
-                                    
+                                    if (showResult) {
+
+                                        val currentQuestion =
+                                            quiz?.questions?.getOrNull(currentQuestionIndex - 1)
+
+                                        Surface(
+                                            color = if (isCorrect)
+                                                Color(0xFF064E3B)
+                                            else
+                                                Color(0xFF7F1D1D),
+                                            shape = RoundedCornerShape(12.dp),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+
+                                            Column(
+                                                modifier = Modifier.padding(16.dp)
+                                            ) {
+
+                                                Text(
+                                                    text = if (isCorrect)
+                                                        "✅ Correct!"
+                                                    else
+                                                        "❌ Incorrect",
+                                                    color = Color.White,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+
+                                                Spacer(Modifier.height(8.dp))
+
+                                                if (!isCorrect) {
+
+                                                    val correctIndex =
+                                                        currentQuestion?.correctAnswer ?: 0
+
+                                                    Text(
+                                                        text =
+                                                            "Correct Answer: ${
+                                                                currentQuestion?.options?.getOrNull(correctIndex)
+                                                            }",
+                                                        color = Color.White
+                                                    )
+
+                                                    Spacer(Modifier.height(8.dp))
+                                                }
+
+                                                Text(
+                                                    text =
+                                                        currentQuestion?.explanation
+                                                            ?: "",
+                                                    color = Color.White
+                                                )
+
+                                                Spacer(Modifier.height(16.dp))
+
+                                                Button(
+                                                    onClick = {
+
+                                                        showResult = false
+
+                                                        if (currentQuestionIndex < totalQuestions) {
+                                                            currentQuestionIndex++
+                                                            selectedOptionIndex = null
+                                                        } else {
+                                                            isQuizFinished = true
+                                                        }
+                                                    }
+                                                ) {
+                                                    Text("Continue")
+                                                }
+                                            }
+                                        }
+
+                                        Spacer(Modifier.height(16.dp))
+                                    }
+
                                     Button(
                                         onClick = {
-                                            if (selectedOptionIndex == 1) { // Assuming index 1 is correct for demo
-                                                score++
-                                            }
-                                            if (currentQuestionIndex < totalQuestions) {
-                                                currentQuestionIndex++
-                                                selectedOptionIndex = null
+
+                                            if (!showResult) {
+
+                                                val currentQuestion =
+                                                    quiz?.questions?.getOrNull(currentQuestionIndex - 1)
+
+                                                isCorrect =
+                                                    selectedOptionIndex == currentQuestion?.correctAnswer
+
+                                                if (isCorrect) {
+                                                    score++
+                                                }
+
+                                                showResult = true
+
                                             } else {
-                                                isQuizFinished = true
+
+                                                showResult = false
+
+                                                if (currentQuestionIndex < totalQuestions) {
+                                                    currentQuestionIndex++
+                                                    selectedOptionIndex = null
+                                                } else {
+                                                    isQuizFinished = true
+                                                }
                                             }
                                         },
                                         enabled = selectedOptionIndex != null,
@@ -217,10 +385,19 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                                         shape = RoundedCornerShape(8.dp)
                                     ) {
                                         Text(
-                                            if (currentQuestionIndex < totalQuestions) "Next Question" else "Finish Quiz",
-                                            color = if (selectedOptionIndex != null) Color.White else Color(0xFF475569),
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(horizontal = 8.dp)
+                                            when {
+                                                showResult && currentQuestionIndex < totalQuestions ->
+                                                    "Next Question"
+
+                                                showResult ->
+                                                    "Finish Quiz"
+
+                                                currentQuestionIndex < totalQuestions ->
+                                                    "Check Answer"
+
+                                                else ->
+                                                    "Check Answer"
+                                            }
                                         )
                                     }
                                 }
@@ -437,15 +614,26 @@ fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMe
 }
 
 @Composable
-fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
+fun OptionItem(
+    text: String,
+    isSelected: Boolean,
+    isCorrect: Boolean = false,
+    isWrong: Boolean = false,
+    onClick: () -> Unit
+) {
     Surface(
         color = Color(0xFF1E293B).copy(alpha = 0.3f),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
             .border(
-                1.dp, 
-                if (isSelected) Color(0xFF3B82F6).copy(alpha = 0.5f) else Color(0xFF334155).copy(alpha = 0.5f), 
+                1.dp,
+                when {
+                    isCorrect -> Color(0xFF22C55E)
+                    isWrong -> Color(0xFFEF4444)
+                    isSelected -> Color(0xFF3B82F6)
+                    else -> Color(0xFF334155)
+                },
                 RoundedCornerShape(12.dp)
             )
             .clickable { onClick() }
