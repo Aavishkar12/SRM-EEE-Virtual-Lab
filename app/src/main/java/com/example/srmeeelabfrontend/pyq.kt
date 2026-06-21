@@ -1,5 +1,7 @@
 package com.example.srmeeelabfrontend
 
+import com.example.srmeeelabfrontend.network.PyqApiModel
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -43,10 +45,12 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    
+    var pyqs by remember { mutableStateOf<List<PyqApiModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
@@ -57,6 +61,25 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getPyqs()
+            if (response.isSuccessful) {
+                pyqs = response.body() ?: emptyList()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isLoading = false
+        }
+    }
+
+    val filteredPyqs = pyqs.filter { paper ->
+        searchQuery.isEmpty() ||
+                paper.subject.contains(searchQuery, ignoreCase = true) ||
+                paper.unit.contains(searchQuery, ignoreCase = true)
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
@@ -112,9 +135,9 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // Search Bar
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -144,17 +167,17 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 )
                             }
                         }
-                        
+
                         Spacer(Modifier.height(16.dp))
-                        
+
                         // Filter Dropdowns
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             FilterDropdown("All Years")
                             FilterDropdown("All Exams")
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // User Info Card
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -177,17 +200,34 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 lineHeight = 20.sp
                             )
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
                     }
                 }
 
                 // Question Papers List
-                items(pyqList) { paper ->
-                    PyqCard(paper)
-                    Spacer(Modifier.height(16.dp))
+                if (isLoading) {
+                    item {
+                        CircularProgressIndicator(
+                            color = Color(0xFF3B82F6),
+                            modifier = Modifier.padding(24.dp)
+                        )
+                    }
+                } else {
+                    items(filteredPyqs) { paper ->
+                        val uiPaper = PyqData(
+                            examType = paper.type,
+                            subject = paper.subject,
+                            units = paper.unit,
+                            date = paper.date,
+                            year = paper.year,
+                            size = paper.size
+                        )
+                        PyqCard(uiPaper)
+                        Spacer(Modifier.height(16.dp))
+                    }
                 }
-                
+
                 item { Footer(onNavigate) }
             }
         }
@@ -293,11 +333,11 @@ fun PyqCard(paper: PyqData) {
                     Text(paper.year, color = Color(0xFF94A3B8), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
                 }
             }
-            
+
             Spacer(Modifier.height(20.dp))
             Text(paper.examType, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
             Text(paper.subject, color = Color(0xFF64748B), fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp))
-            
+
             Spacer(Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(16.dp))
@@ -310,11 +350,11 @@ fun PyqCard(paper: PyqData) {
                 Spacer(Modifier.width(8.dp))
                 Text(paper.date, color = Color(0xFF64748B), fontSize = 14.sp)
             }
-            
+
             Spacer(Modifier.height(24.dp))
             HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
             Spacer(Modifier.height(20.dp))
-            
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(paper.size, color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 Spacer(Modifier.weight(1f))
@@ -334,9 +374,3 @@ fun PyqCard(paper: PyqData) {
 }
 
 data class PyqData(val examType: String, val subject: String, val units: String, val date: String, val year: String, val size: String)
-
-val pyqList = listOf(
-    PyqData("End Semester", "Basic Electrical Engineering", "All Units", "Dec 2022", "2022", "3.1 MB"),
-    PyqData("End Semester", "Basic Electrical Engineering", "All Units", "Dec 2022", "2022", "3.1 MB"),
-    PyqData("Cycle Test 2", "Basic Electrical Engineering", "Unit 3, 4 & 5", "Oct 2022", "2022", "1.8 MB")
-)

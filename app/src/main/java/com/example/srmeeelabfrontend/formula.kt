@@ -1,5 +1,7 @@
 package com.example.srmeeelabfrontend
 
+import com.example.srmeeelabfrontend.network.FormulaApiModel
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -22,6 +24,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,10 +42,12 @@ import java.util.*
 fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
-    
+    var formulas by remember { mutableStateOf<List<FormulaApiModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
@@ -54,6 +59,27 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
             delay(1000)
         }
     }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getFormulas()
+            android.util.Log.d("FORMULA_DEBUG", "Response code: ${response.code()}")
+            android.util.Log.d("FORMULA_DEBUG", "Response body: ${response.body()}")
+            if (response.isSuccessful) {
+                formulas = response.body() ?: emptyList()
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("FORMULA_DEBUG", "API ERROR: ${e.message}", e)
+        } finally {
+            isLoading = false
+        }
+    }
+
+    val groupedFormulas = formulas.groupBy { it.category }
+
+    val preferredOrder = listOf("DC Circuits", "AC Circuits", "Digital Electronics")
+    val orderedCategories = preferredOrder.filter { groupedFormulas.containsKey(it) } +
+            groupedFormulas.keys.filter { it !in preferredOrder }.sorted()
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
         AnimatedBackground()
@@ -69,10 +95,8 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     .scale(contentScale.value),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header
                 item { Header(currentTime, onMenuClick = { isMenuOpen = !isMenuOpen }) }
 
-                // Breadcrumb
                 item {
                     Row(
                         modifier = Modifier
@@ -87,7 +111,6 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     }
                 }
 
-                // Title Section
                 item {
                     Column(
                         modifier = Modifier
@@ -108,10 +131,9 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
-                        // Download Button
+
                         Button(
                             onClick = { },
                             modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFFFBBF24).copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
@@ -123,10 +145,9 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             Spacer(Modifier.width(12.dp))
                             Text("Download Full PDF", color = Color(0xFFFBBF24), fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
-                        // User Info Card
+
                         Surface(
                             color = Color(0xFF1E1B1E).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
@@ -148,33 +169,63 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 lineHeight = 20.sp
                             )
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
                     }
                 }
 
-                // DC Circuits Section
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(24.dp))
-                        Spacer(Modifier.width(12.dp))
-                        Text("DC Circuits", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+                if (isLoading) {
+                    item {
+                        CircularProgressIndicator(
+                            color = Color(0xFFFBBF24),
+                            modifier = Modifier.padding(24.dp)
+                        )
+                    }
+                } else if (formulas.isEmpty()) {
+                    item {
+                        Text(
+                            "No formulas found.",
+                            color = Color(0xFF94A3B8),
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(24.dp)
+                        )
+                    }
+                } else {
+                    orderedCategories.forEach { category ->
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    categoryIcon(category),
+                                    contentDescription = null,
+                                    tint = categoryColor(category),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Text(category, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+                            }
+                        }
+
+                        val categoryFormulas = groupedFormulas[category].orEmpty()
+                        items(categoryFormulas) { formula ->
+                            FormulaCard(
+                                FormulaData(
+                                    title = formula.name.uppercase(),
+                                    equation = formula.formula,
+                                    description = formula.description
+                                )
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        }
                     }
                 }
 
-                items(dcFormulaList) { formula ->
-                    FormulaCard(formula)
-                    Spacer(Modifier.height(16.dp))
-                }
-                
                 item { Footer(onNavigate) }
             }
         }
 
-        // Hamburger Menu Overlay
         if (isMenuOpen) {
             Box(
                 modifier = Modifier
@@ -207,6 +258,20 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     }
 }
 
+private fun categoryIcon(category: String): ImageVector = when (category) {
+    "DC Circuits" -> Icons.Default.Bolt
+    "AC Circuits" -> Icons.Default.ShowChart
+    "Digital Electronics" -> Icons.Default.Memory
+    else -> Icons.Default.Functions
+}
+
+private fun categoryColor(category: String): Color = when (category) {
+    "DC Circuits" -> Color(0xFFFBBF24)
+    "AC Circuits" -> Color(0xFF22D3EE)
+    "Digital Electronics" -> Color(0xFF4ADE80)
+    else -> Color(0xFF94A3B8)
+}
+
 @Composable
 fun FormulaCard(formula: FormulaData) {
     Surface(
@@ -220,7 +285,7 @@ fun FormulaCard(formula: FormulaData) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(formula.title, color = Color(0xFF64748B), fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
             Spacer(Modifier.height(20.dp))
-            
+
             Surface(
                 color = Color.Black.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(12.dp),
@@ -235,7 +300,7 @@ fun FormulaCard(formula: FormulaData) {
                     modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)
                 )
             }
-            
+
             Spacer(Modifier.height(20.dp))
             Text(formula.description, color = Color(0xFF475569), fontSize = 14.sp, lineHeight = 20.sp)
         }
@@ -243,10 +308,3 @@ fun FormulaCard(formula: FormulaData) {
 }
 
 data class FormulaData(val title: String, val equation: String, val description: String)
-
-val dcFormulaList = listOf(
-    FormulaData("KIRCHHOFF'S CURRENT LAW (KCL)", "Σ I_in = Σ I_out", "The sum of currents entering a node equals the sum leaving."),
-    FormulaData("POWER EQUATION", "P = V × I = I²R = V²/R", "Electrical power consumed by a resistor."),
-    FormulaData("KIRCHHOFF'S VOLTAGE LAW (KVL)", "Σ V_drop = Σ V_rise", "The directed sum of potential differences around any closed loop is zero."),
-    FormulaData("OHM'S LAW", "V = I × R", "Relationship between voltage, current, and resistance.")
-)

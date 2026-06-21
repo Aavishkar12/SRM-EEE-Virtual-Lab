@@ -6,5 +6,12 @@ data class ExperimentApiModel(
     val description: String,
     val category: String,
     val difficulty: String,
-    val duration: String
+    val duration: String,
+    val embedId: String?,
+    val aim: String?,
+    val apparatus: String?,
+    val theory: String?,
+    val procedure: String?,
+    val references: String?,
+    val image: String?
 )

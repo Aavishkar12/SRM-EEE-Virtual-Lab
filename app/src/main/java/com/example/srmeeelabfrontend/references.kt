@@ -25,6 +25,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -42,10 +45,15 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    
+
+    // --- API state ---
+    var books by remember { mutableStateOf<List<BookData>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
@@ -55,6 +63,42 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         while (true) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
+        }
+    }
+
+    // Fetch reference books from the backend
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getBooks()
+            if (response.isSuccessful) {
+                books = (response.body() ?: emptyList()).map { b ->
+                    BookData(
+                        title = b.title,
+                        author = b.author,
+                        edition = b.edition,
+                        size = b.size,
+                        type = b.type,
+                        url = b.url ?: ""
+                    )
+                }
+            } else {
+                errorMessage = "Couldn't load reference books (code ${response.code()})"
+            }
+        } catch (e: Exception) {
+            errorMessage = e.localizedMessage ?: "Couldn't reach the server"
+        } finally {
+            isLoading = false
+        }
+    }
+
+    val filteredBooks = remember(books, searchQuery) {
+        if (searchQuery.isBlank()) {
+            books
+        } else {
+            books.filter {
+                it.title.contains(searchQuery, ignoreCase = true) ||
+                        it.author.contains(searchQuery, ignoreCase = true)
+            }
         }
     }
 
@@ -111,9 +155,9 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // Search Bar
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -143,9 +187,9 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 )
                             }
                         }
-                        
+
                         Spacer(Modifier.height(16.dp))
-                        
+
                         // User Info Card
                         Surface(
                             color = Color(0xFF171717).copy(alpha = 0.5f),
@@ -168,17 +212,40 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 lineHeight = 20.sp
                             )
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
                     }
                 }
 
-                // Books List
-                items(bookList) { book ->
-                    BookCard(book)
-                    Spacer(Modifier.height(24.dp))
+                // Books List (loading / error / empty / data)
+                when {
+                    isLoading -> item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(color = Color(0xFFEAB308))
+                        }
+                    }
+                    errorMessage != null -> item {
+                        Text(
+                            errorMessage ?: "Something went wrong",
+                            color = Color(0xFFF87171),
+                            fontSize = 14.sp,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                        )
+                    }
+                    filteredBooks.isEmpty() -> item {
+                        Text(
+                            if (searchQuery.isBlank()) "No reference books added yet." else "No books match \"$searchQuery\".",
+                            color = Color(0xFF64748B),
+                            fontSize = 14.sp,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                        )
+                    }
+                    else -> items(filteredBooks) { book ->
+                        BookCard(book)
+                        Spacer(Modifier.height(24.dp))
+                    }
                 }
-                
+
                 item { Footer(onNavigate) }
             }
         }
@@ -218,6 +285,8 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
 @Composable
 fun BookCard(book: BookData) {
+    val uriHandler = LocalUriHandler.current
+
     Surface(
         color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
@@ -252,28 +321,28 @@ fun BookCard(book: BookData) {
                     )
                 }
             }
-            
+
             Column(modifier = Modifier.padding(24.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
                         color = Color(0xFFEAB308).copy(alpha = 0.1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Reference Book", color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                        Text(book.type, color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                     }
                     Spacer(Modifier.weight(1f))
                     Text(book.size, color = Color(0xFF475569), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
-                
+
                 Spacer(Modifier.height(16.dp))
                 Text(book.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Text("By ${book.author}", color = Color(0xFF94A3B8), fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp))
                 Text(book.edition, color = Color(0xFF64748B), fontSize = 14.sp, modifier = Modifier.padding(top = 4.dp))
-                
+
                 Spacer(Modifier.height(24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Button(
-                        onClick = { },
+                        onClick = { if (book.url.isNotBlank()) uriHandler.openUri(book.url) },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF171717)),
                         shape = RoundedCornerShape(12.dp),
@@ -284,7 +353,7 @@ fun BookCard(book: BookData) {
                         Text("Read", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     }
                     Button(
-                        onClick = { },
+                        onClick = { if (book.url.isNotBlank()) uriHandler.openUri(book.url) },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF78350F)),
                         shape = RoundedCornerShape(12.dp)
@@ -302,9 +371,11 @@ fun BookCard(book: BookData) {
 @Composable
 fun borderStroke(width: androidx.compose.ui.unit.Dp, color: Color) = androidx.compose.foundation.BorderStroke(width, color)
 
-data class BookData(val title: String, val author: String, val edition: String, val size: String)
-
-val bookList = listOf(
-    BookData("Electrical Machinery", "P.S. Bimbhra", "7th Edition", "12.8 MB"),
-    BookData("Basic Electrical Engineering", "D.P. Kothari", "3rd Edition", "15.2 MB")
+data class BookData(
+    val title: String,
+    val author: String,
+    val edition: String,
+    val size: String,
+    val type: String = "Reference Book",
+    val url: String = ""
 )

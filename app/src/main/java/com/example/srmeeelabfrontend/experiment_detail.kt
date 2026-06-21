@@ -20,44 +20,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.srmeeelabfrontend.network.ExperimentApiModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import com.example.srmeeelabfrontend.network.RetrofitClient
+
 @Composable
 fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
-    var selectedTab by remember { mutableStateOf("Theory") }
-    var experiment by remember {
-        mutableStateOf<ExperimentApiModel?>(null)
-    }
-    
+    var selectedTab by remember { mutableStateOf("Aim") }
+    var experiment by remember { mutableStateOf<ExperimentApiModel?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+
     val contentAlpha = remember { Animatable(0f) }
-    
+
     LaunchedEffect(Unit) {
         contentAlpha.animateTo(1f, animationSpec = tween(800, easing = FastOutSlowInEasing))
     }
+
     LaunchedEffect(experimentId) {
         try {
-            val response =
-                RetrofitClient.apiService.getExperimentById(experimentId)
-
+            val response = RetrofitClient.apiService.getExperimentById(experimentId)
             if (response.isSuccessful) {
                 experiment = response.body()
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        } finally {
+            isLoading = false
         }
     }
 
@@ -68,21 +65,18 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
         }
     }
 
-    val tabs = listOf("Theory", "Procedure", "Interactive", "Simulation", "Quiz", "Video", "References", "Gallery")
+    val tabs = listOf("Aim", "Apparatus", "Theory", "Procedure", "Interactive", "Simulation", "Quiz", "Video", "References", "Gallery")
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
         AnimatedBackground()
 
-        Scaffold(
-            containerColor = Color.Transparent,
-        ) { paddingValues ->
+        Scaffold(containerColor = Color.Transparent) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
                     .alpha(contentAlpha.value)
             ) {
-                // Header
                 Header(currentTime, onMenuClick = { isMenuOpen = !isMenuOpen })
 
                 LazyColumn(
@@ -134,7 +128,7 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                             }
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                    experiment?.title ?: "Loading...",
+                                experiment?.title ?: "Loading...",
                                 color = Color.White,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.ExtraBold
@@ -145,20 +139,38 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                                 color = Color(0xFF94A3B8),
                                 fontSize = 16.sp
                             )
-                            
+
                             Spacer(Modifier.height(24.dp))
-                            
-                            Surface(
-                                color = Color(0xFF0F172A).copy(alpha = 0.8f),
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.size(70.dp).border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
+
+                            // Duration + Difficulty badges
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Surface(
+                                    color = Color(0xFF0F172A).copy(alpha = 0.8f),
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
                                 ) {
-                                    Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(24.dp))
-                                    Text("EXP-1", color = Color(0xFF64748B), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Column(
+                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.height(4.dp))
+                                        Text(experiment?.difficulty ?: "", color = Color(0xFF64748B), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                                Surface(
+                                    color = Color(0xFF0F172A).copy(alpha = 0.8f),
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Icon(Icons.Default.Timer, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.height(4.dp))
+                                        Text(experiment?.duration ?: "", color = Color(0xFF64748B), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    }
                                 }
                             }
                         }
@@ -207,7 +219,7 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                         Spacer(Modifier.height(16.dp))
                     }
 
-                    // Content based on Tab
+                    // Tab Content
                     item {
                         Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                             AnimatedContent(
@@ -218,6 +230,8 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                                 label = "TabContentTransition"
                             ) { targetTab ->
                                 when (targetTab) {
+                                    "Aim" -> AimContent(aim = experiment?.aim)
+                                    "Apparatus" -> ApparatusContent(apparatus = experiment?.apparatus)
                                     "Theory" -> TheoryContent()
                                     "Procedure" -> ProcedureContent()
                                     "Interactive" -> InteractiveContent()
@@ -230,11 +244,8 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
                             }
                         }
                     }
-                    
-                    item {
-                        Footer(onNavigate)
-                    }
-                    
+
+                    item { Footer(onNavigate) }
                     item { Spacer(Modifier.height(40.dp)) }
                 }
             }
@@ -273,6 +284,131 @@ fun ExperimentDetailScreen(experimentId: Int, onBack: () -> Unit, onNavigate: (S
     }
 }
 
+// ── NEW: Aim Tab ─────────────────────────────────────────────────────────────
+@Composable
+fun AimContent(aim: String?) {
+    Surface(
+        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        shape = RoundedCornerShape(24.dp),
+        modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(24.dp))
+                Spacer(Modifier.width(12.dp))
+                Text("Aim", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(20.dp))
+            if (aim != null) {
+                Text(
+                    text = aim,
+                    color = Color(0xFF94A3B8),
+                    fontSize = 16.sp,
+                    lineHeight = 26.sp
+                )
+            } else {
+                Text("Aim not available for this experiment.", color = Color(0xFF475569), fontSize = 15.sp)
+            }
+        }
+    }
+}
+
+// ── NEW: Apparatus Tab ────────────────────────────────────────────────────────
+@Composable
+fun ApparatusContent(apparatus: String?) {
+    Surface(
+        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        shape = RoundedCornerShape(24.dp),
+        modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Build, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(24.dp))
+                Spacer(Modifier.width(12.dp))
+                Text("Apparatus Required", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(20.dp))
+
+            if (apparatus != null) {
+                // Parse apparatus string if it's comma or newline separated
+                val items = apparatus.split(",", "\n").map { it.trim() }.filter { it.isNotEmpty() }
+                items.forEachIndexed { index, item ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Index number badge
+                        Surface(
+                            color = Color(0xFF1E293B),
+                            shape = CircleShape,
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    (index + 1).toString(),
+                                    color = Color(0xFF60A5FA),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        Text(item, color = Color(0xFFE2E8F0), fontSize = 15.sp, lineHeight = 22.sp)
+                    }
+                    if (index < items.lastIndex) {
+                        Divider(color = Color(0xFF1E293B), thickness = 0.5.dp, modifier = Modifier.padding(vertical = 4.dp))
+                    }
+                }
+            } else {
+                // Fallback hardcoded apparatus table (same style as website)
+                Spacer(Modifier.height(8.dp))
+                // Table header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF1E293B).copy(alpha = 0.7f), RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                        .padding(vertical = 10.dp, horizontal = 8.dp)
+                ) {
+                    Text("Sl.No.", color = Color(0xFF60A5FA), fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.12f), textAlign = TextAlign.Center)
+                    Text("Apparatus", color = Color(0xFF60A5FA), fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.40f))
+                    Text("Range", color = Color(0xFF60A5FA), fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.28f))
+                    Text("Qty", color = Color(0xFF60A5FA), fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.20f), textAlign = TextAlign.Center)
+                }
+                val apparatusData = listOf(
+                    listOf("1", "RPS (regulated power supply)", "(0-30V)", "2"),
+                    listOf("2", "Resistance", "330Ω, 220Ω, 1kΩ", "4"),
+                    listOf("3", "Voltmeter", "(0-30V)MC", "2"),
+                    listOf("4", "Bread Board & Wires", "-", "Required")
+                )
+                apparatusData.forEachIndexed { index, row ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(if (index % 2 == 0) Color(0xFF0F172A) else Color(0xFF1E293B).copy(alpha = 0.3f))
+                            .padding(vertical = 10.dp, horizontal = 8.dp)
+                    ) {
+                        Text(row[0], color = Color.White, fontSize = 13.sp, modifier = Modifier.weight(0.12f), textAlign = TextAlign.Center)
+                        Text(row[1], color = Color(0xFFE2E8F0), fontSize = 13.sp, modifier = Modifier.weight(0.40f))
+                        Text(row[2], color = Color(0xFF94A3B8), fontSize = 13.sp, modifier = Modifier.weight(0.28f))
+                        Text(row[3], color = Color(0xFF94A3B8), fontSize = 13.sp, modifier = Modifier.weight(0.20f), textAlign = TextAlign.Center)
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    "Note: Apparatus may vary per experiment. Refer to your lab manual for exact requirements.",
+                    color = Color(0xFF475569),
+                    fontSize = 12.sp,
+                    lineHeight = 18.sp
+                )
+            }
+        }
+    }
+}
+
+// ── Existing tabs (unchanged) ─────────────────────────────────────────────────
+
 @Composable
 fun TheoryContent() {
     Surface(
@@ -281,66 +417,27 @@ fun TheoryContent() {
         modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text(
-                "STATEMENT:",
-                color = Color(0xFF60A5FA),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 1.sp
-            )
+            Text("STATEMENT:", color = Color(0xFF60A5FA), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
             Spacer(Modifier.height(16.dp))
-            Text(
-                "KVL: In any closed path / mesh, the algebraic sum of all the voltages is zero.",
-                color = Color.White,
-                fontSize = 16.sp,
-                lineHeight = 24.sp
-            )
+            Text("KVL: In any closed path / mesh, the algebraic sum of all the voltages is zero.", color = Color.White, fontSize = 16.sp, lineHeight = 24.sp)
             Spacer(Modifier.height(16.dp))
-            Text(
-                "Kirchhoff's Voltage Law (KVL) states that the sum of all voltages around any closed loop in a circuit must equal zero. This is a fundamental principle in circuit analysis.",
-                color = Color(0xFF94A3B8),
-                fontSize = 16.sp,
-                lineHeight = 24.sp
-            )
+            Text("Kirchhoff's Voltage Law (KVL) states that the sum of all voltages around any closed loop in a circuit must equal zero. This is a fundamental principle in circuit analysis.", color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 24.sp)
             Spacer(Modifier.height(24.dp))
-            Text(
-                "Mathematically, it is expressed as:",
-                color = Color(0xFF94A3B8),
-                fontSize = 16.sp
-            )
+            Text("Mathematically, it is expressed as:", color = Color(0xFF94A3B8), fontSize = 16.sp)
             Spacer(Modifier.height(12.dp))
-            Text(
-                "ΣV = 0",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("ΣV = 0", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(16.dp))
-            Text(
-                "Where:\n• ΣV represents the sum of all voltage drops and rises around a closed loop",
-                color = Color(0xFF94A3B8),
-                fontSize = 16.sp,
-                lineHeight = 24.sp
-            )
-            
+            Text("Where:\n• ΣV represents the sum of all voltage drops and rises around a closed loop", color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 24.sp)
             Spacer(Modifier.height(32.dp))
             Surface(
                 color = Color(0xFF020617),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Kirchhoff's Voltage Law", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        "Understanding the theoretical principles is essential before conducting the practical experiment.",
-                        color = Color(0xFF64748B),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    Text("Understanding the theoretical principles is essential before conducting the practical experiment.", color = Color(0xFF64748B), fontSize = 14.sp, textAlign = TextAlign.Center)
                 }
             }
         }
@@ -355,13 +452,7 @@ fun ProcedureContent() {
         modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text(
-                "EXPERIMENTAL PROCEDURE:",
-                color = Color(0xFF60A5FA),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 1.sp
-            )
+            Text("EXPERIMENTAL PROCEDURE:", color = Color(0xFF60A5FA), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
             Spacer(Modifier.height(16.dp))
             val steps = listOf(
                 "1. Set up a circuit with multiple voltage sources and resistors in a closed loop.",
@@ -376,17 +467,9 @@ fun ProcedureContent() {
                 Text(step, color = Color.White, fontSize = 16.sp, lineHeight = 24.sp)
                 Spacer(Modifier.height(12.dp))
             }
-            
             Spacer(Modifier.height(32.dp))
-            Text(
-                "THEORETICAL VALUES:",
-                color = Color(0xFF60A5FA),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 1.sp
-            )
+            Text("THEORETICAL VALUES:", color = Color(0xFF60A5FA), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
             Spacer(Modifier.height(16.dp))
-            // Basic Table implementation
             Column(modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B))) {
                 Row(modifier = Modifier.background(Color(0xFF1E293B).copy(alpha = 0.5f))) {
                     TableCell("Sl.No.", weight = 0.15f)
@@ -396,10 +479,10 @@ fun ProcedureContent() {
                 }
                 repeat(4) { i ->
                     Row {
-                        TableCell((i+1).toString(), weight = 0.15f)
-                        TableCell((6*(i+1)).toString(), weight = 0.35f)
-                        TableCell("%.2f".format(2.3 * (i+1)), weight = 0.25f)
-                        TableCell("%.2f".format(3.7 * (i+1)), weight = 0.25f)
+                        TableCell((i + 1).toString(), weight = 0.15f)
+                        TableCell((6 * (i + 1)).toString(), weight = 0.35f)
+                        TableCell("%.2f".format(2.3 * (i + 1)), weight = 0.25f)
+                        TableCell("%.2f".format(3.7 * (i + 1)), weight = 0.25f)
                     }
                 }
             }
@@ -409,13 +492,7 @@ fun ProcedureContent() {
 
 @Composable
 fun RowScope.TableCell(text: String, weight: Float) {
-    Text(
-        text = text,
-        modifier = Modifier.weight(weight).border(0.5.dp, Color(0xFF1E293B)).padding(8.dp),
-        color = Color.White,
-        fontSize = 12.sp,
-        textAlign = TextAlign.Center
-    )
+    Text(text = text, modifier = Modifier.weight(weight).border(0.5.dp, Color(0xFF1E293B)).padding(8.dp), color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center)
 }
 
 @Composable
@@ -426,39 +503,22 @@ fun InteractiveContent() {
         modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text(
-                "Kirchhoff's Voltage Law - Interactive Demonstration",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Kirchhoff's Voltage Law - Interactive Demonstration", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Text("Step 1 of 5", color = Color(0xFF64748B), fontSize = 14.sp)
             Spacer(Modifier.height(16.dp))
-            
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Icon(Icons.Default.Refresh, null, tint = Color.White)
                 Icon(Icons.Default.ChevronLeft, null, tint = Color.White)
                 Icon(Icons.Default.PlayArrow, null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
                 Icon(Icons.Default.ChevronRight, null, tint = Color.White)
             }
-            
             Spacer(Modifier.height(32.dp))
             Text("Introduction to Kirchhoff's Voltage Law", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
-            Text(
-                "Kirchhoff's Voltage Law (KVL) states that the sum of all voltages around any closed loop in a circuit must equal zero.",
-                color = Color(0xFF94A3B8),
-                fontSize = 15.sp,
-                lineHeight = 22.sp
-            )
-            
+            Text("Kirchhoff's Voltage Law (KVL) states that the sum of all voltages around any closed loop in a circuit must equal zero.", color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
             Spacer(Modifier.height(32.dp))
-            Surface(
-                color = Color(0xFF020617),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
-            ) {
+            Surface(color = Color(0xFF020617), shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text("KVL Circuit Demonstration", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(16.dp))
@@ -471,7 +531,6 @@ fun InteractiveContent() {
                         }
                     }
                     Spacer(Modifier.height(24.dp))
-                    // Placeholder for Circuit Image/Drawing
                     Box(modifier = Modifier.fillMaxWidth().height(200.dp).background(Color.DarkGray.copy(alpha = 0.1f)), contentAlignment = Alignment.Center) {
                         Icon(Icons.Default.ElectricBolt, null, tint = Color(0xFFFBBF24), modifier = Modifier.size(100.dp))
                     }
@@ -493,20 +552,9 @@ fun SimulationContent() {
             Spacer(Modifier.height(24.dp))
             Text("Interactive Circuit Simulator", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(12.dp))
-            Text(
-                "Use our Tinkercad-powered simulator to build and test KVL circuits in real-time.",
-                color = Color(0xFF94A3B8),
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center,
-                lineHeight = 22.sp
-            )
+            Text("Use our Tinkercad-powered simulator to build and test KVL circuits in real-time.", color = Color(0xFF94A3B8), fontSize = 15.sp, textAlign = TextAlign.Center, lineHeight = 22.sp)
             Spacer(Modifier.height(32.dp))
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
-            ) {
+            Button(onClick = { }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)), shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth().height(50.dp)) {
                 Text("Launch Simulator", fontWeight = FontWeight.Bold)
             }
         }
@@ -521,27 +569,11 @@ fun QuizDetailContent(onNavigate: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text(
-                "Kirchhoff's Voltage Law - Knowledge Check",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Kirchhoff's Voltage Law - Knowledge Check", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(16.dp))
-            Text(
-                "Ready to test your understanding? Start the interactive quiz to challenge yourself.",
-                color = Color(0xFF94A3B8),
-                fontSize = 15.sp,
-                lineHeight = 22.sp
-            )
-            
+            Text("Ready to test your understanding? Start the interactive quiz to challenge yourself.", color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
             Spacer(Modifier.height(32.dp))
-            Button(
-                onClick = { onNavigate("quiz_attempt/1") },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(10.dp)
-            ) {
+            Button(onClick = { onNavigate("quiz_attempt/1") }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)), modifier = Modifier.fillMaxWidth().height(50.dp), shape = RoundedCornerShape(10.dp)) {
                 Text("Start Interactive Quiz", fontWeight = FontWeight.Bold)
             }
         }
@@ -562,26 +594,14 @@ fun VideoContent() {
                 Text("Video Tutorial", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(16.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.Black),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(16.dp)).background(Color.Black), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Default.PlayArrow, null, tint = Color.White, modifier = Modifier.size(64.dp))
                     Text("Watch on YouTube", color = Color.White, fontSize = 14.sp)
                 }
             }
             Spacer(Modifier.height(24.dp))
-            Text(
-                "In this video, we demonstrate the step-by-step procedure to verify Kirchhoff's Voltage Law using a breadboard and basic components.",
-                color = Color(0xFF94A3B8),
-                fontSize = 15.sp,
-                lineHeight = 22.sp
-            )
+            Text("In this video, we demonstrate the step-by-step procedure to verify Kirchhoff's Voltage Law using a breadboard and basic components.", color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
         }
     }
 }
@@ -608,10 +628,7 @@ fun ReferencesContent() {
                 "MIT OpenCourseWare - Basic Circuit Analysis"
             )
             references.forEach { ref ->
-                Row(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(modifier = Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Link, null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(12.dp))
                     Text(ref, color = Color(0xFF60A5FA), fontSize = 15.sp)
@@ -636,7 +653,6 @@ fun GalleryContent() {
             }
             Spacer(Modifier.height(8.dp))
             Text("Components and equipment used in this experiment", color = Color(0xFF64748B), fontSize = 14.sp)
-            
             Spacer(Modifier.height(48.dp))
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(Icons.Default.BrokenImage, null, tint = Color(0xFF1E293B), modifier = Modifier.size(64.dp))

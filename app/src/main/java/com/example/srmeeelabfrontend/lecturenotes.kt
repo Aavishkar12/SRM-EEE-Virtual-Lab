@@ -29,9 +29,11 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -42,10 +44,15 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    
+
+    // --- API state ---
+    var unitGroups by remember { mutableStateOf<List<UnitData>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
@@ -55,6 +62,50 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         while (true) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
+        }
+    }
+
+    // Fetch notes and group them by their "unit" field (e.g. "Unit 1: DC Circuits")
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getNotes()
+            if (response.isSuccessful) {
+                val apiList = response.body() ?: emptyList()
+                unitGroups = apiList.groupBy { it.unit }.entries.mapIndexed { index, (unitTitle, notesInUnit) ->
+                    UnitData(
+                        id = index + 1,
+                        title = unitTitle,
+                        description = "${notesInUnit.size} resource${if (notesInUnit.size != 1) "s" else ""} available",
+                        resources = notesInUnit.map { note ->
+                            LectureResource(
+                                name = note.title,
+                                type = note.type.uppercase(),
+                                fileSize = note.size,
+                                date = note.date,
+                                url = note.url
+                            )
+                        }
+                    )
+                }
+            } else {
+                errorMessage = "Couldn't load notes (code ${response.code()})"
+            }
+        } catch (e: Exception) {
+            errorMessage = e.localizedMessage ?: "Couldn't reach the server"
+        } finally {
+            isLoading = false
+        }
+    }
+
+    // Search filters by unit title or by individual resource name
+    val filteredUnits = remember(unitGroups, searchQuery) {
+        if (searchQuery.isBlank()) {
+            unitGroups
+        } else {
+            unitGroups.filter { unit ->
+                unit.title.contains(searchQuery, ignoreCase = true) ||
+                        unit.resources.any { it.name.contains(searchQuery, ignoreCase = true) }
+            }
         }
     }
 
@@ -111,9 +162,9 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // Search Bar
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -143,9 +194,9 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 )
                             }
                         }
-                        
+
                         Spacer(Modifier.height(16.dp))
-                        
+
                         // User Info Card
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -168,17 +219,40 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 lineHeight = 20.sp
                             )
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
                     }
                 }
 
-                // Units List
-                items(unitList) { unit ->
-                    UnitExpandableCard(unit)
-                    Spacer(Modifier.height(16.dp))
+                // Units List (loading / error / empty / data)
+                when {
+                    isLoading -> item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(color = Color(0xFFF472B6))
+                        }
+                    }
+                    errorMessage != null -> item {
+                        Text(
+                            errorMessage ?: "Something went wrong",
+                            color = Color(0xFFF87171),
+                            fontSize = 14.sp,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                        )
+                    }
+                    filteredUnits.isEmpty() -> item {
+                        Text(
+                            if (searchQuery.isBlank()) "No notes uploaded yet." else "No notes match \"$searchQuery\".",
+                            color = Color(0xFF64748B),
+                            fontSize = 14.sp,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                        )
+                    }
+                    else -> items(filteredUnits) { unit ->
+                        UnitExpandableCard(unit)
+                        Spacer(Modifier.height(16.dp))
+                    }
                 }
-                
+
                 item { Footer(onNavigate) }
             }
         }
@@ -219,7 +293,7 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 @Composable
 fun UnitExpandableCard(unit: UnitData) {
     var expanded by remember { mutableStateOf(false) }
-    
+
     Surface(
         color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(20.dp),
@@ -247,7 +321,7 @@ fun UnitExpandableCard(unit: UnitData) {
                 Spacer(Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        "Unit ${unit.id}: ${unit.title}",
+                        unit.title,
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
@@ -266,7 +340,7 @@ fun UnitExpandableCard(unit: UnitData) {
                     modifier = Modifier.size(24.dp)
                 )
             }
-            
+
             AnimatedVisibility(visible = expanded) {
                 Column {
                     Spacer(Modifier.height(20.dp))
@@ -300,11 +374,11 @@ fun ResourceCard(resource: LectureResource) {
                 Spacer(Modifier.width(12.dp))
                 Text(resource.name, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
-            
+
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    color = when(resource.type) {
+                    color = when (resource.type) {
                         "NOTES" -> Color(0xFF3B82F6).copy(alpha = 0.2f)
                         "SLIDES" -> Color(0xFFEC4899).copy(alpha = 0.2f)
                         else -> Color(0xFF10B981).copy(alpha = 0.2f)
@@ -313,7 +387,7 @@ fun ResourceCard(resource: LectureResource) {
                 ) {
                     Text(
                         resource.type,
-                        color = when(resource.type) {
+                        color = when (resource.type) {
                             "NOTES" -> Color(0xFF60A5FA)
                             "SLIDES" -> Color(0xFFF472B6)
                             else -> Color(0xFF34D399)
@@ -328,10 +402,11 @@ fun ResourceCard(resource: LectureResource) {
                 Spacer(Modifier.width(12.dp))
                 Text("•  Added ${resource.date}", color = Color(0xFF64748B), fontSize = 12.sp)
             }
-            
+
             Spacer(Modifier.height(16.dp))
+            val uriHandler = LocalUriHandler.current
             Button(
-                onClick = { },
+                onClick = { if (resource.url.isNotBlank()) uriHandler.openUri(resource.url) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F172A)),
                 shape = RoundedCornerShape(10.dp),
@@ -346,18 +421,4 @@ fun ResourceCard(resource: LectureResource) {
 }
 
 data class UnitData(val id: Int, val title: String, val description: String, val resources: List<LectureResource>)
-data class LectureResource(val name: String, val type: String, val fileSize: String, val date: String)
-
-val commonResources = listOf(
-    LectureResource("KCL & KVL Complete Guide", "NOTES", "1.1 MB", "Aug 15"),
-    LectureResource("Introduction to Basic Electrical Variables", "SLIDES", "2.4 MB", "Aug 10"),
-    LectureResource("Mesh & Nodal Analysis Problems", "WORKSHEET", "800 KB", "Aug 20")
-)
-
-val unitList = listOf(
-    UnitData(1, "DC Circuits", "Fundamental concepts, Ohm's law, Kirchhoff's laws, Nodal and Mesh analysis.", commonResources),
-    UnitData(2, "AC Circuits", "Sinusoidal steady-state analysis, phasors, impedance, power in AC circuits.", commonResources),
-    UnitData(3, "Electrical Machines", "Principles of DC machines, Transformers, and Induction Motors.", commonResources),
-    UnitData(4, "Semiconductor Devices", "PN junction diodes, Zener diodes, BJT and FET transistors.", commonResources),
-    UnitData(5, "Digital Electronics", "Number systems, Logic gates, Boolean algebra, Combinational circuits.", commonResources)
-)
+data class LectureResource(val name: String, val type: String, val fileSize: String, val date: String, val url: String = "")

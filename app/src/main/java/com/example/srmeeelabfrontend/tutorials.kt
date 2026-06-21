@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -43,10 +45,15 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    
+
+    // --- API state ---
+    var videos by remember { mutableStateOf<List<VideoData>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
@@ -57,6 +64,34 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
         }
+    }
+
+    // Fetch video tutorials from the backend
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getVideos()
+            if (response.isSuccessful) {
+                videos = (response.body() ?: emptyList()).map { v ->
+                    VideoData(
+                        title = v.title,
+                        duration = v.duration,
+                        expId = v.expNumber,
+                        views = v.views,
+                        url = v.url
+                    )
+                }
+            } else {
+                errorMessage = "Couldn't load videos (code ${response.code()})"
+            }
+        } catch (e: Exception) {
+            errorMessage = e.localizedMessage ?: "Couldn't reach the server"
+        } finally {
+            isLoading = false
+        }
+    }
+
+    val filteredVideos = remember(videos, searchQuery) {
+        videos.filter { it.title.contains(searchQuery, ignoreCase = true) }
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
@@ -112,9 +147,9 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // Search Bar
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -144,9 +179,9 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 )
                             }
                         }
-                        
+
                         Spacer(Modifier.height(16.dp))
-                        
+
                         // User Info Card
                         Surface(
                             color = Color(0xFF171717).copy(alpha = 0.5f),
@@ -169,17 +204,40 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 lineHeight = 20.sp
                             )
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
                     }
                 }
 
-                // Video List
-                items(videoList.filter { it.title.contains(searchQuery, ignoreCase = true) }) { video ->
-                    VideoCard(video)
-                    Spacer(Modifier.height(24.dp))
+                // Video List (loading / error / empty / data)
+                when {
+                    isLoading -> item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(color = Color(0xFFF87171))
+                        }
+                    }
+                    errorMessage != null -> item {
+                        Text(
+                            errorMessage ?: "Something went wrong",
+                            color = Color(0xFFF87171),
+                            fontSize = 14.sp,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                        )
+                    }
+                    filteredVideos.isEmpty() -> item {
+                        Text(
+                            if (searchQuery.isBlank()) "No video tutorials uploaded yet." else "No videos match \"$searchQuery\".",
+                            color = Color(0xFF64748B),
+                            fontSize = 14.sp,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                        )
+                    }
+                    else -> items(filteredVideos) { video ->
+                        VideoCard(video)
+                        Spacer(Modifier.height(24.dp))
+                    }
                 }
-                
+
                 item { Footer(onNavigate) }
             }
         }
@@ -219,6 +277,8 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
 @Composable
 fun VideoCard(video: VideoData) {
+    val uriHandler = LocalUriHandler.current
+
     Surface(
         color = Color(0xFF0F172A).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
@@ -226,7 +286,7 @@ fun VideoCard(video: VideoData) {
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
-            .clickable { }
+            .clickable { if (video.url.isNotBlank()) uriHandler.openUri(video.url) }
     ) {
         Column {
             // Thumbnail
@@ -246,7 +306,7 @@ fun VideoCard(video: VideoData) {
                 ) {
                     Icon(Icons.Default.PlayCircle, contentDescription = null, tint = Color.White.copy(alpha = 0.8f), modifier = Modifier.size(64.dp))
                 }
-                
+
                 // Duration Badge
                 Surface(
                     color = Color.Black.copy(alpha = 0.7f),
@@ -263,7 +323,7 @@ fun VideoCard(video: VideoData) {
                     }
                 }
             }
-            
+
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
@@ -282,9 +342,4 @@ fun VideoCard(video: VideoData) {
     }
 }
 
-data class VideoData(val title: String, val duration: String, val expId: String, val views: String)
-
-val videoList = listOf(
-    VideoData("Verification of Norton's Theorem", "14:10", "Exp 3", "840"),
-    VideoData("V-I Characteristics of Zener Diode", "16:15", "Exp 5", "1.5k")
-)
+data class VideoData(val title: String, val duration: String, val expId: String, val views: String, val url: String = "")

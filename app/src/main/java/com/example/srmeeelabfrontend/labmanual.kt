@@ -1,5 +1,7 @@
 package com.example.srmeeelabfrontend
 
+import com.example.srmeeelabfrontend.network.ManualApiModel
+import com.example.srmeeelabfrontend.network.RetrofitClient
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -39,10 +41,12 @@ import java.util.*
 fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
-    
+    var chapters by remember { mutableStateOf<List<ManualApiModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
@@ -52,6 +56,19 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         while (true) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getManualChapters()
+            if (response.isSuccessful) {
+                chapters = response.body() ?: emptyList()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isLoading = false
         }
     }
 
@@ -108,9 +125,9 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // Download Full Manual Button
                         Button(
                             onClick = { },
@@ -122,9 +139,9 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             Spacer(Modifier.width(12.dp))
                             Text("Download Full Manual", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
-                        
+
                         // User Info Card
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.5f),
@@ -147,7 +164,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 lineHeight = 20.sp
                             )
                         }
-                        
+
                         Spacer(Modifier.height(32.dp))
                     }
                 }
@@ -170,10 +187,25 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     }
                 }
 
-                items(manualChapterList) { chapter ->
-                    ManualChapterCard(chapter)
+                if (isLoading) {
+                    item {
+                        CircularProgressIndicator(
+                            color = Color(0xFF818CF8),
+                            modifier = Modifier.padding(24.dp)
+                        )
+                    }
+                } else {
+                    items(chapters) { chapter ->
+                        ManualChapterCard(
+                            ManualChapterData(
+                                title = chapter.title,
+                                pages = chapter.pages,
+                                size = chapter.size
+                            )
+                        )
+                    }
                 }
-                
+
                 item { Spacer(Modifier.height(16.dp)) }
                 item { Footer(onNavigate) }
             }
@@ -261,11 +293,3 @@ fun ManualChapterCard(chapter: ManualChapterData) {
 }
 
 data class ManualChapterData(val title: String, val pages: String, val size: String)
-
-val manualChapterList = listOf(
-    ManualChapterData("Exp 2: Verification of Thevenin's Theorem", "13-18", "920 KB"),
-    ManualChapterData("Exp 8: Implementation of Half/Full Adder", "53-60", "1.3 MB"),
-    ManualChapterData("Exp 6: Half Wave and Full Wave Rectifiers", "38-45", "1.4 MB"),
-    ManualChapterData("Exp 1: Verification of KCL and KVL", "6-12", "850 KB"),
-    ManualChapterData("Exp 4: V-I Characteristics of PN Junction Diode", "25-31", "1.1 MB")
-)

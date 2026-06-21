@@ -46,10 +46,10 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
     var selectedCategory by remember { mutableStateOf("All") }
     var experiments by remember { mutableStateOf<List<ExperimentApiModel>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
-    
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch {
             contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
@@ -65,19 +65,8 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
             delay(1000)
         }
     }
-    LaunchedEffect(Unit) {
-        try {
-            val response = RetrofitClient.apiService.getExperiments()
 
-            if (response.isSuccessful) {
-                experiments = response.body() ?: emptyList()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            isLoading = false
-        }
-    }
+    // ✅ Single API call — duplicate removed
     LaunchedEffect(Unit) {
         try {
             val response = RetrofitClient.apiService.getExperiments()
@@ -89,7 +78,6 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                 experiments = response.body() ?: emptyList()
                 println("Experiments Loaded: ${experiments.size}")
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
             println("API ERROR: ${e.message}")
@@ -213,7 +201,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                     ) {
                         items(categories) { category ->
                             FilterChip(
-                                text = category, 
+                                text = category,
                                 isSelected = selectedCategory == category,
                                 onClick = { selectedCategory = category }
                             )
@@ -243,9 +231,7 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                         )
                     }
                 } else {
-
                     items(filteredExperiments) { exp ->
-
                         val uiExp = ExperimentData(
                             id = exp.id,
                             title = exp.title,
@@ -254,26 +240,19 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                             difficulty = exp.difficulty,
                             duration = exp.duration
                         )
-
                         ExperimentCardDetailed(
                             uiExp,
-                            onClick = {
-                                onNavigate("experiment_detail/${exp.id}")
-                            }
+                            onClick = { onNavigate("experiment_detail/${exp.id}") }
                         )
-
                         Spacer(Modifier.height(16.dp))
                     }
                 }
+
                 // Stats Section
-                item {
-                    StatsSection()
-                }
+                item { StatsSection() }
 
                 // Footer
-                item {
-                    Footer(onNavigate)
-                }
+                item { Footer(onNavigate) }
             }
         }
 
@@ -295,10 +274,15 @@ fun ExperimentsScreen(isLoggedIn: Boolean, onBack: () -> Unit, onNavigate: (Stri
                         .align(Alignment.TopEnd)
                         .padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = isLoggedIn, currentRoute = "experiments", onClose = { isMenuOpen = false }, onNavigate = { route ->
-                        onNavigate(route)
-                        isMenuOpen = false
-                    })
+                    HamburgerMenu(
+                        isLoggedIn = isLoggedIn,
+                        currentRoute = "experiments",
+                        onClose = { isMenuOpen = false },
+                        onNavigate = { route ->
+                            onNavigate(route)
+                            isMenuOpen = false
+                        }
+                    )
                 }
             }
         }
