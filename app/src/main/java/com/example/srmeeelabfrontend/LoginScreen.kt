@@ -29,18 +29,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.RetrofitClient
+import com.example.srmeeelabfrontend.network.UserSession
 import com.example.srmeeelabfrontend.ui.theme.SrmEEELabFrontendTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
+fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     val scrollState = rememberScrollState()
-    
+    val scope = rememberCoroutineScope()
+
     val contentVisible = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         contentVisible.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing))
@@ -50,6 +56,45 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         while (true) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             delay(1000)
+        }
+    }
+
+    // Attempt login: fetch user list and match credentials
+    fun attemptLogin() {
+        if (email.isBlank() || password.isBlank()) {
+            errorMessage = "Please enter your email and password."
+            return
+        }
+        isLoading = true
+        errorMessage = null
+        scope.launch {
+            try {
+                val response = RetrofitClient.apiService.getUsers()
+                if (response.isSuccessful) {
+                    val users = response.body() ?: emptyList()
+                    // Find user by email (backend returns list of maps)
+                    val matched = users.firstOrNull { user ->
+                        (user["email"] as? String)?.equals(email.trim(), ignoreCase = true) == true
+                    }
+                    if (matched != null) {
+                        val session = UserSession(
+                            id = (matched["id"] as? String) ?: "",
+                            name = (matched["name"] as? String) ?: "Student",
+                            email = (matched["email"] as? String) ?: email.trim(),
+                            role = (matched["role"] as? String) ?: "student"
+                        )
+                        onLoginSuccess(session)
+                    } else {
+                        errorMessage = "No account found for this email."
+                    }
+                } else {
+                    errorMessage = "Server error. Please try again."
+                }
+            } catch (e: Exception) {
+                errorMessage = "Could not connect to server. Check your network."
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -68,7 +113,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     .padding(horizontal = 24.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header Bar (Logo Left, Time Right)
+                // Header Bar
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -182,7 +227,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         Spacer(modifier = Modifier.height(8.dp))
                         OutlinedTextField(
                             value = email,
-                            onValueChange = { email = it },
+                            onValueChange = { email = it; errorMessage = null },
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = { Text("yourname@srmist.edu.in", color = Color(0xFF475569)) },
                             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF6366F1)) },
@@ -195,7 +240,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White
                             ),
-                            singleLine = true
+                            singleLine = true,
+                            enabled = !isLoading
                         )
                     }
 
@@ -207,7 +253,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         Spacer(modifier = Modifier.height(8.dp))
                         OutlinedTextField(
                             value = password,
-                            onValueChange = { password = it },
+                            onValueChange = { password = it; errorMessage = null },
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = { Text("••••••••", color = Color(0xFF475569)) },
                             leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF6366F1)) },
@@ -222,7 +268,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White
                             ),
-                            singleLine = true
+                            singleLine = true,
+                            enabled = !isLoading
                         )
                         Text(
                             text = "Same password as your SRM Academia portal",
@@ -233,11 +280,31 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         )
                     }
 
+                    // Error message
+                    if (errorMessage != null) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Surface(
+                            color = Color(0xFF450A0A).copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, Color(0xFF991B1B), RoundedCornerShape(10.dp))
+                        ) {
+                            Text(
+                                text = errorMessage!!,
+                                color = Color(0xFFFCA5A5),
+                                fontSize = 13.sp,
+                                modifier = Modifier.padding(12.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(32.dp))
 
                     // Sign In Button
                     Button(
-                        onClick = onLoginSuccess,
+                        onClick = { attemptLogin() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp)
@@ -247,9 +314,18 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                                 shape = RoundedCornerShape(28.dp)
                             ),
                         shape = RoundedCornerShape(28.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                        enabled = !isLoading
                     ) {
-                        Text(text = "Sign in →", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier.size(22.dp),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text(text = "Sign in →", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
