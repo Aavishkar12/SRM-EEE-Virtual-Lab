@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.srmeeelabfrontend.network.UserSession
 import com.example.srmeeelabfrontend.ui.theme.SrmEEELabFrontendTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +32,8 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
-    var isLoggedIn by remember { mutableStateOf(false) }
+    var userSession by remember { mutableStateOf<UserSession?>(null) }
+    val isLoggedIn = userSession != null
 
     NavHost(
         navController = navController,
@@ -40,41 +42,30 @@ fun AppNavigation() {
 
         composable("login") {
             LoginScreen(
-                onLoginSuccess = {
-                    isLoggedIn = true
-
+                onLoginSuccess = { session ->
+                    userSession = session
                     navController.navigate("home") {
-                        popUpTo("home") {
-                            inclusive = true
-                        }
+                        popUpTo("home") { inclusive = true }
                     }
                 }
             )
         }
 
         val navigateHandler: (String) -> Unit = { route ->
-
             if (route == "logout") {
-
-                isLoggedIn = false
-
+                userSession = null
                 navController.navigate("login") {
                     popUpTo(0)
                 }
-
             } else {
-
                 navController.navigate(route)
-
             }
         }
 
         composable("home") {
             HomeScreen(
                 isLoggedIn = isLoggedIn,
-                onExploreExperiments = {
-                    navController.navigate("experiments")
-                },
+                onExploreExperiments = { navController.navigate("experiments") },
                 onNavigate = navigateHandler
             )
         }
@@ -82,9 +73,7 @@ fun AppNavigation() {
         composable("experiments") {
             ExperimentsScreen(
                 isLoggedIn = isLoggedIn,
-                onBack = {
-                    navController.popBackStack()
-                },
+                onBack = { navController.popBackStack() },
                 onNavigate = navigateHandler
             )
         }
@@ -105,7 +94,7 @@ fun AppNavigation() {
 
         composable("team") {
             TeamScreen(
-                isLoggedIn = isLoggedIn,
+                onBack = { navController.popBackStack() },
                 onNavigate = navigateHandler
             )
         }
@@ -119,14 +108,14 @@ fun AppNavigation() {
 
         composable("profile") {
             ProfileScreen(
-                isLoggedIn = isLoggedIn,
+                userSession = userSession,
                 onNavigate = navigateHandler
             )
         }
 
         composable("settings") {
             SettingsScreen(
-                isLoggedIn = isLoggedIn,
+                userSession = userSession,
                 onNavigate = navigateHandler
             )
         }
