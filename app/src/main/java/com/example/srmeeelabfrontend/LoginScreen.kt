@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.AcademiaLoginRequest
 import com.example.srmeeelabfrontend.network.RetrofitClient
 import com.example.srmeeelabfrontend.network.UserSession
 import com.example.srmeeelabfrontend.ui.theme.SrmEEELabFrontendTheme
@@ -59,7 +60,7 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
         }
     }
 
-    // Attempt login: fetch user list and match credentials
+    // Attempt login: call the website's Academia login endpoint directly
     fun attemptLogin() {
         if (email.isBlank() || password.isBlank()) {
             errorMessage = "Please enter your email and password."
@@ -69,24 +70,38 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
         errorMessage = null
         scope.launch {
             try {
-                val response = RetrofitClient.apiService.getUsers()
+                val response = RetrofitClient.apiService.loginWithAcademia(
+                    AcademiaLoginRequest(
+                        email = email.trim(),
+                        password = password
+                    )
+                )
                 if (response.isSuccessful) {
-                    val users = response.body() ?: emptyList()
-                    // Find user by email (backend returns list of maps)
-                    val matched = users.firstOrNull { user ->
-                        (user["email"] as? String)?.equals(email.trim(), ignoreCase = true) == true
-                    }
-                    if (matched != null) {
+                    val profile = response.body()
+                    if (profile != null) {
                         val session = UserSession(
-                            id = (matched["id"] as? String) ?: "",
-                            name = (matched["name"] as? String) ?: "Student",
-                            email = (matched["email"] as? String) ?: email.trim(),
-                            role = (matched["role"] as? String) ?: "student"
+                            id = profile.id,
+                            name = profile.name,
+                            email = profile.email,
+                            role = profile.role,
+                            registrationNumber = profile.registrationNumber,
+                            department = profile.department,
+                            branch = profile.branch,
+                            year = profile.year,
+                            semester = profile.semester,
+                            section = profile.section,
+                            batch = profile.batch,
+                            mobile = profile.mobile,
+                            program = profile.program
                         )
                         onLoginSuccess(session)
                     } else {
-                        errorMessage = "No account found for this email."
+                        errorMessage = "Server error. Please try again."
                     }
+                } else if (response.code() == 401) {
+                    errorMessage = "Invalid SRM Academia email or password."
+                } else if (response.code() == 400) {
+                    errorMessage = "Please use your SRM email and check your password."
                 } else {
                     errorMessage = "Server error. Please try again."
                 }

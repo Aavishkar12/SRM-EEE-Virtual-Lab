@@ -29,9 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.srmeeelabfrontend.network.RetrofitClient
-import com.example.srmeeelabfrontend.network.UpdateUserRequest
-import com.example.srmeeelabfrontend.network.UserApiModel
 import com.example.srmeeelabfrontend.network.UserSession
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,8 +42,8 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
     var isMenuOpen by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableIntStateOf(0) }
 
-    // Live data
-    var userData by remember { mutableStateOf<UserApiModel?>(null) }
+    // Academia profile fields come straight from userSession (set at login) —
+    // no extra network call needed here.
     var isLoadingUser by remember { mutableStateOf(false) }
     var loadError by remember { mutableStateOf<String?>(null) }
 
@@ -71,42 +68,29 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
         }
     }
 
-    // Fetch user data on load
+    // Seed the editable display name from the Academia session (already
+    // populated at login — no extra fetch from the mock /api/users endpoint).
     LaunchedEffect(userSession) {
         if (userSession != null) {
-            isLoadingUser = true
-            loadError = null
-            try {
-                val response = RetrofitClient.apiService.getUser(userSession.id)
-                if (response.isSuccessful) {
-                    userData = response.body()
-                    displayName = response.body()?.name ?: userSession.name
-                } else {
-                    loadError = "Could not load account data."
-                    displayName = userSession.name
-                }
-            } catch (e: Exception) {
-                loadError = "Network error. Showing session data."
-                displayName = userSession.name
-            } finally {
-                isLoadingUser = false
-            }
+            displayName = userSession.name
         }
     }
 
-    // Build academia info list from live data
-    val settingsInfoList: List<ProfileInfo> = remember(userData, userSession) {
+    // Build academia info list straight from the session data
+    val settingsInfoList: List<ProfileInfo> = remember(userSession) {
         if (userSession == null) return@remember emptyList()
-        val name = userData?.name ?: userSession.name
-        val email = userData?.email ?: userSession.email
-        val role = userData?.role ?: userSession.role
-        val completedCount = userData?.completedExperiments?.size ?: 0
         listOf(
-            ProfileInfo("STUDENT NAME", name.uppercase(), Icons.Default.Person, Color.White),
-            ProfileInfo("EMAIL", email, Icons.Default.Email, Color.White),
-            ProfileInfo("ACCOUNT ID", userSession.id, Icons.Default.Tag, Color.White),
-            ProfileInfo("ROLE", role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color.White),
-            ProfileInfo("COMPLETED EXPERIMENTS", "$completedCount", Icons.Default.Science, Color.White)
+            ProfileInfo("STUDENT NAME", userSession.name.uppercase(), Icons.Default.Person, Color.White),
+            ProfileInfo("EMAIL", userSession.email, Icons.Default.Email, Color.White),
+            ProfileInfo("REGISTRATION NUMBER", userSession.registrationNumber.ifBlank { "N/A" }, Icons.Default.Badge, Color.White),
+            ProfileInfo("DEPARTMENT", userSession.department.ifBlank { "N/A" }, Icons.Default.School, Color.White),
+            ProfileInfo("BRANCH", userSession.branch.ifBlank { "N/A" }, Icons.Default.AccountTree, Color.White),
+            ProfileInfo("YEAR / SEMESTER", "${userSession.year.ifBlank { "N/A" }} / ${userSession.semester.ifBlank { "N/A" }}", Icons.Default.CalendarMonth, Color.White),
+            ProfileInfo("SECTION", userSession.section.ifBlank { "N/A" }, Icons.Default.Groups, Color.White),
+            ProfileInfo("BATCH", userSession.batch.ifBlank { "N/A" }, Icons.Default.Tag, Color.White),
+            ProfileInfo("PROGRAM", userSession.program.ifBlank { "N/A" }, Icons.Default.MenuBook, Color.White),
+            ProfileInfo("MOBILE", userSession.mobile.ifBlank { "N/A" }, Icons.Default.Phone, Color.White),
+            ProfileInfo("ROLE", userSession.role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color.White)
         )
     }
 
@@ -250,13 +234,13 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                             } else {
                                 Column(modifier = Modifier.padding(20.dp)) {
                                     Text(
-                                        (userData?.name ?: userSession?.name ?: "").uppercase(),
+                                        (userSession?.name ?: "").uppercase(),
                                         color = Color.White,
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.ExtraBold
                                     )
                                     Text(
-                                        userData?.email ?: userSession?.email ?: "",
+                                        userSession?.email ?: "",
                                         color = Color(0xFF64748B),
                                         fontSize = 14.sp
                                     )
@@ -386,7 +370,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                         .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
                                 ) {
                                     Text(
-                                        text = userData?.email ?: userSession?.email ?: "",
+                                        text = userSession?.email ?: "",
                                         color = Color(0xFF64748B),
                                         fontSize = 15.sp,
                                         modifier = Modifier.padding(16.dp)
@@ -417,29 +401,12 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
 
                                 Button(
                                     onClick = {
-                                        if (userSession != null) {
-                                            isSaving = true
-                                            saveSuccess = false
-                                            scope.launch {
-                                                try {
-                                                    val response = RetrofitClient.apiService.updateUser(
-                                                        id = userSession.id,
-                                                        request = UpdateUserRequest(
-                                                            name = displayName,
-                                                            email = userData?.email ?: userSession.email
-                                                        )
-                                                    )
-                                                    if (response.isSuccessful) {
-                                                        userData = response.body()
-                                                        saveSuccess = true
-                                                    }
-                                                } catch (e: Exception) {
-                                                    // silently fail — user sees no change
-                                                } finally {
-                                                    isSaving = false
-                                                }
-                                            }
-                                        }
+                                        // NOTE: there's no real backend endpoint to persist a
+                                        // display-name override for an Academia-sourced profile
+                                        // (PUT /api/users/{id} is mock data only and would 404
+                                        // for a real userSession.id, which is now an email).
+                                        // This just updates local UI state for this session.
+                                        saveSuccess = true
                                     },
                                     modifier = Modifier.align(Alignment.End),
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),

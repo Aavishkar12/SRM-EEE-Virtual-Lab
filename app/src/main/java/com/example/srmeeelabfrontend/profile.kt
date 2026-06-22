@@ -30,7 +30,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.srmeeelabfrontend.network.RetrofitClient
-import com.example.srmeeelabfrontend.network.UserApiModel
 import com.example.srmeeelabfrontend.network.UserSession
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,8 +42,8 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
 
-    // Live user data fetched from API
-    var userData by remember { mutableStateOf<UserApiModel?>(null) }
+    // Live progress data fetched from API (Academia profile fields come straight
+    // from userSession — they were already returned by the academia login call)
     var completedCount by remember { mutableStateOf(0) }
     var isLoadingUser by remember { mutableStateOf(false) }
     var loadError by remember { mutableStateOf<String?>(null) }
@@ -65,19 +64,12 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
         }
     }
 
-    // Fetch user data and progress when logged in
+    // Fetch progress when logged in (Academia profile fields already live in userSession)
     LaunchedEffect(userSession) {
         if (userSession != null) {
             isLoadingUser = true
             loadError = null
             try {
-                val userResponse = RetrofitClient.apiService.getUser(userSession.id)
-                if (userResponse.isSuccessful) {
-                    userData = userResponse.body()
-                } else {
-                    loadError = "Could not load profile data."
-                }
-
                 val progressResponse = RetrofitClient.apiService.getProgress(userSession.id)
                 if (progressResponse.isSuccessful) {
                     completedCount = progressResponse.body()?.count { it.completed } ?: 0
@@ -90,19 +82,22 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
         }
     }
 
-    // Build the profile info list from live data, falling back to session data
-    val liveInfo: List<ProfileInfo> = remember(userData, userSession, completedCount) {
+    // Build the profile info list straight from the Academia session data
+    val liveInfo: List<ProfileInfo> = remember(userSession, completedCount) {
         if (userSession == null) return@remember emptyList()
-        val name = userData?.name ?: userSession.name
-        val email = userData?.email ?: userSession.email
-        val role = userData?.role ?: userSession.role
-        val completed = userData?.completedExperiments?.size ?: completedCount
         listOf(
-            ProfileInfo("FULL NAME", name.uppercase(), Icons.Default.Person, Color(0xFF60A5FA)),
-            ProfileInfo("SRM EMAIL ADDRESS", email, Icons.Default.Email, Color(0xFFA78BFA)),
-            ProfileInfo("PORTAL ACCESS ROLE", role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color(0xFF34D399)),
-            ProfileInfo("COMPLETED EXPERIMENTS", "$completed experiment(s)", Icons.Default.Science, Color(0xFFFBBF24)),
-            ProfileInfo("ACCOUNT ID", userSession.id, Icons.Default.Tag, Color(0xFFF472B6))
+            ProfileInfo("FULL NAME", userSession.name.uppercase(), Icons.Default.Person, Color(0xFF60A5FA)),
+            ProfileInfo("SRM EMAIL ADDRESS", userSession.email, Icons.Default.Email, Color(0xFFA78BFA)),
+            ProfileInfo("REGISTRATION NUMBER", userSession.registrationNumber.ifBlank { "N/A" }, Icons.Default.Badge, Color(0xFF38BDF8)),
+            ProfileInfo("DEPARTMENT", userSession.department.ifBlank { "N/A" }, Icons.Default.School, Color(0xFFFB923C)),
+            ProfileInfo("BRANCH", userSession.branch.ifBlank { "N/A" }, Icons.Default.AccountTree, Color(0xFF4ADE80)),
+            ProfileInfo("YEAR / SEMESTER", "${userSession.year.ifBlank { "N/A" }} / ${userSession.semester.ifBlank { "N/A" }}", Icons.Default.CalendarMonth, Color(0xFFE879F9)),
+            ProfileInfo("SECTION", userSession.section.ifBlank { "N/A" }, Icons.Default.Groups, Color(0xFF818CF8)),
+            ProfileInfo("BATCH", userSession.batch.ifBlank { "N/A" }, Icons.Default.Tag, Color(0xFFF472B6)),
+            ProfileInfo("PROGRAM", userSession.program.ifBlank { "N/A" }, Icons.Default.MenuBook, Color(0xFFFACC15)),
+            ProfileInfo("MOBILE", userSession.mobile.ifBlank { "N/A" }, Icons.Default.Phone, Color(0xFF22D3EE)),
+            ProfileInfo("PORTAL ACCESS ROLE", userSession.role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color(0xFF34D399)),
+            ProfileInfo("COMPLETED EXPERIMENTS", "$completedCount experiment(s)", Icons.Default.Science, Color(0xFFFBBF24))
         )
     }
 

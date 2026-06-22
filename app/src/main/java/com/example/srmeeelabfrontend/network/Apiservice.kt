@@ -10,6 +10,11 @@ import retrofit2.http.Query
 
 interface ApiService {
 
+    // Real SRM Academia login — hits the website's scraper directly and
+    // returns the student's profile as plain JSON.
+    @POST("api/auth/academia")
+    suspend fun loginWithAcademia(@Body request: AcademiaLoginRequest): Response<AcademiaProfile>
+
     @GET("api/experiments")
     suspend fun getExperiments(): Response<List<ExperimentApiModel>>
 

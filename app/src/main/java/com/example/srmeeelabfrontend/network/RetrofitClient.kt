@@ -4,10 +4,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.1.3:3000/"
+    // Your deployed website (handles both the website AND the API the app talks to)
+    private const val BASE_URL = "https://srm-eee-vlab.onrender.com/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -15,6 +17,12 @@ object RetrofitClient {
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(logging)
+        // Render free-tier instances can cold-start / the Academia scrape itself
+        // takes a while (login -> token exchange -> profile scrape), so use
+        // generous timeouts instead of the OkHttp default of 10s.
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
     val apiService: ApiService by lazy {
