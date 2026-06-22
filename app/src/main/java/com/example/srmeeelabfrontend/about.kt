@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,23 +35,57 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+data class AboutFeature(val title: String, val desc: String, val icon: ImageVector)
+data class AboutObjective(val number: String, val text: String)
+data class AboutFaculty(val name: String, val role: String, val email: String, val initial: String)
+
+val aboutFeatures = listOf(
+    AboutFeature("Interactive Simulations", "Run circuit simulations and observe real-time behavior of electrical systems without physical hardware.", Icons.Outlined.Devices),
+    AboutFeature("Hands-On Learning", "Step-by-step guided experiments reinforce theoretical knowledge and develop essential technical skills.", Icons.Outlined.Science),
+    AboutFeature("Comprehensive Coverage", "Covers the full 26EEE1001T Basic Electrical Engineering curriculum — from DC circuits to AC theory.", Icons.Outlined.MenuBook),
+    AboutFeature("Expert Guidance", "Content designed and reviewed by faculty from the Department of EEE, SRM IST Kattankulathur.", Icons.Outlined.People),
+    AboutFeature("Modern Stack", "Built with Next.js, real-time data, and interactive UI so the learning experience stays current and accessible.", Icons.Outlined.AutoAwesome),
+    AboutFeature("Self-Paced Quizzes", "Test your understanding with quizzes mapped to each experiment, with instant feedback and scoring.", Icons.Outlined.Lightbulb)
+)
+
+val aboutObjectives = listOf(
+    AboutObjective("1", "Provide hands-on experience with fundamental electrical and electronics experiments in a safe virtual environment."),
+    AboutObjective("2", "Strengthen theoretical knowledge through interactive simulations and practical applications."),
+    AboutObjective("3", "Cultivate critical thinking, data analysis, and problem-solving skills essential for an engineer."),
+    AboutObjective("4", "Establish a strong foundation for advanced studies in power systems, electronics, and control engineering.")
+)
+
+// Order matches the website exactly
+val aboutFaculty = listOf(
+    AboutFaculty("Dr. S. Vidyasagar",      "Assistant Professor",  "vidyasagar@srm.edu.in",      "V"),
+    AboutFaculty("Dr. K. Saravanan",       "Associate Professor",  "saravanan@srm.edu.in",        "S"),
+    AboutFaculty("Dr. D. Sattianandan",    "Associate Professor",  "sattianandan@srm.edu.in",     "S"),
+    AboutFaculty("Dr. V. Kalyanasundaram", "Assistant Professor",  "kalyanasundaram@srm.edu.in",  "K")
+)
+
+val aboutStats = listOf(
+    Triple(Icons.Outlined.Science,    "12+", "Experiments"),
+    Triple(Icons.Outlined.Book,       "50+", "Quiz Questions"),
+    Triple(Icons.Outlined.School,     "30+", "Study Resources"),
+    Triple(Icons.Outlined.AccessTime, "∞",   "24 / 7 Access")
+)
+
+// ── Screen ────────────────────────────────────────────────────────────────────
+
 @Composable
 fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
-    
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
-    LaunchedEffect(Unit) {
-        launch {
-            contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
-        launch {
-            contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
-    }
 
+    LaunchedEffect(Unit) {
+        launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
+        launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
+    }
     LaunchedEffect(Unit) {
         while (true) {
             currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
@@ -61,9 +96,7 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
         AnimatedBackground()
 
-        Scaffold(
-            containerColor = Color.Transparent,
-        ) { paddingValues ->
+        Scaffold(containerColor = Color.Transparent) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -72,17 +105,19 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     .scale(contentScale.value),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header
+
+                // ── Header ──────────────────────────────────────────────────
                 item { Header(currentTime, onMenuClick = { isMenuOpen = !isMenuOpen }) }
 
-                // Hero Section
+                // ── Hero ────────────────────────────────────────────────────
                 item {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 32.dp),
+                            .padding(horizontal = 24.dp, vertical = 40.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        // Badge
                         Surface(
                             color = Color(0xFF1E293B).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(20.dp),
@@ -90,9 +125,9 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
                             ) {
-                                Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(14.dp))
                                 Spacer(Modifier.width(8.dp))
                                 Text("SRM Institute of Science and Technology", color = Color(0xFF94A3B8), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                             }
@@ -100,214 +135,134 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                         Spacer(Modifier.height(32.dp))
 
+                        Text("EEE", color = Color.White, fontSize = 52.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
                         Text(
-                            text = "EEE",
-                            color = Color.White,
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "Virtual Lab",
+                            "Virtual Lab",
                             style = TextStyle(
                                 brush = Brush.horizontalGradient(listOf(Color(0xFF60A5FA), Color(0xFFA78BFA))),
-                                fontSize = 48.sp,
+                                fontSize = 52.sp,
                                 fontWeight = FontWeight.ExtraBold
                             ),
                             textAlign = TextAlign.Center
                         )
 
-                        Spacer(Modifier.height(28.dp))
+                        Spacer(Modifier.height(24.dp))
 
                         Text(
-                            text = "An interactive virtual laboratory for the Department of Electrical & Electronics Engineering — empowering students with 24/7 access to experiments, simulations, and study resources.",
+                            "An interactive virtual laboratory for the Department of Electrical & Electronics Engineering — empowering students with 24/7 access to experiments, simulations, and study resources.",
                             color = Color(0xFF94A3B8),
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center,
                             lineHeight = 26.sp,
-                            modifier = Modifier.padding(horizontal = 12.dp)
+                            modifier = Modifier.padding(horizontal = 8.dp)
                         )
                     }
                 }
 
-                // Stats Grid
+                // ── Stats grid ──────────────────────────────────────────────
                 item {
-                    Column(modifier = Modifier.padding(24.dp)) {
+                    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            AboutStatCard(Icons.Outlined.Science, "12+", "Experiments", Color(0xFF3B82F6), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[0].first, aboutStats[0].second, aboutStats[0].third, Color(0xFF3B82F6), Modifier.weight(1f))
                             Spacer(Modifier.width(16.dp))
-                            AboutStatCard(Icons.Outlined.Book, "50+", "Quiz Questions", Color(0xFFA78BFA), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[1].first, aboutStats[1].second, aboutStats[1].third, Color(0xFFA78BFA), Modifier.weight(1f))
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            AboutStatCard(Icons.Outlined.School, "30+", "Study Resources", Color(0xFF22D3EE), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[2].first, aboutStats[2].second, aboutStats[2].third, Color(0xFF22D3EE), Modifier.weight(1f))
                             Spacer(Modifier.width(16.dp))
-                            AboutStatCard(Icons.Outlined.AccessTime, "∞", "24 / 7 Access", Color(0xFF34D399), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[3].first, aboutStats[3].second, aboutStats[3].third, Color(0xFF34D399), Modifier.weight(1f))
                         }
                     }
+                    Spacer(Modifier.height(8.dp))
                 }
 
-                // Our Mission
+                // ── Our Mission ─────────────────────────────────────────────
+                item { AboutSectionHeader("Our Mission") }
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 40.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                         Text(
-                            text = "Our Mission",
-                            color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            "The SRM EEE Virtual Lab is a resource of the Electrical and Electronics Engineering Department at SRM Institute of Science and Technology, Kattankulathur. The lab gives engineering students a comprehensive platform to explore, experiment, and build a robust understanding of the core principles of electrical and electronics engineering.",
+                            color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 26.sp
                         )
-                        Spacer(Modifier.height(8.dp))
-                        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6)))
-                        
-                        Spacer(Modifier.height(32.dp))
-                        
+                        Spacer(Modifier.height(20.dp))
                         Text(
-                            text = "The SRM EEE Virtual Lab is a resource of the Electrical and Electronics Engineering Department at SRM Institute of Science and Technology, Kattankulathur. The lab gives engineering students a comprehensive platform to explore, experiment, and build a robust understanding of the core principles of electrical and electronics engineering.",
-                            color = Color(0xFF94A3B8),
-                            fontSize = 16.sp,
-                            lineHeight = 26.sp
-                        )
-                        Spacer(Modifier.height(24.dp))
-                        Text(
-                            text = "We are committed to bridging the gap between theory and practice — empowering students to enhance their problem-solving skills, strengthen technical expertise, and foster a passion for innovation in the engineering domain, anytime and from anywhere.",
-                            color = Color(0xFF94A3B8),
-                            fontSize = 16.sp,
-                            lineHeight = 26.sp
+                            "We are committed to bridging the gap between theory and practice — empowering students to enhance their problem-solving skills, strengthen technical expertise, and foster a passion for innovation in the engineering domain, anytime and from anywhere.",
+                            color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 26.sp
                         )
                     }
+                    Spacer(Modifier.height(16.dp))
                 }
 
-                // Key Features
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 24.dp)
-                    ) {
-                        Text(
-                            text = "Key Features",
-                            color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6)))
-                        
-                        Spacer(Modifier.height(32.dp))
-                    }
-                }
-
+                // ── Key Features ────────────────────────────────────────────
+                item { AboutSectionHeader("Key Features") }
                 items(aboutFeatures) { feature ->
                     AboutFeatureCard(feature)
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // Objectives
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 48.dp)
-                    ) {
-                        Text(
-                            text = "Objectives",
-                            color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6)))
-                        
-                        Spacer(Modifier.height(32.dp))
-                    }
-                }
-
-                items(aboutObjectives) { objective ->
-                    AboutObjectiveCard(objective)
+                // ── Objectives ──────────────────────────────────────────────
+                item { AboutSectionHeader("Objectives") }
+                items(aboutObjectives) { obj ->
+                    AboutObjectiveCard(obj)
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // Faculty Team
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 48.dp)
-                    ) {
-                        Text(
-                            text = "Faculty Team",
-                            color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6)))
-                        
-                        Spacer(Modifier.height(32.dp))
-                    }
-                }
-
+                // ── Faculty ─────────────────────────────────────────────────
+                item { AboutSectionHeader("Faculty Team") }
                 items(aboutFaculty) { faculty ->
                     AboutFacultyCard(faculty)
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // Contact Us
+                // ── Contact ─────────────────────────────────────────────────
+                item { AboutSectionHeader("Contact Us") }
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 48.dp)
-                    ) {
-                        Text(
-                            text = "Contact Us",
-                            color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6)))
-                        
-                        Spacer(Modifier.height(32.dp))
-                        
-                        ContactCard()
-                    }
+                    ContactCard()
+                    Spacer(Modifier.height(32.dp))
                 }
 
-                // Footer
+                // ── Footer ──────────────────────────────────────────────────
                 item { Footer(onNavigate) }
             }
         }
 
-        // Floating Hamburger Menu Overlay
         if (isMenuOpen) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { isMenuOpen = false }
+                    .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { isMenuOpen = false }
             ) {
                 AnimatedVisibility(
                     visible = isMenuOpen,
                     enter = scaleIn(initialScale = 0.8f) + fadeIn(),
                     exit = scaleOut(targetScale = 0.8f) + fadeOut(),
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 75.dp, end = 16.dp)
+                    modifier = Modifier.align(Alignment.TopEnd).padding(top = 75.dp, end = 16.dp)
                 ) {
-                    HamburgerMenu(isLoggedIn = isLoggedIn, currentRoute = "about", onClose = { isMenuOpen = false }, onNavigate = { route ->
-                        onNavigate(route)
-                        isMenuOpen = false
-                    })
+                    HamburgerMenu(
+                        isLoggedIn = isLoggedIn,
+                        currentRoute = "about",
+                        onClose = { isMenuOpen = false },
+                        onNavigate = { route -> onNavigate(route); isMenuOpen = false }
+                    )
                 }
             }
         }
+    }
+}
+
+// ── Reusable composables ──────────────────────────────────────────────────────
+
+@Composable
+private fun AboutSectionHeader(title: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 32.dp)
+    ) {
+        Text(title, color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold)
+        Spacer(Modifier.height(8.dp))
+        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6), RoundedCornerShape(2.dp)))
     }
 }
 
@@ -369,15 +324,8 @@ fun AboutObjectiveCard(obj: AboutObjective) {
             .padding(horizontal = 24.dp)
             .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
     ) {
-        Row(
-            modifier = Modifier.padding(24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                color = Color(0xFF1E293B),
-                shape = CircleShape,
-                modifier = Modifier.size(40.dp)
-            ) {
+        Row(modifier = Modifier.padding(24.dp), verticalAlignment = Alignment.CenterVertically) {
+            Surface(color = Color(0xFF1E293B), shape = CircleShape, modifier = Modifier.size(40.dp)) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(obj.number, color = Color(0xFF60A5FA), fontWeight = FontWeight.ExtraBold)
                 }
@@ -399,24 +347,26 @@ fun AboutFacultyCard(faculty: AboutFaculty) {
             .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
     ) {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+            // Avatar
             Surface(
-                color = Color(0xFF3B82F6),
+                color = Color(0xFF2563EB),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.size(56.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(faculty.initial, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(faculty.initial, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(Modifier.width(20.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(faculty.name, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
-                Text(faculty.role, color = Color(0xFF3B82F6), fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text(faculty.dept, color = Color(0xFF64748B), fontSize = 12.sp, fontWeight = FontWeight.Medium)
-                Spacer(Modifier.height(8.dp))
+                Text(faculty.name, color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
+                Spacer(Modifier.height(2.dp))
+                Text(faculty.role, color = Color(0xFF3B82F6), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Dept. of Electrical & Electronics Engineering", color = Color(0xFF64748B), fontSize = 12.sp)
+                Spacer(Modifier.height(10.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(14.dp))
-                    Spacer(Modifier.width(8.dp))
+                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(13.dp))
+                    Spacer(Modifier.width(6.dp))
                     Text(faculty.email, color = Color(0xFF60A5FA), fontSize = 13.sp)
                 }
             }
@@ -431,9 +381,11 @@ fun ContactCard() {
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 24.dp)
             .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
     ) {
         Column(modifier = Modifier.padding(28.dp)) {
+            // Badge
             Surface(
                 color = Color(0xFF3B82F6).copy(alpha = 0.1f),
                 shape = RoundedCornerShape(20.dp),
@@ -443,40 +395,42 @@ fun ContactCard() {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(14.dp))
+                    Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(13.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("GET IN TOUCH", color = Color(0xFF3B82F6), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("GET IN TOUCH", color = Color(0xFF3B82F6), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                 }
             }
-            
+
             Spacer(Modifier.height(24.dp))
-            Text("Department of Electrical and Electronics Engineering", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(12.dp))
+            Text("Department of Electrical and Electronics Engineering", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 28.sp)
+            Spacer(Modifier.height(10.dp))
             Text("SRM Institute of Science and Technology\nKattankulathur 603 203, Tamil Nadu", color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 24.sp)
-            
-            Spacer(Modifier.height(32.dp))
-            
+
+            Spacer(Modifier.height(28.dp))
+
+            // Email row
             Surface(
                 color = Color(0xFF1E293B).copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF334155), RoundedCornerShape(12.dp))
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp)) {
-                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(20.dp))
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(12.dp))
                     Text("eee@srm.edu.in", color = Color(0xFF60A5FA), fontSize = 15.sp)
                 }
             }
-            
+
             Spacer(Modifier.height(12.dp))
-            
+
+            // Website row
             Surface(
                 color = Color(0xFF1E293B).copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF334155), RoundedCornerShape(12.dp))
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp)) {
-                    Icon(Icons.Default.Launch, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(20.dp))
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                    Icon(Icons.Default.Launch, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(12.dp))
                     Text("www.srmist.edu.in", color = Color(0xFF60A5FA), fontSize = 15.sp)
                 }
@@ -484,30 +438,3 @@ fun ContactCard() {
         }
     }
 }
-
-data class AboutFeature(val title: String, val desc: String, val icon: ImageVector)
-data class AboutObjective(val number: String, val text: String)
-data class AboutFaculty(val name: String, val role: String, val dept: String, val email: String, val initial: String)
-
-val aboutFeatures = listOf(
-    AboutFeature("Interactive Simulations", "Run circuit simulations and observe real-time behavior of electrical systems without physical hardware.", Icons.Outlined.Devices),
-    AboutFeature("Hands-On Learning", "Step-by-step guided experiments reinforce theoretical knowledge and develop essential technical skills.", Icons.Outlined.Science),
-    AboutFeature("Comprehensive Coverage", "Covers the full 26EEE1001T Basic Electrical Engineering curriculum — from DC circuits to AC theory.", Icons.Outlined.MenuBook),
-    AboutFeature("Expert Guidance", "Content designed and reviewed by faculty from the Department of EEE, SRM IST Kattankulathur.", Icons.Outlined.People),
-    AboutFeature("Modern Stack", "Built with Next.js, real-time data, and interactive UI so the learning experience stays current and accessible.", Icons.Outlined.AutoAwesome),
-    AboutFeature("Self-Paced Quizzes", "Test your understanding with quizzes mapped to each experiment, with instant feedback and scoring.", Icons.Outlined.Lightbulb)
-)
-
-val aboutObjectives = listOf(
-    AboutObjective("1", "Provide hands-on experience with fundamental electrical and electronics experiments in a safe virtual environment."),
-    AboutObjective("2", "Strengthen theoretical knowledge through interactive simulations and practical applications."),
-    AboutObjective("3", "Cultivate critical thinking, data analysis, and problem-solving skills essential for an engineer."),
-    AboutObjective("4", "Establish a strong foundation for advanced studies in power systems, electronics, and control engineering.")
-)
-
-val aboutFaculty = listOf(
-    AboutFaculty("Dr. K. Saravanan", "Associate Professor", "Dept. of Electrical & Electronics Engineering", "saravanan@srm.edu.in", "S"),
-    AboutFaculty("Dr. S. Vidyasagar", "Assistant Professor", "Dept. of Electrical & Electronics Engineering", "vidyasagar@srm.edu.in", "V"),
-    AboutFaculty("Dr. D. Sattianandan", "Associate Professor", "Dept. of Electrical & Electronics Engineering", "sattianandan@srm.edu.in", "S"),
-    AboutFaculty("Dr. V. Kalyanasundaram", "Assistant Professor", "Dept. of Electrical & Electronics Engineering", "kalyanasundaram@srm.edu.in", "K")
-)
