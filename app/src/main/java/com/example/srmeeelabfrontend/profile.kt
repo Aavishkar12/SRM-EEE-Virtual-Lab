@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -30,26 +29,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.RetrofitClient
+import com.example.srmeeelabfrontend.network.UserApiModel
+import com.example.srmeeelabfrontend.network.UserSession
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
+fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
+    val isLoggedIn = userSession != null
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
-    
+
+    // Live user data fetched from API
+    var userData by remember { mutableStateOf<UserApiModel?>(null) }
+    var completedCount by remember { mutableStateOf(0) }
+    var isLoadingUser by remember { mutableStateOf(false) }
+    var loadError by remember { mutableStateOf<String?>(null) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
-        launch {
-            contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
-        launch {
-            contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
+        launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
+        launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
     }
 
     LaunchedEffect(Unit) {
@@ -59,12 +65,51 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
         }
     }
 
+    // Fetch user data and progress when logged in
+    LaunchedEffect(userSession) {
+        if (userSession != null) {
+            isLoadingUser = true
+            loadError = null
+            try {
+                val userResponse = RetrofitClient.apiService.getUser(userSession.id)
+                if (userResponse.isSuccessful) {
+                    userData = userResponse.body()
+                } else {
+                    loadError = "Could not load profile data."
+                }
+
+                val progressResponse = RetrofitClient.apiService.getProgress(userSession.id)
+                if (progressResponse.isSuccessful) {
+                    completedCount = progressResponse.body()?.count { it.completed } ?: 0
+                }
+            } catch (e: Exception) {
+                loadError = "Network error. Showing cached info."
+            } finally {
+                isLoadingUser = false
+            }
+        }
+    }
+
+    // Build the profile info list from live data, falling back to session data
+    val liveInfo: List<ProfileInfo> = remember(userData, userSession, completedCount) {
+        if (userSession == null) return@remember emptyList()
+        val name = userData?.name ?: userSession.name
+        val email = userData?.email ?: userSession.email
+        val role = userData?.role ?: userSession.role
+        val completed = userData?.completedExperiments?.size ?: completedCount
+        listOf(
+            ProfileInfo("FULL NAME", name.uppercase(), Icons.Default.Person, Color(0xFF60A5FA)),
+            ProfileInfo("SRM EMAIL ADDRESS", email, Icons.Default.Email, Color(0xFFA78BFA)),
+            ProfileInfo("PORTAL ACCESS ROLE", role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color(0xFF34D399)),
+            ProfileInfo("COMPLETED EXPERIMENTS", "$completed experiment(s)", Icons.Default.Science, Color(0xFFFBBF24)),
+            ProfileInfo("ACCOUNT ID", userSession.id, Icons.Default.Tag, Color(0xFFF472B6))
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
         AnimatedBackground()
 
-        Scaffold(
-            containerColor = Color.Transparent,
-        ) { paddingValues ->
+        Scaffold(containerColor = Color.Transparent) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -73,11 +118,9 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     .scale(contentScale.value),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header
                 item { Header(currentTime, onMenuClick = { isMenuOpen = !isMenuOpen }) }
 
                 if (!isLoggedIn) {
-                    // Access Denied Section
                     item {
                         Column(
                             modifier = Modifier
@@ -103,9 +146,7 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         modifier = Modifier.size(64.dp),
                                         tint = Color(0xFF3B82F6)
                                     )
-                                    
                                     Spacer(Modifier.height(24.dp))
-                                    
                                     Text(
                                         text = "SRM profile access",
                                         color = Color.White,
@@ -113,9 +154,7 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         fontWeight = FontWeight.ExtraBold,
                                         textAlign = TextAlign.Center
                                     )
-                                    
                                     Spacer(Modifier.height(16.dp))
-                                    
                                     Text(
                                         text = "Profile details are available only to signed-in SRM users.",
                                         color = Color(0xFF94A3B8),
@@ -123,9 +162,7 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
                                     )
-                                    
                                     Spacer(Modifier.height(16.dp))
-                                    
                                     Text(
                                         text = buildAnnotatedString {
                                             append("Sign in with your ")
@@ -139,9 +176,7 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
                                     )
-                                    
                                     Spacer(Modifier.height(32.dp))
-                                    
                                     Button(
                                         onClick = { onNavigate("login") },
                                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
@@ -155,7 +190,7 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         }
                     }
                 } else {
-                    // Profile Content
+                    // Title
                     item {
                         Column(
                             modifier = Modifier
@@ -179,36 +214,68 @@ fun ProfileScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         }
                     }
 
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp, vertical = 16.dp)
-                        ) {
-                            Text(
-                                "Academia Information",
-                                color = Color.White,
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(Modifier.height(24.dp))
+                    // Loading / error state
+                    if (isLoadingUser) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(120.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(color = Color(0xFF3B82F6))
+                            }
+                        }
+                    } else {
+                        if (loadError != null) {
+                            item {
+                                Surface(
+                                    color = Color(0xFF1C1917).copy(alpha = 0.6f),
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 24.dp)
+                                        .border(1.dp, Color(0xFF78716C), RoundedCornerShape(12.dp))
+                                ) {
+                                    Text(
+                                        text = loadError!!,
+                                        color = Color(0xFFFBBF24),
+                                        fontSize = 13.sp,
+                                        modifier = Modifier.padding(14.dp),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                Spacer(Modifier.height(16.dp))
+                            }
+                        }
+
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                            ) {
+                                Text(
+                                    "Academia Information",
+                                    color = Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(Modifier.height(24.dp))
+                            }
+                        }
+
+                        items(liveInfo) { info ->
+                            ProfileInfoCard(info)
+                            Spacer(Modifier.height(16.dp))
                         }
                     }
 
-                    items(academiaInfo) { info ->
-                        ProfileInfoCard(info)
-                        Spacer(Modifier.height(16.dp))
-                    }
-                    
                     item { Spacer(Modifier.height(32.dp)) }
                 }
 
-                // Footer
                 item { Footer(onNavigate) }
             }
         }
 
-        // Floating Hamburger Menu Overlay
         if (isMenuOpen) {
             Box(
                 modifier = Modifier
@@ -312,16 +379,3 @@ fun ProfileInfoCard(info: ProfileInfo) {
 }
 
 data class ProfileInfo(val label: String, val value: String, val icon: ImageVector, val color: Color)
-
-val academiaInfo = listOf(
-    ProfileInfo("FULL NAME", "AAVISHKAR SINGH", Icons.Default.Person, Color(0xFF60A5FA)),
-    ProfileInfo("SRM EMAIL ADDRESS", "as9261@srmist.edu.in", Icons.Default.Email, Color(0xFFA78BFA)),
-    ProfileInfo("REGISTRATION NUMBER", "RA2511003011024", Icons.Default.Tag, Color(0xFFF472B6)),
-    ProfileInfo("BRANCH", "Computer Science and Engineering(CS)", Icons.Default.Apartment, Color(0xFF34D399)),
-    ProfileInfo("SEMESTER", "2", Icons.Default.CalendarToday, Color(0xFFFBBF24)),
-    ProfileInfo("BATCH", "1/1", Icons.Default.Layers, Color(0xFFFBBF24)),
-    ProfileInfo("SECTION", "(O1 Section)", Icons.Default.GridView, Color(0xFF22D3EE)),
-    ProfileInfo("MOBILE NUMBER", "9818867459", Icons.Default.Phone, Color(0xFF818CF8)),
-    ProfileInfo("PROGRAM / DEGREE", "3", Icons.Default.School, Color(0xFFFCA5A5)),
-    ProfileInfo("PORTAL ACCESS ROLE", "Student", Icons.Default.Shield, Color(0xFF34D399))
-)

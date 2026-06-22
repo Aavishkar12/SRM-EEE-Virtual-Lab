@@ -9,23 +9,18 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,27 +29,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.network.RetrofitClient
+import com.example.srmeeelabfrontend.network.UpdateUserRequest
+import com.example.srmeeelabfrontend.network.UserApiModel
+import com.example.srmeeelabfrontend.network.UserSession
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
+fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
+    val isLoggedIn = userSession != null
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableIntStateOf(0) }
-    
+
+    // Live data
+    var userData by remember { mutableStateOf<UserApiModel?>(null) }
+    var isLoadingUser by remember { mutableStateOf(false) }
+    var loadError by remember { mutableStateOf<String?>(null) }
+
+    // Editable display name field (tab 0)
+    var displayName by remember { mutableStateOf("") }
+    var isSaving by remember { mutableStateOf(false) }
+    var saveSuccess by remember { mutableStateOf(false) }
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
-        launch {
-            contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
-        launch {
-            contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
-        }
+        launch { contentAlpha.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
+        launch { contentScale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing)) }
     }
 
     LaunchedEffect(Unit) {
@@ -64,12 +71,49 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
         }
     }
 
+    // Fetch user data on load
+    LaunchedEffect(userSession) {
+        if (userSession != null) {
+            isLoadingUser = true
+            loadError = null
+            try {
+                val response = RetrofitClient.apiService.getUser(userSession.id)
+                if (response.isSuccessful) {
+                    userData = response.body()
+                    displayName = response.body()?.name ?: userSession.name
+                } else {
+                    loadError = "Could not load account data."
+                    displayName = userSession.name
+                }
+            } catch (e: Exception) {
+                loadError = "Network error. Showing session data."
+                displayName = userSession.name
+            } finally {
+                isLoadingUser = false
+            }
+        }
+    }
+
+    // Build academia info list from live data
+    val settingsInfoList: List<ProfileInfo> = remember(userData, userSession) {
+        if (userSession == null) return@remember emptyList()
+        val name = userData?.name ?: userSession.name
+        val email = userData?.email ?: userSession.email
+        val role = userData?.role ?: userSession.role
+        val completedCount = userData?.completedExperiments?.size ?: 0
+        listOf(
+            ProfileInfo("STUDENT NAME", name.uppercase(), Icons.Default.Person, Color.White),
+            ProfileInfo("EMAIL", email, Icons.Default.Email, Color.White),
+            ProfileInfo("ACCOUNT ID", userSession.id, Icons.Default.Tag, Color.White),
+            ProfileInfo("ROLE", role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color.White),
+            ProfileInfo("COMPLETED EXPERIMENTS", "$completedCount", Icons.Default.Science, Color.White)
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
         AnimatedBackground()
 
-        Scaffold(
-            containerColor = Color.Transparent,
-        ) { paddingValues ->
+        Scaffold(containerColor = Color.Transparent) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -78,11 +122,9 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     .scale(contentScale.value),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header
                 item { Header(currentTime, onMenuClick = { isMenuOpen = !isMenuOpen }) }
 
                 if (!isLoggedIn) {
-                    // Access Denied Section
                     item {
                         Column(
                             modifier = Modifier
@@ -108,9 +150,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         modifier = Modifier.size(64.dp),
                                         tint = Color(0xFF3B82F6)
                                     )
-                                    
                                     Spacer(Modifier.height(24.dp))
-                                    
                                     Text(
                                         text = "SRM settings access",
                                         color = Color.White,
@@ -118,9 +158,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         fontWeight = FontWeight.ExtraBold,
                                         textAlign = TextAlign.Center
                                     )
-                                    
                                     Spacer(Modifier.height(16.dp))
-                                    
                                     Text(
                                         text = "Settings are available only to signed-in SRM users.",
                                         color = Color(0xFF94A3B8),
@@ -128,9 +166,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
                                     )
-                                    
                                     Spacer(Modifier.height(16.dp))
-                                    
                                     Text(
                                         text = buildAnnotatedString {
                                             append("Sign in with your ")
@@ -144,9 +180,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
                                     )
-                                    
                                     Spacer(Modifier.height(32.dp))
-                                    
                                     Button(
                                         onClick = { onNavigate("login") },
                                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
@@ -160,7 +194,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         }
                     }
                 } else {
-                    // Settings Content
+                    // Title
                     item {
                         Column(
                             modifier = Modifier
@@ -192,7 +226,7 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         }
                     }
 
-                    // User Summary Card
+                    // User Summary Card — live data
                     item {
                         Surface(
                             color = Color(0xFF0F172A).copy(alpha = 0.6f),
@@ -202,12 +236,57 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                 .padding(horizontal = 24.dp)
                                 .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
                         ) {
-                            Column(modifier = Modifier.padding(20.dp)) {
-                                Text("AAVISHKAR SINGH", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
-                                Text("as9261@srmist.edu.in", color = Color(0xFF64748B), fontSize = 14.sp)
+                            if (isLoadingUser) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().height(60.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        color = Color(0xFF3B82F6),
+                                        modifier = Modifier.size(24.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                }
+                            } else {
+                                Column(modifier = Modifier.padding(20.dp)) {
+                                    Text(
+                                        (userData?.name ?: userSession?.name ?: "").uppercase(),
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                    Text(
+                                        userData?.email ?: userSession?.email ?: "",
+                                        color = Color(0xFF64748B),
+                                        fontSize = 14.sp
+                                    )
+                                }
                             }
                         }
                         Spacer(Modifier.height(24.dp))
+                    }
+
+                    // Error banner
+                    if (loadError != null) {
+                        item {
+                            Surface(
+                                color = Color(0xFF1C1917).copy(alpha = 0.6f),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp)
+                                    .border(1.dp, Color(0xFF78716C), RoundedCornerShape(12.dp))
+                            ) {
+                                Text(
+                                    text = loadError!!,
+                                    color = Color(0xFFFBBF24),
+                                    fontSize = 13.sp,
+                                    modifier = Modifier.padding(14.dp),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            Spacer(Modifier.height(16.dp))
+                        }
                     }
 
                     // Tab bar
@@ -221,7 +300,12 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
-                            listOf(Icons.Default.AccountCircle, Icons.Default.Palette, Icons.Default.Notifications, Icons.Default.Lock).forEachIndexed { index, icon ->
+                            listOf(
+                                Icons.Default.AccountCircle,
+                                Icons.Default.Palette,
+                                Icons.Default.Notifications,
+                                Icons.Default.Lock
+                            ).forEachIndexed { index, icon ->
                                 IconButton(
                                     onClick = { selectedTab = index },
                                     modifier = Modifier
@@ -243,8 +327,8 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(32.dp))
                     }
 
+                    // Tab 0 — Account / Profile
                     if (selectedTab == 0) {
-                        // Profile Settings
                         item {
                             Column(
                                 modifier = Modifier
@@ -253,52 +337,130 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                             ) {
                                 Text("Academia Profile", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                                 Spacer(Modifier.height(8.dp))
-                                Text("These details are synced from your SRM Academia account.", color = Color(0xFF64748B), fontSize = 14.sp)
+                                Text(
+                                    "These details are synced from your SRM Academia account.",
+                                    color = Color(0xFF64748B),
+                                    fontSize = 14.sp
+                                )
                                 Spacer(Modifier.height(24.dp))
                             }
                         }
 
-                        items(academiaSettingsInfo) { info ->
+                        items(settingsInfoList) { info ->
                             SettingsInfoCard(info)
                             Spacer(Modifier.height(16.dp))
                         }
 
+                        // Display name edit + Save button wired to PUT /api/users/{id}
                         item {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 24.dp, vertical = 32.dp)
                             ) {
-                                Text("Display Preferences", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                                Text(
+                                    "Display Preferences",
+                                    color = Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                                 Spacer(Modifier.height(24.dp))
-                                
+
                                 Text("Display Name", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                                 Spacer(Modifier.height(12.dp))
-                                CustomTextField(value = "AAVISHKAR SINGH")
-                                
-                                Spacer(Modifier.height(24.dp))
-                                
-                                Text("Bio", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Spacer(Modifier.height(12.dp))
                                 CustomTextField(
-                                    value = "Computer Science and Engineering(CS), Section (O1 Section)",
-                                    singleLine = false,
-                                    modifier = Modifier.height(100.dp)
+                                    value = displayName,
+                                    onValueChange = { displayName = it }
                                 )
-                                
+
+                                Spacer(Modifier.height(24.dp))
+
+                                Text("Email", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Spacer(Modifier.height(12.dp))
+                                // Email is read-only — shown as plain text
+                                Surface(
+                                    color = Color(0xFF1E293B).copy(alpha = 0.3f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+                                ) {
+                                    Text(
+                                        text = userData?.email ?: userSession?.email ?: "",
+                                        color = Color(0xFF64748B),
+                                        fontSize = 15.sp,
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
+
+                                // Save success banner
+                                if (saveSuccess) {
+                                    Spacer(Modifier.height(16.dp))
+                                    Surface(
+                                        color = Color(0xFF052E16).copy(alpha = 0.7f),
+                                        shape = RoundedCornerShape(10.dp),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .border(1.dp, Color(0xFF166534), RoundedCornerShape(10.dp))
+                                    ) {
+                                        Text(
+                                            "Settings saved successfully.",
+                                            color = Color(0xFF86EFAC),
+                                            fontSize = 13.sp,
+                                            modifier = Modifier.padding(12.dp),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+
                                 Spacer(Modifier.height(32.dp))
+
                                 Button(
-                                    onClick = { },
+                                    onClick = {
+                                        if (userSession != null) {
+                                            isSaving = true
+                                            saveSuccess = false
+                                            scope.launch {
+                                                try {
+                                                    val response = RetrofitClient.apiService.updateUser(
+                                                        id = userSession.id,
+                                                        request = UpdateUserRequest(
+                                                            name = displayName,
+                                                            email = userData?.email ?: userSession.email
+                                                        )
+                                                    )
+                                                    if (response.isSuccessful) {
+                                                        userData = response.body()
+                                                        saveSuccess = true
+                                                    }
+                                                } catch (e: Exception) {
+                                                    // silently fail — user sees no change
+                                                } finally {
+                                                    isSaving = false
+                                                }
+                                            }
+                                        }
+                                    },
                                     modifier = Modifier.align(Alignment.End),
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
-                                    shape = RoundedCornerShape(10.dp)
+                                    shape = RoundedCornerShape(10.dp),
+                                    enabled = !isSaving
                                 ) {
-                                    Text("Save Settings", fontWeight = FontWeight.Bold)
+                                    if (isSaving) {
+                                        CircularProgressIndicator(
+                                            color = Color.White,
+                                            modifier = Modifier.size(16.dp),
+                                            strokeWidth = 2.dp
+                                        )
+                                    } else {
+                                        Text("Save Settings", fontWeight = FontWeight.Bold)
+                                    }
                                 }
                             }
                         }
+
+                        // Tab 3 — Privacy
                     } else if (selectedTab == 3) {
-                        // Privacy Settings (as in last screenshot)
                         item {
                             Column(
                                 modifier = Modifier
@@ -307,16 +469,29 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                             ) {
                                 Text("Privacy Settings", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                                 Spacer(Modifier.height(32.dp))
-                                
-                                PrivacySwitchRow("Share Progress", "Allow instructors to view your experiment progress", true)
+
+                                PrivacySwitchRow(
+                                    "Share Progress",
+                                    "Allow instructors to view your experiment progress",
+                                    true
+                                )
                                 Spacer(Modifier.height(24.dp))
-                                PrivacySwitchRow("Public Profile", "Make your profile visible to other students", false)
+                                PrivacySwitchRow(
+                                    "Public Profile",
+                                    "Make your profile visible to other students",
+                                    false
+                                )
                                 Spacer(Modifier.height(24.dp))
-                                PrivacySwitchRow("Data Collection", "Allow anonymous usage data collection to improve the platform", true)
-                                
+                                PrivacySwitchRow(
+                                    "Data Collection",
+                                    "Allow anonymous usage data collection to improve the platform",
+                                    true
+                                )
+
                                 Spacer(Modifier.height(48.dp))
+                                // Privacy prefs are local-only (no backend endpoint)
                                 Button(
-                                    onClick = { },
+                                    onClick = { saveSuccess = true },
                                     modifier = Modifier.align(Alignment.End),
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
                                     shape = RoundedCornerShape(10.dp)
@@ -325,24 +500,26 @@ fun SettingsScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                                 }
                             }
                         }
+
+                        // Tabs 1 & 2 — placeholder
                     } else {
-                        // Placeholder for other tabs
                         item {
-                            Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(200.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Text("Section under development", color = Color(0xFF64748B))
                             }
                         }
                     }
-                    
+
                     item { Spacer(Modifier.height(32.dp)) }
                 }
 
-                // Footer
                 item { Footer(onNavigate) }
             }
         }
 
-        // Floating Hamburger Menu Overlay
         if (isMenuOpen) {
             Box(
                 modifier = Modifier
@@ -416,8 +593,13 @@ fun SettingsInfoCard(info: ProfileInfo) {
 }
 
 @Composable
-fun CustomTextField(value: String, singleLine: Boolean = true, modifier: Modifier = Modifier) {
-    var text by remember { mutableStateOf(value) }
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit = {},
+    singleLine: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    var text by remember(value) { mutableStateOf(value) }
     Surface(
         color = Color(0xFF1E293B).copy(alpha = 0.5f),
         shape = RoundedCornerShape(10.dp),
@@ -427,7 +609,10 @@ fun CustomTextField(value: String, singleLine: Boolean = true, modifier: Modifie
     ) {
         BasicTextField(
             value = text,
-            onValueChange = { text = it },
+            onValueChange = {
+                text = it
+                onValueChange(it)
+            },
             textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
             cursorBrush = SolidColor(Color(0xFF3B82F6)),
             modifier = Modifier.padding(16.dp),
@@ -460,13 +645,3 @@ fun PrivacySwitchRow(title: String, desc: String, initialValue: Boolean) {
         )
     }
 }
-
-val academiaSettingsInfo = listOf(
-    ProfileInfo("STUDENT NAME", "AAVISHKAR SINGH", Icons.Default.Person, Color.White),
-    ProfileInfo("EMAIL", "as9261@srmist.edu.in", Icons.Default.Email, Color.White),
-    ProfileInfo("REGISTRATION NO.", "RA2511003011024", Icons.Default.Tag, Color.White),
-    ProfileInfo("BRANCH", "Computer Science and Engineering(CS)", Icons.Default.Apartment, Color.White),
-    ProfileInfo("YEAR", "—", Icons.Default.Tag, Color.White),
-    ProfileInfo("SEMESTER", "2", Icons.Default.Tag, Color.White),
-    ProfileInfo("BATCH", "1/1", Icons.Default.Tag, Color.White)
-)
