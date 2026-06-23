@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     // Your deployed website (handles both the website AND the API the app talks to)
-    private const val BASE_URL = "https://srm-eee-vlab.onrender.com/"
+    private const val BASE_URL = "http://10.15.129.105:3001/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
