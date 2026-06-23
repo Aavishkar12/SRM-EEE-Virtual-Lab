@@ -11,6 +11,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.srmeeelabfrontend.network.UserSession
 import com.example.srmeeelabfrontend.ui.theme.SrmEEELabFrontendTheme
+import androidx.compose.ui.platform.LocalContext
+import com.example.srmeeelabfrontend.data.SessionManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,8 +33,10 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation() {
 
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
 
-    var userSession by remember { mutableStateOf<UserSession?>(null) }
+    var userSession by remember { mutableStateOf(sessionManager.getSession()) }
     val isLoggedIn = userSession != null
 
     NavHost(
@@ -43,6 +47,7 @@ fun AppNavigation() {
         composable("login") {
             LoginScreen(
                 onLoginSuccess = { session ->
+                    sessionManager.saveSession(session)
                     userSession = session
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
@@ -53,6 +58,7 @@ fun AppNavigation() {
 
         val navigateHandler: (String) -> Unit = { route ->
             if (route == "logout") {
+                sessionManager.clearSession()
                 userSession = null
                 navController.navigate("login") {
                     popUpTo(0)
@@ -195,6 +201,7 @@ fun AppNavigation() {
 
         composable("formula") {
             FormulaScreen(
+                userSession = userSession,
                 onBack = { navController.popBackStack() },
                 onNavigate = navigateHandler
             )

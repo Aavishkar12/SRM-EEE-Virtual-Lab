@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
+fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession?, onBack: () -> Unit, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
     var formulas by remember { mutableStateOf<List<FormulaApiModel>>(emptyList()) }
@@ -157,11 +157,15 @@ fun FormulaScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         ) {
                             Text(
                                 text = buildAnnotatedString {
-                                    append("Signed in as ")
-                                    withStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)) {
-                                        append("as9261@srmist.edu.in")
+                                    if (userSession != null) {
+                                        append("Signed in as ")
+                                        withStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)) {
+                                            append(userSession.email)
+                                        }
+                                        append(". You can read the formula cards, but only admins can manage them.")
+                                    } else {
+                                        append("You are currently viewing formulas as Guest. Sign in to sync your progress.")
                                     }
-                                    append(". You can read the formula cards, but only admins can manage them.")
                                 },
                                 color = Color(0xFF737373),
                                 fontSize = 13.sp,

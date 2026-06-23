@@ -249,15 +249,14 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
 
                                             onClick = {
                                                 if (!showResult) {
-
+                                                    selectedOptionIndex = index
                                                     val currentQuestion =
                                                         quiz?.questions?.getOrNull(currentQuestionIndex - 1)
 
-                                                    userAnswers[currentQuestionIndex] =
-                                                        selectedOptionIndex ?: -1
+                                                    userAnswers[currentQuestionIndex] = index
 
                                                     isCorrect =
-                                                        selectedOptionIndex == currentQuestion?.correctAnswer
+                                                        index == currentQuestion?.correctAnswer
 
                                                     if (isCorrect) {
                                                         score++
