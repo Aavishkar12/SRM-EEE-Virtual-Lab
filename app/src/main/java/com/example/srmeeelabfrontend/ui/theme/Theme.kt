@@ -9,28 +9,50 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+// "Circuit Lab" dark scheme — every default Material3 widget (Button,
+// Switch, TextField, Checkbox, etc.) that doesn't set explicit colors
+// will resolve through this, so it stays on-brand automatically.
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = ScopeCyan,
+    onPrimary = CircuitVoid,
+    primaryContainer = ScopeCyanDeep,
+    onPrimaryContainer = PhosphorWhite,
+
+    secondary = CopperWire,
+    onSecondary = CircuitVoid,
+    secondaryContainer = CopperWireDeep,
+    onSecondaryContainer = CopperWireLight,
+
+    tertiary = SignalViolet,
+    onTertiary = PhosphorWhite,
+    tertiaryContainer = SignalVioletDeep,
+    onTertiaryContainer = SignalVioletLight,
+
+    background = CircuitVoid,
+    onBackground = PhosphorWhite,
+
+    surface = CircuitPanel,
+    onSurface = PhosphorWhite,
+    surfaceVariant = CircuitSurface,
+    onSurfaceVariant = SteelMuted,
+
+    outline = CircuitSurfaceLight,
+    outlineVariant = CircuitSurface,
+
+    error = StatusDanger,
+    onError = CircuitVoid
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = ScopeCyanDeep,
+    secondary = CopperWireDeep,
+    tertiary = SignalViolet,
+    background = Color(0xFFF7FAF9),
+    surface = Color.White,
+    error = StatusDanger
 )
 
 @Composable

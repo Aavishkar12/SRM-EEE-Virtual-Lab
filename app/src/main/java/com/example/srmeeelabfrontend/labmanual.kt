@@ -72,7 +72,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -98,9 +98,9 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF6366F1), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF8B7CF6), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFF6366F1), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFF8B7CF6), fontSize = 14.sp)
                     }
                 }
 
@@ -113,7 +113,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     ) {
                         Text(
                             "Virtual Lab Manual",
-                            color = Color(0xFF60A5FA),
+                            color = Color(0xFF5EEAD4),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -121,7 +121,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Download the complete digital version of the SRM EEE Virtual Lab Manual, containing procedures, apparatus lists, and theory.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -132,7 +132,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Button(
                             onClick = { },
                             modifier = Modifier.fillMaxWidth().height(56.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6D5BD0)),
                             shape = RoundedCornerShape(14.dp)
                         ) {
                             Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color.White)
@@ -144,11 +144,11 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // User Info Card
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -158,7 +158,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                     }
                                     append(". You can read and download manual chapters, but only admins can manage them.")
                                 },
-                                color = Color(0xFF64748B),
+                                color = Color(0xFF6E8699),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -172,15 +172,15 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 // Chapters Section
                 item {
                     Surface(
-                        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+                        color = Color(0xFF0A131F).copy(alpha = 0.85f),
                         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).border(1.dp, Color(0xFF1E293B), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).border(1.dp, Color(0xFF142233), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     ) {
                         Row(
                             modifier = Modifier.padding(20.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null, tint = Color(0xFF818CF8), modifier = Modifier.size(24.dp))
+                            Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null, tint = Color(0xFFA89BFF), modifier = Modifier.size(24.dp))
                             Spacer(Modifier.width(16.dp))
                             Text("Chapters & Experiments", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                         }
@@ -190,7 +190,7 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 if (isLoading) {
                     item {
                         CircularProgressIndicator(
-                            color = Color(0xFF818CF8),
+                            color = Color(0xFFA89BFF),
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -247,21 +247,21 @@ fun LabManualScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 @Composable
 fun ManualChapterCard(chapter: ManualChapterData) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(0.5.dp, Color(0xFF1E293B))
+            .border(0.5.dp, Color(0xFF142233))
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    color = Color(0xFF4F46E5).copy(alpha = 0.15f),
+                    color = Color(0xFF6D5BD0).copy(alpha = 0.15f),
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.size(44.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.Description, contentDescription = null, tint = Color(0xFF818CF8), modifier = Modifier.size(22.dp))
+                        Icon(Icons.Default.Description, contentDescription = null, tint = Color(0xFFA89BFF), modifier = Modifier.size(22.dp))
                     }
                 }
                 Spacer(Modifier.width(16.dp))
@@ -270,22 +270,22 @@ fun ManualChapterCard(chapter: ManualChapterData) {
                     Spacer(Modifier.height(8.dp))
                     Row {
                         Surface(
-                            color = Color(0xFF1E293B),
+                            color = Color(0xFF142233),
                             shape = RoundedCornerShape(6.dp)
                         ) {
-                            Text("Pages ${chapter.pages}", color = Color(0xFF64748B), fontSize = 11.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                            Text("Pages ${chapter.pages}", color = Color(0xFF6E8699), fontSize = 11.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                         }
                         Spacer(Modifier.width(8.dp))
-                        Text("•  ${chapter.size}  •  PDF", color = Color(0xFF475569), fontSize = 11.sp, modifier = Modifier.align(Alignment.CenterVertically))
+                        Text("•  ${chapter.size}  •  PDF", color = Color(0xFF3D5468), fontSize = 11.sp, modifier = Modifier.align(Alignment.CenterVertically))
                     }
                 }
                 IconButton(
                     onClick = { },
-                    modifier = Modifier.background(Color(0xFF1E293B), RoundedCornerShape(8.dp))
+                    modifier = Modifier.background(Color(0xFF142233), RoundedCornerShape(8.dp))
                 ) {
-                    Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFF818CF8), modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFFA89BFF), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("PDF", color = Color(0xFF818CF8), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text("PDF", color = Color(0xFFA89BFF), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

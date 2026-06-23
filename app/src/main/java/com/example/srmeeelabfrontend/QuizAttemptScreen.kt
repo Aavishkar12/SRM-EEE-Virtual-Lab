@@ -56,9 +56,9 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
     }
     val totalQuestions = quiz?.questions?.size ?: 0
     val progress = currentQuestionIndex.toFloat() / totalQuestions
-    
+
     val contentAlpha = remember { Animatable(0f) }
-    
+
     LaunchedEffect(Unit) {
         contentAlpha.animateTo(1f, animationSpec = tween(800))
     }
@@ -84,7 +84,7 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -126,27 +126,27 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                             modifier = Modifier.clickable { onBack() },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(16.dp))
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF5EEAD4), modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Back to Quizzes", color = Color(0xFF60A5FA), fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                            Text("Back to Quizzes", color = Color(0xFF5EEAD4), fontSize = 14.sp, fontWeight = FontWeight.Medium)
                         }
 
                         IconButton(
                             onClick = { isMenuOpen = !isMenuOpen },
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color(0xFF1E293B).copy(alpha = 0.6f), CircleShape)
-                                .border(1.dp, Color(0xFF334155), CircleShape)
+                                .background(Color(0xFF142233).copy(alpha = 0.6f), CircleShape)
+                                .border(1.dp, Color(0xFF24384C), CircleShape)
                         ) {
                             Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(20.dp))
                         }
 
                         Surface(
-                            color = Color(0xFF0F172A),
+                            color = Color(0xFF0A131F),
                             shape = RoundedCornerShape(10.dp),
-                            modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+                            modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(10.dp))
                         ) {
-                            Text(text = currentTime, color = Color(0xFF60A5FA), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                            Text(text = currentTime, color = Color(0xFF5EEAD4), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                         }
                     }
 
@@ -165,15 +165,15 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                             Spacer(Modifier.height(12.dp))
                             Text(
                                 quiz?.description ?: "",
-                                color = Color(0xFF64748B),
+                                color = Color(0xFF6E8699),
                                 fontSize = 15.sp,
                                 lineHeight = 22.sp
                             )
-                            
+
                             Spacer(Modifier.height(32.dp))
-                            
+
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Question $currentQuestionIndex of $totalQuestions", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                                Text("Question $currentQuestionIndex of $totalQuestions", color = Color(0xFF94ACBA), fontSize = 14.sp)
                                 Spacer(Modifier.weight(1f))
                                 val percentage =
                                     if (totalQuestions > 0)
@@ -183,30 +183,30 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
 
                                 Text(
                                     "Score: $score/$totalQuestions ($percentage%)",
-                                    color = Color(0xFF94A3B8),
+                                    color = Color(0xFF94ACBA),
                                     fontSize = 14.sp
                                 )
                             }
-                            
+
                             Spacer(Modifier.height(12.dp))
-                            
+
                             LinearProgressIndicator(
                                 progress = { progress },
                                 modifier = Modifier.fillMaxWidth().height(4.dp).clip(CircleShape),
-                                color = Color(0xFF3B82F6).copy(alpha = 0.6f),
-                                trackColor = Color(0xFF1E293B)
+                                color = Color(0xFF1FD7C4).copy(alpha = 0.6f),
+                                trackColor = Color(0xFF142233)
                             )
-                            
+
                             Spacer(Modifier.height(32.dp))
                         }
-                        
+
                         item {
                             Surface(
-                                color = Color(0xFF0F172A).copy(alpha = 0.8f),
+                                color = Color(0xFF0A131F).copy(alpha = 0.8f),
                                 shape = RoundedCornerShape(16.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+                                    .border(1.dp, Color(0xFF142233), RoundedCornerShape(16.dp))
                             ) {
                                 Column(modifier = Modifier.padding(24.dp)) {
                                     Text(
@@ -249,15 +249,14 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
 
                                             onClick = {
                                                 if (!showResult) {
-
+                                                    selectedOptionIndex = index
                                                     val currentQuestion =
                                                         quiz?.questions?.getOrNull(currentQuestionIndex - 1)
 
-                                                    userAnswers[currentQuestionIndex] =
-                                                        selectedOptionIndex ?: -1
+                                                    userAnswers[currentQuestionIndex] = index
 
                                                     isCorrect =
-                                                        selectedOptionIndex == currentQuestion?.correctAnswer
+                                                        index == currentQuestion?.correctAnswer
 
                                                     if (isCorrect) {
                                                         score++
@@ -279,9 +278,9 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
 
                                         Surface(
                                             color = if (isCorrect)
-                                                Color(0xFF064E3B)
+                                                Color(0xFF0A3D32)
                                             else
-                                                Color(0xFF7F1D1D),
+                                                Color(0xFF5C1E1E),
                                             shape = RoundedCornerShape(12.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
@@ -379,8 +378,8 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
                                         enabled = selectedOptionIndex != null,
                                         modifier = Modifier.align(Alignment.End),
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color(0xFF1E293B),
-                                            disabledContainerColor = Color(0xFF1E293B).copy(alpha = 0.5f)
+                                            containerColor = Color(0xFF142233),
+                                            disabledContainerColor = Color(0xFF142233).copy(alpha = 0.5f)
                                         ),
                                         shape = RoundedCornerShape(8.dp)
                                     ) {
@@ -443,7 +442,7 @@ fun QuizAttemptScreen(quizId: Int, onBack: () -> Unit, onNavigate: (String) -> U
 @Composable
 fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMenuClick: () -> Unit, onRetry: () -> Unit, onBack: () -> Unit) {
     val accuracy = if (totalQuestions > 0) (score.toFloat() / totalQuestions * 100).toInt() else 0
-    
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
         Row(
@@ -457,27 +456,27 @@ fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMe
                 modifier = Modifier.clickable { onBack() },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(16.dp))
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF5EEAD4), modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(8.dp))
-                Text("Back to Quizzes", color = Color(0xFF60A5FA), fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                Text("Back to Quizzes", color = Color(0xFF5EEAD4), fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
 
             IconButton(
                 onClick = onMenuClick,
                 modifier = Modifier
                     .size(40.dp)
-                    .background(Color(0xFF1E293B).copy(alpha = 0.6f), CircleShape)
-                    .border(1.dp, Color(0xFF334155), CircleShape)
+                    .background(Color(0xFF142233).copy(alpha = 0.6f), CircleShape)
+                    .border(1.dp, Color(0xFF24384C), CircleShape)
             ) {
                 Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(20.dp))
             }
 
             Surface(
-                color = Color(0xFF0F172A),
+                color = Color(0xFF0A131F),
                 shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+                modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(10.dp))
             ) {
-                Text(text = currentTime, color = Color(0xFF60A5FA), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                Text(text = currentTime, color = Color(0xFF5EEAD4), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
             }
         }
 
@@ -488,11 +487,11 @@ fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMe
         ) {
             item {
                 Surface(
-                    color = Color(0xFF0F172A).copy(alpha = 0.85f),
+                    color = Color(0xFF0A131F).copy(alpha = 0.85f),
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+                        .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
                 ) {
                     Column(
                         modifier = Modifier.padding(32.dp),
@@ -501,7 +500,7 @@ fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMe
                         Icon(
                             Icons.Default.EmojiEvents,
                             contentDescription = null,
-                            tint = Color(0xFFFBBF24),
+                            tint = Color(0xFFE8954D),
                             modifier = Modifier.size(80.dp)
                         )
                         Spacer(Modifier.height(24.dp))
@@ -514,70 +513,70 @@ fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMe
                         Spacer(Modifier.height(8.dp))
                         Text(
                             "You scored $score out of $totalQuestions",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 18.sp
                         )
                     }
                 }
-                
+
                 Spacer(Modifier.height(32.dp))
-                
+
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text("Your Performance", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(16.dp))
-                    
+
                     LinearProgressIndicator(
                         progress = { score.toFloat() / totalQuestions },
                         modifier = Modifier.fillMaxWidth().height(16.dp).clip(CircleShape),
-                        color = Color(0xFF3B82F6),
-                        trackColor = Color(0xFF1E293B)
+                        color = Color(0xFF1FD7C4),
+                        trackColor = Color(0xFF142233)
                     )
-                    
+
                     Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-                        Text("0", color = Color(0xFF475569), fontSize = 14.sp)
+                        Text("0", color = Color(0xFF3D5468), fontSize = 14.sp)
                         Spacer(Modifier.weight(1f))
-                        Text("$totalQuestions", color = Color(0xFF475569), fontSize = 14.sp)
+                        Text("$totalQuestions", color = Color(0xFF3D5468), fontSize = 14.sp)
                     }
                 }
-                
+
                 Spacer(Modifier.height(32.dp))
-                
+
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Surface(
-                        color = Color(0xFF1E293B).copy(alpha = 0.6f),
+                        color = Color(0xFF142233).copy(alpha = 0.6f),
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.weight(1f).border(1.dp, Color(0xFF334155), RoundedCornerShape(16.dp))
+                        modifier = Modifier.weight(1f).border(1.dp, Color(0xFF24384C), RoundedCornerShape(16.dp))
                     ) {
                         Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("$accuracy%", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-                            Text("Accuracy", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                            Text("Accuracy", color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-                    
+
                     Surface(
-                        color = Color(0xFF1E293B).copy(alpha = 0.6f),
+                        color = Color(0xFF142233).copy(alpha = 0.6f),
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.weight(1f).border(1.dp, Color(0xFF334155), RoundedCornerShape(16.dp))
+                        modifier = Modifier.weight(1f).border(1.dp, Color(0xFF24384C), RoundedCornerShape(16.dp))
                     ) {
                         Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("$score", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-                            Text("Correct Answers", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                            Text("Correct Answers", color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                         }
                     }
                 }
-                
+
                 Spacer(Modifier.height(32.dp))
-                
+
                 Surface(
-                    color = Color(0xFF3B82F6).copy(alpha = 0.1f),
+                    color = Color(0xFF1FD7C4).copy(alpha = 0.1f),
                     shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF3B82F6).copy(alpha = 0.2f), RoundedCornerShape(16.dp))
+                    modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1FD7C4).copy(alpha = 0.2f), RoundedCornerShape(16.dp))
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
-                        Text("Performance Analysis", color = Color(0xFF60A5FA), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text("Performance Analysis", color = Color(0xFF5EEAD4), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            if (accuracy >= 80) "Perfect score! You've mastered this topic completely!" 
+                            if (accuracy >= 80) "Perfect score! You've mastered this topic completely!"
                             else if (accuracy >= 50) "Good job! You have a solid understanding, but some areas need review."
                             else "Keep practicing! Review the theory and try again to improve your score.",
                             color = Color.White,
@@ -586,24 +585,24 @@ fun QuizCompletedView(score: Int, totalQuestions: Int, currentTime: String, onMe
                         )
                     }
                 }
-                
+
                 Spacer(Modifier.height(48.dp))
-                
+
                 Button(
                     onClick = onRetry,
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9488)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Retry Quiz", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
-                
+
                 Spacer(Modifier.height(16.dp))
-                
+
                 Button(
                     onClick = onBack,
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF142233)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Back to Quizzes", fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -622,17 +621,17 @@ fun OptionItem(
     onClick: () -> Unit
 ) {
     Surface(
-        color = Color(0xFF1E293B).copy(alpha = 0.3f),
+        color = Color(0xFF142233).copy(alpha = 0.3f),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
             .border(
                 1.dp,
                 when {
-                    isCorrect -> Color(0xFF22C55E)
-                    isWrong -> Color(0xFFEF4444)
-                    isSelected -> Color(0xFF3B82F6)
-                    else -> Color(0xFF334155)
+                    isCorrect -> Color(0xFF2FE070)
+                    isWrong -> Color(0xFFFF4757)
+                    isSelected -> Color(0xFF1FD7C4)
+                    else -> Color(0xFF24384C)
                 },
                 RoundedCornerShape(12.dp)
             )
@@ -646,20 +645,20 @@ fun OptionItem(
                 modifier = Modifier.size(20.dp),
                 shape = CircleShape,
                 color = Color.Transparent,
-                border = BorderStroke(1.dp, if (isSelected) Color(0xFF3B82F6) else Color(0xFF475569))
+                border = BorderStroke(1.dp, if (isSelected) Color(0xFF1FD7C4) else Color(0xFF3D5468))
             ) {
                 if (isSelected) {
                     Box(
                         modifier = Modifier
                             .padding(4.dp)
-                            .background(Color(0xFF3B82F6), CircleShape)
+                            .background(Color(0xFF1FD7C4), CircleShape)
                     )
                 }
             }
             Spacer(Modifier.width(16.dp))
             Text(
                 text = text,
-                color = if (isSelected) Color.White else Color(0xFF94A3B8),
+                color = if (isSelected) Color.White else Color(0xFF94ACBA),
                 fontSize = 15.sp,
                 lineHeight = 22.sp
             )

@@ -33,14 +33,48 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.srmeeelabfrontend.ui.theme.LabFonts
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// A PCB-trace-style divider: a hairline with a small glowing solder-point
+// node in the middle, instead of a plain HorizontalDivider. This is the
+// app's signature structural motif — used anywhere a section break would
+// otherwise be a flat line.
+@Composable
+fun CircuitDivider(
+    modifier: Modifier = Modifier,
+    nodeColor: Color = Color(0xFF1FD7C4)
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = Color(0xFF142233),
+            thickness = 1.dp
+        )
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .size(6.dp)
+                .background(nodeColor.copy(alpha = 0.15f), CircleShape)
+                .border(1.dp, nodeColor.copy(alpha = 0.6f), CircleShape)
+        )
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = Color(0xFF142233),
+            thickness = 1.dp
+        )
+    }
+}
+
 @Composable
 fun AnimatedBackground() {
     val infiniteTransition = rememberInfiniteTransition(label = "dynamic_bg")
-    
+
     // Orb 1 Movement
     val xOffset1 by infiniteTransition.animateFloat(
         initialValue = -150f,
@@ -95,7 +129,7 @@ fun AnimatedBackground() {
         ), label = "pulse"
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         // Orb 1: Deep Indigo Glow
         Box(
             modifier = Modifier
@@ -105,12 +139,12 @@ fun AnimatedBackground() {
                 .blur(120.dp)
                 .background(
                     Brush.radialGradient(
-                        colors = listOf(Color(0xFF1E1B4B).copy(alpha = 0.7f), Color.Transparent)
+                        colors = listOf(Color(0xFF1A1638).copy(alpha = 0.7f), Color.Transparent)
                     ),
                     CircleShape
                 )
         )
-        
+
         // Orb 2: Royal Blue Bottom Highlight
         Box(
             modifier = Modifier
@@ -120,7 +154,7 @@ fun AnimatedBackground() {
                 .blur(140.dp)
                 .background(
                     Brush.radialGradient(
-                        colors = listOf(Color(0xFF312E81).copy(alpha = 0.5f), Color.Transparent)
+                        colors = listOf(Color(0xFF2B2557).copy(alpha = 0.5f), Color.Transparent)
                     ),
                     CircleShape
                 )
@@ -144,7 +178,7 @@ fun AnimatedBackground() {
                 .blur(100.dp)
                 .background(
                     Brush.linearGradient(
-                        colors = listOf(Color(0xFF4F46E5).copy(alpha = 0.2f), Color.Transparent)
+                        colors = listOf(Color(0xFF6D5BD0).copy(alpha = 0.2f), Color.Transparent)
                     ),
                     CircleShape
                 )
@@ -155,7 +189,7 @@ fun AnimatedBackground() {
 @Composable
 fun Header(time: String, onMenuClick: () -> Unit) {
     val date = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault()).format(Date())
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -172,16 +206,16 @@ fun Header(time: String, onMenuClick: () -> Unit) {
                 modifier = Modifier
                     .size(42.dp)
                     .border(
-                        width = 1.5.dp, 
-                        brush = Brush.linearGradient(listOf(Color(0xFF3B82F6), Color(0xFFA855F7))), 
+                        width = 1.5.dp,
+                        brush = Brush.linearGradient(listOf(Color(0xFF1FD7C4), Color(0xFFB57AFA))),
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "SRM", 
-                    color = Color.White, 
-                    fontSize = 11.sp, 
+                    "SRM",
+                    color = Color.White,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 0.5.sp
                 )
@@ -189,18 +223,18 @@ fun Header(time: String, onMenuClick: () -> Unit) {
             Spacer(Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "VIRTUAL ", 
-                    color = Color.White, 
-                    fontSize = 12.sp, 
-                    fontWeight = FontWeight.Bold, 
+                    "VIRTUAL ",
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
                 Text(
-                    "LAB", 
+                    "LAB",
                     style = TextStyle(
-                        brush = Brush.linearGradient(listOf(Color(0xFF3B82F6), Color(0xFFA855F7))),
+                        brush = Brush.linearGradient(listOf(Color(0xFF1FD7C4), Color(0xFFB57AFA))),
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold, 
+                        fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp
                     )
                 )
@@ -212,8 +246,8 @@ fun Header(time: String, onMenuClick: () -> Unit) {
             onClick = onMenuClick,
             modifier = Modifier
                 .size(44.dp)
-                .background(Color(0xFF1E293B).copy(alpha = 0.4f), CircleShape)
-                .border(1.dp, Color(0xFF334155).copy(alpha = 0.5f), CircleShape)
+                .background(Color(0xFF142233).copy(alpha = 0.4f), CircleShape)
+                .border(1.dp, Color(0xFF24384C).copy(alpha = 0.5f), CircleShape)
         ) {
             Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(22.dp))
         }
@@ -221,24 +255,25 @@ fun Header(time: String, onMenuClick: () -> Unit) {
         // Time & Date Section - Rebalanced
         Column(horizontalAlignment = Alignment.End) {
             Surface(
-                color = Color(0xFF0F172A).copy(alpha = 0.6f),
+                color = Color(0xFF0A131F).copy(alpha = 0.6f),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp))
             ) {
                 Text(
-                    text = time, 
-                    color = Color(0xFF60A5FA), 
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp), 
-                    fontSize = 13.sp, 
-                    fontWeight = FontWeight.Bold, 
+                    text = time,
+                    color = Color(0xFF5EEAD4),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = LabFonts.Mono,
                     letterSpacing = 1.sp
                 )
             }
             Spacer(Modifier.height(6.dp))
             Text(
-                text = date, 
-                color = Color(0xFF94A3B8), 
-                fontSize = 10.sp, 
+                text = date,
+                color = Color(0xFF94ACBA),
+                fontSize = 10.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.End
             )
@@ -249,7 +284,7 @@ fun Header(time: String, onMenuClick: () -> Unit) {
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
-    glowColor: Color = Color(0xFF1E293B),
+    glowColor: Color = Color(0xFF142233),
     content: @Composable ColumnScope.() -> Unit
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "glassGlow")
@@ -264,7 +299,7 @@ fun GlassCard(
     )
 
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.4f),
+        color = Color(0xFF0A131F).copy(alpha = 0.4f),
         shape = RoundedCornerShape(24.dp),
         modifier = modifier
             .fillMaxWidth()
@@ -272,9 +307,9 @@ fun GlassCard(
                 width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF1E293B),
+                        Color(0xFF142233),
                         glowColor.copy(alpha = glowAlpha),
-                        Color(0xFF1E293B)
+                        Color(0xFF142233)
                     )
                 ),
                 shape = RoundedCornerShape(24.dp)
@@ -291,37 +326,37 @@ fun HamburgerMenu(isLoggedIn: Boolean, currentRoute: String, onClose: () -> Unit
     Surface(
         modifier = Modifier
             .width(240.dp),
-        color = Color(0xFF080C14).copy(alpha = 0.98f),
+        color = Color(0xFF030608).copy(alpha = 0.98f),
         shape = RoundedCornerShape(24.dp),
-        border = BorderStroke(1.dp, Color(0xFF1E293B)),
+        border = BorderStroke(1.dp, Color(0xFF142233)),
         shadowElevation = 16.dp
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             val menuItems = listOf(
-                MenuItemData("Home", Icons.Outlined.Home, Color(0xFF60A5FA), "home"),
-                MenuItemData("Experiments", Icons.Outlined.Science, Color(0xFF60A5FA), "experiments"),
-                MenuItemData("Study Room", Icons.AutoMirrored.Outlined.MenuBook, Color(0xFF60A5FA), "study"),
-                MenuItemData("Quizzes", Icons.Outlined.Quiz, Color(0xFF60A5FA), "quizzes"),
-                MenuItemData("Team", Icons.Outlined.People, Color(0xFF60A5FA), "team"),
-                MenuItemData("About", Icons.Outlined.Info, Color(0xFF60A5FA), "about"),
-                MenuItemData("Profile", Icons.Outlined.Person, Color(0xFF60A5FA), "profile"),
-                MenuItemData("Settings", Icons.Outlined.Settings, Color(0xFF60A5FA), "settings"),
+                MenuItemData("Home", Icons.Outlined.Home, Color(0xFF5EEAD4), "home"),
+                MenuItemData("Experiments", Icons.Outlined.Science, Color(0xFF5EEAD4), "experiments"),
+                MenuItemData("Study Room", Icons.AutoMirrored.Outlined.MenuBook, Color(0xFF5EEAD4), "study"),
+                MenuItemData("Quizzes", Icons.Outlined.Quiz, Color(0xFF5EEAD4), "quizzes"),
+                MenuItemData("Team", Icons.Outlined.People, Color(0xFF5EEAD4), "team"),
+                MenuItemData("About", Icons.Outlined.Info, Color(0xFF5EEAD4), "about"),
+                MenuItemData("Profile", Icons.Outlined.Person, Color(0xFF5EEAD4), "profile"),
+                MenuItemData("Settings", Icons.Outlined.Settings, Color(0xFF5EEAD4), "settings"),
                 if (isLoggedIn) {
-                    MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFFEF4444), "logout")
+                    MenuItemData("Sign Out", Icons.AutoMirrored.Outlined.Logout, Color(0xFFFF4757), "logout")
                 } else {
-                    MenuItemData("Sign In", Icons.AutoMirrored.Outlined.Login, Color(0xFF60A5FA), "login")
+                    MenuItemData("Sign In", Icons.AutoMirrored.Outlined.Login, Color(0xFF5EEAD4), "login")
                 }
             )
 
             menuItems.forEach { item ->
                 val isActive = currentRoute == item.route
-                
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(14.dp))
                         .background(if (isActive) item.color.copy(alpha = 0.12f) else Color.Transparent)
-                        .clickable { 
+                        .clickable {
                             if (!isActive) onNavigate(item.route)
                             onClose()
                         }
@@ -331,13 +366,13 @@ fun HamburgerMenu(isLoggedIn: Boolean, currentRoute: String, onClose: () -> Unit
                     Icon(
                         imageVector = item.icon,
                         contentDescription = null,
-                        tint = if (isActive) item.color else Color(0xFF64748B),
+                        tint = if (isActive) item.color else Color(0xFF6E8699),
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(Modifier.width(16.dp))
                     Text(
                         text = item.text,
-                        color = if (isActive) Color.White else Color(0xFF94A3B8),
+                        color = if (isActive) Color.White else Color(0xFF94ACBA),
                         fontSize = 15.sp,
                         fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
                         modifier = Modifier.weight(1f)
@@ -356,18 +391,18 @@ fun HamburgerMenu(isLoggedIn: Boolean, currentRoute: String, onClose: () -> Unit
 }
 
 data class MenuItemData(
-    val text: String, 
-    val icon: ImageVector, 
-    val color: Color, 
+    val text: String,
+    val icon: ImageVector,
+    val color: Color,
     val route: String
 )
 
 @Composable
 fun Footer(onNavigate: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().padding(24.dp).padding(top = 60.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
+        CircuitDivider()
         Spacer(Modifier.height(48.dp))
-        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF64748B), fontSize = 15.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF6E8699), fontSize = 15.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(32.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -380,7 +415,7 @@ fun Footer(onNavigate: (String) -> Unit) {
             FooterLink("Developers", onClick = { onNavigate("developers") })
         }
         Spacer(Modifier.height(56.dp))
-        Text("© 2026 SRM Institute of Science and Technology —\nDepartment of EEE. All rights reserved.", color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, lineHeight = 20.sp)
+        Text("© 2026 SRM Institute of Science and Technology —\nDepartment of EEE. All rights reserved.", color = Color(0xFF3D5468), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, lineHeight = 20.sp)
         Spacer(Modifier.height(24.dp))
     }
 }
@@ -388,10 +423,10 @@ fun Footer(onNavigate: (String) -> Unit) {
 @Composable
 fun FooterLink(text: String, onClick: () -> Unit) {
     Text(
-        text = text, 
-        color = Color(0xFF94A3B8), 
-        fontSize = 14.sp, 
-        fontWeight = FontWeight.SemiBold, 
+        text = text,
+        color = Color(0xFF94ACBA),
+        fontSize = 14.sp,
+        fontWeight = FontWeight.SemiBold,
         modifier = Modifier.clickable { onClick() }
     )
 }

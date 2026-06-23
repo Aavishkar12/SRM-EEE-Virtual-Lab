@@ -91,7 +91,7 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -117,9 +117,9 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF34D399), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF3DE8B0), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFF34D399), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFF3DE8B0), fontSize = 14.sp)
                     }
                 }
 
@@ -132,7 +132,7 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     ) {
                         Text(
                             "CT & Exam Schedules",
-                            color = Color(0xFF10B981),
+                            color = Color(0xFF1FC98D),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -140,7 +140,7 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Stay on top of your academic deadlines. Track upcoming Cycle Tests, assignment submissions, and End Semester exams for 26EEE1001T.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -149,11 +149,11 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // User Info Card
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -163,7 +163,7 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                     }
                                     append(". You can read and track deadlines, but only admins can manage them.")
                                 },
-                                color = Color(0xFF64748B),
+                                color = Color(0xFF6E8699),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -178,13 +178,13 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 when {
                     isLoading -> item {
                         Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = Color(0xFF10B981))
+                            CircularProgressIndicator(color = Color(0xFF1FC98D))
                         }
                     }
                     errorMessage != null -> item {
                         Text(
                             errorMessage ?: "Something went wrong",
-                            color = Color(0xFFF87171),
+                            color = Color(0xFFFF6B6B),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -192,7 +192,7 @@ fun CtScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     schedules.isEmpty() -> item {
                         Text(
                             "No schedules posted yet.",
-                            color = Color(0xFF64748B),
+                            color = Color(0xFF6E8699),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -267,10 +267,10 @@ fun TimelineItem(item: ScheduleData) {
                 modifier = Modifier
                     .size(12.dp)
                     .scale(if (item.status == "Upcoming") dotScale else 1f)
-                    .background(if (item.status == "Completed") Color(0xFF10B981) else Color(0xFF3B82F6), CircleShape)
+                    .background(if (item.status == "Completed") Color(0xFF1FC98D) else Color(0xFF1FD7C4), CircleShape)
                     .then(
                         if (item.status == "Upcoming") {
-                            Modifier.border(2.dp, Color(0xFF3B82F6).copy(alpha = 0.5f), CircleShape)
+                            Modifier.border(2.dp, Color(0xFF1FD7C4).copy(alpha = 0.5f), CircleShape)
                         } else Modifier
                     )
             )
@@ -278,7 +278,7 @@ fun TimelineItem(item: ScheduleData) {
                 modifier = Modifier
                     .width(2.dp)
                     .height(if (item.isLast) 0.dp else 400.dp)
-                    .background(Color(0xFF1E293B))
+                    .background(Color(0xFF142233))
             )
         }
 
@@ -286,12 +286,12 @@ fun TimelineItem(item: ScheduleData) {
 
         // Schedule Card
         Surface(
-            color = Color(0xFF0F172A).copy(alpha = 0.85f),
+            color = Color(0xFF0A131F).copy(alpha = 0.85f),
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
                 .weight(1f)
                 .padding(bottom = 32.dp)
-                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+                .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -311,11 +311,11 @@ fun TimelineItem(item: ScheduleData) {
                 Spacer(Modifier.height(20.dp))
 
                 Surface(
-                    color = (if (item.status == "Completed") Color(0xFF064E3B) else Color(0xFF78350F)).copy(alpha = 0.3f),
+                    color = (if (item.status == "Completed") Color(0xFF0A3D32) else Color(0xFF3D2412)).copy(alpha = 0.3f),
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier.border(
                         1.dp,
-                        if (item.status == "Completed") Color(0xFF065F46) else Color(0xFF92400E),
+                        if (item.status == "Completed") Color(0xFF0C4A3C) else Color(0xFF6B3A14),
                         RoundedCornerShape(20.dp)
                     )
                 ) {
@@ -324,12 +324,12 @@ fun TimelineItem(item: ScheduleData) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (item.status == "Completed") {
-                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(14.dp))
+                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF1FC98D), modifier = Modifier.size(14.dp))
                             Spacer(Modifier.width(6.dp))
                         }
                         Text(
                             item.status,
-                            color = if (item.status == "Completed") Color(0xFF10B981) else Color(0xFFFBBF24),
+                            color = if (item.status == "Completed") Color(0xFF1FC98D) else Color(0xFFE8954D),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -339,35 +339,35 @@ fun TimelineItem(item: ScheduleData) {
                 Spacer(Modifier.height(20.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color(0xFF1FC98D), modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(12.dp))
-                    Text(item.date, color = Color(0xFF94A3B8), fontSize = 14.sp)
+                    Text(item.date, color = Color(0xFF94ACBA), fontSize = 14.sp)
                 }
 
                 if (item.time.isNotEmpty()) {
                     Spacer(Modifier.height(12.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(16.dp))
+                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF1FC98D), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(12.dp))
-                        Text(item.time, color = Color(0xFF94A3B8), fontSize = 14.sp)
+                        Text(item.time, color = Color(0xFF94ACBA), fontSize = 14.sp)
                     }
                 }
 
                 Spacer(Modifier.height(24.dp))
 
                 Surface(
-                    color = Color(0xFF020617),
+                    color = Color(0xFF05080D),
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                    modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF94ACBA), modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(12.dp))
                             Text("Syllabus Coverage", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         }
                         Spacer(Modifier.height(8.dp))
-                        Text(item.syllabus, color = Color(0xFF94A3B8), fontSize = 13.sp, lineHeight = 18.sp)
+                        Text(item.syllabus, color = Color(0xFF94ACBA), fontSize = 13.sp, lineHeight = 18.sp)
                     }
                 }
             }
@@ -385,10 +385,10 @@ private fun iconForScheduleType(type: String): ImageVector = when (type) {
 }
 
 private fun colorForScheduleType(type: String): Color = when (type) {
-    "Exam" -> Color(0xFF60A5FA)
-    "Submission" -> Color(0xFFA78BFA)
-    "Lab" -> Color(0xFF22D3EE)
-    else -> Color(0xFF60A5FA)
+    "Exam" -> Color(0xFF5EEAD4)
+    "Submission" -> Color(0xFFC4A8FF)
+    "Lab" -> Color(0xFF53F1E0)
+    else -> Color(0xFF5EEAD4)
 }
 
 data class ScheduleData(

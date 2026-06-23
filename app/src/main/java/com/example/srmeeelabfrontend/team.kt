@@ -90,21 +90,21 @@ val facultyList = listOf(
 data class ExpertiseData(val title: String, val description: String, val icon: ImageVector, val tint: Color)
 
 val expertiseList = listOf(
-    ExpertiseData("Power Systems", "Research in smart grids, renewable energy integration, and power quality improvement", Icons.Default.ElectricBolt, Color(0xFF60A5FA)),
-    ExpertiseData("Power Electronics", "Expertise in converter design, motor drives, and energy-efficient systems", Icons.Default.School, Color(0xFFA78BFA)),
-    ExpertiseData("Control Systems", "Advanced research in automation, industrial controls, and system optimization", Icons.Default.Star, Color(0xFF34D399)),
-    ExpertiseData("Electrical Machines", "Design and analysis of motors, generators, and transformers", Icons.Default.MenuBook, Color(0xFFFBBF24)),
-    ExpertiseData("Renewable Energy", "Solar, wind, and hybrid energy systems research and development", Icons.Default.Info, Color(0xFFF472B6)),
-    ExpertiseData("Digital Signal Processing", "Signal analysis, filtering techniques, and embedded systems applications", Icons.Default.Settings, Color(0xFF22D3EE)),
+    ExpertiseData("Power Systems", "Research in smart grids, renewable energy integration, and power quality improvement", Icons.Default.ElectricBolt, Color(0xFF5EEAD4)),
+    ExpertiseData("Power Electronics", "Expertise in converter design, motor drives, and energy-efficient systems", Icons.Default.School, Color(0xFFC4A8FF)),
+    ExpertiseData("Control Systems", "Advanced research in automation, industrial controls, and system optimization", Icons.Default.Star, Color(0xFF3DE8B0)),
+    ExpertiseData("Electrical Machines", "Design and analysis of motors, generators, and transformers", Icons.Default.MenuBook, Color(0xFFE8954D)),
+    ExpertiseData("Renewable Energy", "Solar, wind, and hybrid energy systems research and development", Icons.Default.Info, Color(0xFFFF7AC6)),
+    ExpertiseData("Digital Signal Processing", "Signal analysis, filtering techniques, and embedded systems applications", Icons.Default.Settings, Color(0xFF53F1E0)),
 )
 
 data class StatData(val label: String, val value: String, val icon: ImageVector, val tint: Color)
 
 val facultyStats = listOf(
-    StatData("Faculty Members", "4+", Icons.Default.People, Color(0xFF60A5FA)),
-    StatData("Years Experience", "50+", Icons.Default.School, Color(0xFFA78BFA)),
-    StatData("Research Projects", "25+", Icons.Default.MenuBook, Color(0xFF34D399)),
-    StatData("Publications", "100+", Icons.Default.Star, Color(0xFFFBBF24)),
+    StatData("Faculty Members", "4+", Icons.Default.People, Color(0xFF5EEAD4)),
+    StatData("Years Experience", "50+", Icons.Default.School, Color(0xFFC4A8FF)),
+    StatData("Research Projects", "25+", Icons.Default.MenuBook, Color(0xFF3DE8B0)),
+    StatData("Publications", "100+", Icons.Default.Star, Color(0xFFE8954D)),
 )
 
 @Composable
@@ -127,7 +127,7 @@ fun TeamScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(containerColor = Color.Transparent) { paddingValues ->
@@ -150,9 +150,9 @@ fun TeamScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back", color = Color(0xFF64748B), fontSize = 14.sp)
+                        Text("Back", color = Color(0xFF6E8699), fontSize = 14.sp)
                     }
                 }
 
@@ -173,7 +173,7 @@ fun TeamScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(12.dp))
                         Text(
                             "Meet the dedicated faculty and staff behind the EEE Learning Platform. Our team brings decades of experience in electrical engineering education and research.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 15.sp,
                             lineHeight = 24.sp,
                             textAlign = TextAlign.Center
@@ -200,11 +200,11 @@ fun TeamScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 8.dp)
                     ) {
-                        Text("Faculty Expertise", color = Color(0xFF60A5FA), fontSize = 26.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("Faculty Expertise", color = Color(0xFF5EEAD4), fontSize = 26.sp, fontWeight = FontWeight.ExtraBold)
                         Spacer(Modifier.height(8.dp))
                         Text(
                             "Our faculty members specialize in various domains of electrical engineering, bringing their expertise to the classroom and research.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 14.sp,
                             lineHeight = 22.sp
                         )
@@ -229,11 +229,11 @@ fun TeamScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 8.dp)
                     ) {
-                        Text("Faculty Achievements", color = Color(0xFFA78BFA), fontSize = 26.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("Faculty Achievements", color = Color(0xFFC4A8FF), fontSize = 26.sp, fontWeight = FontWeight.ExtraBold)
                         Spacer(Modifier.height(8.dp))
                         Text(
                             "Our team's collective accomplishments in research, teaching, and industry collaboration.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 14.sp,
                             lineHeight = 22.sp
                         )
@@ -284,12 +284,12 @@ fun TeamScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 @Composable
 fun FacultyCard(faculty: FacultyData, onEmail: () -> Unit, onLinkedIn: () -> Unit, onGithub: () -> Unit) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.9f),
+        color = Color(0xFF0A131F).copy(alpha = 0.9f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Column {
             // Photo
@@ -298,7 +298,7 @@ fun FacultyCard(faculty: FacultyData, onEmail: () -> Unit, onLinkedIn: () -> Uni
                     .fillMaxWidth()
                     .height(200.dp)
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                    .background(Color(0xFF1E293B))
+                    .background(Color(0xFF142233))
             ) {
                 androidx.compose.foundation.Image(
                     painter = painterResource(id = faculty.drawableRes),
@@ -312,17 +312,17 @@ fun FacultyCard(faculty: FacultyData, onEmail: () -> Unit, onLinkedIn: () -> Uni
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(faculty.name, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(Modifier.height(4.dp))
-                Text(faculty.role, color = Color(0xFF60A5FA), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                Text(faculty.department, color = Color(0xFF64748B), fontSize = 12.sp)
+                Text(faculty.role, color = Color(0xFF5EEAD4), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                Text(faculty.department, color = Color(0xFF6E8699), fontSize = 12.sp)
                 Spacer(Modifier.height(12.dp))
-                Text(faculty.bio, color = Color(0xFF94A3B8), fontSize = 13.sp, lineHeight = 20.sp)
+                Text(faculty.bio, color = Color(0xFF94ACBA), fontSize = 13.sp, lineHeight = 20.sp)
                 Spacer(Modifier.height(16.dp))
 
                 // Action buttons
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    SocialButton("Email", Color(0xFF1E293B), Color(0xFF60A5FA)) { onEmail() }
-                    SocialButton("LinkedIn", Color(0xFF1E3A5F), Color(0xFF60A5FA)) { onLinkedIn() }
-                    SocialButton("GitHub", Color(0xFF1E293B), Color(0xFF94A3B8)) { onGithub() }
+                    SocialButton("Email", Color(0xFF142233), Color(0xFF5EEAD4)) { onEmail() }
+                    SocialButton("LinkedIn", Color(0xFF153449), Color(0xFF5EEAD4)) { onLinkedIn() }
+                    SocialButton("GitHub", Color(0xFF142233), Color(0xFF94ACBA)) { onGithub() }
                 }
             }
         }
@@ -332,16 +332,16 @@ fun FacultyCard(faculty: FacultyData, onEmail: () -> Unit, onLinkedIn: () -> Uni
 @Composable
 fun ExpertiseCard(expertise: ExpertiseData, modifier: Modifier = Modifier) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(16.dp),
-        modifier = modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+        modifier = modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(16.dp))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Icon(expertise.icon, contentDescription = null, tint = expertise.tint, modifier = Modifier.size(28.dp))
             Spacer(Modifier.height(10.dp))
             Text(expertise.title, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text(expertise.description, color = Color(0xFF64748B), fontSize = 12.sp, lineHeight = 18.sp)
+            Text(expertise.description, color = Color(0xFF6E8699), fontSize = 12.sp, lineHeight = 18.sp)
         }
     }
 }
@@ -349,9 +349,9 @@ fun ExpertiseCard(expertise: ExpertiseData, modifier: Modifier = Modifier) {
 @Composable
 fun StatCard(stat: StatData, modifier: Modifier = Modifier) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(16.dp),
-        modifier = modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+        modifier = modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(16.dp))
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -360,7 +360,7 @@ fun StatCard(stat: StatData, modifier: Modifier = Modifier) {
             Icon(stat.icon, contentDescription = null, tint = stat.tint, modifier = Modifier.size(32.dp))
             Spacer(Modifier.height(8.dp))
             Text(stat.value, color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-            Text(stat.label, color = Color(0xFF64748B), fontSize = 12.sp, textAlign = TextAlign.Center)
+            Text(stat.label, color = Color(0xFF6E8699), fontSize = 12.sp, textAlign = TextAlign.Center)
         }
     }
 }

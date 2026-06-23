@@ -93,7 +93,7 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(containerColor = Color.Transparent) { paddingValues ->
@@ -119,17 +119,17 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     ) {
                         // Badge
                         Surface(
-                            color = Color(0xFF1E293B).copy(alpha = 0.5f),
+                            color = Color(0xFF142233).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(20.dp))
+                            modifier = Modifier.border(1.dp, Color(0xFF24384C), RoundedCornerShape(20.dp))
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
                             ) {
-                                Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(14.dp))
+                                Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF5EEAD4), modifier = Modifier.size(14.dp))
                                 Spacer(Modifier.width(8.dp))
-                                Text("SRM Institute of Science and Technology", color = Color(0xFF94A3B8), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                                Text("SRM Institute of Science and Technology", color = Color(0xFF94ACBA), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                             }
                         }
 
@@ -139,7 +139,7 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         Text(
                             "Virtual Lab",
                             style = TextStyle(
-                                brush = Brush.horizontalGradient(listOf(Color(0xFF60A5FA), Color(0xFFA78BFA))),
+                                brush = Brush.horizontalGradient(listOf(Color(0xFF5EEAD4), Color(0xFFC4A8FF))),
                                 fontSize = 52.sp,
                                 fontWeight = FontWeight.ExtraBold
                             ),
@@ -150,7 +150,7 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                         Text(
                             "An interactive virtual laboratory for the Department of Electrical & Electronics Engineering — empowering students with 24/7 access to experiments, simulations, and study resources.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center,
                             lineHeight = 26.sp,
@@ -163,15 +163,15 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                 item {
                     Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            AboutStatCard(aboutStats[0].first, aboutStats[0].second, aboutStats[0].third, Color(0xFF3B82F6), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[0].first, aboutStats[0].second, aboutStats[0].third, Color(0xFF1FD7C4), Modifier.weight(1f))
                             Spacer(Modifier.width(16.dp))
-                            AboutStatCard(aboutStats[1].first, aboutStats[1].second, aboutStats[1].third, Color(0xFFA78BFA), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[1].first, aboutStats[1].second, aboutStats[1].third, Color(0xFFC4A8FF), Modifier.weight(1f))
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            AboutStatCard(aboutStats[2].first, aboutStats[2].second, aboutStats[2].third, Color(0xFF22D3EE), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[2].first, aboutStats[2].second, aboutStats[2].third, Color(0xFF53F1E0), Modifier.weight(1f))
                             Spacer(Modifier.width(16.dp))
-                            AboutStatCard(aboutStats[3].first, aboutStats[3].second, aboutStats[3].third, Color(0xFF34D399), Modifier.weight(1f))
+                            AboutStatCard(aboutStats[3].first, aboutStats[3].second, aboutStats[3].third, Color(0xFF3DE8B0), Modifier.weight(1f))
                         }
                     }
                     Spacer(Modifier.height(8.dp))
@@ -183,12 +183,12 @@ fun AboutScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                     Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                         Text(
                             "The SRM EEE Virtual Lab is a resource of the Electrical and Electronics Engineering Department at SRM Institute of Science and Technology, Kattankulathur. The lab gives engineering students a comprehensive platform to explore, experiment, and build a robust understanding of the core principles of electrical and electronics engineering.",
-                            color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 26.sp
+                            color = Color(0xFF94ACBA), fontSize = 16.sp, lineHeight = 26.sp
                         )
                         Spacer(Modifier.height(20.dp))
                         Text(
                             "We are committed to bridging the gap between theory and practice — empowering students to enhance their problem-solving skills, strengthen technical expertise, and foster a passion for innovation in the engineering domain, anytime and from anywhere.",
-                            color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 26.sp
+                            color = Color(0xFF94ACBA), fontSize = 16.sp, lineHeight = 26.sp
                         )
                     }
                     Spacer(Modifier.height(16.dp))
@@ -262,16 +262,16 @@ private fun AboutSectionHeader(title: String) {
     ) {
         Text(title, color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold)
         Spacer(Modifier.height(8.dp))
-        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF3B82F6), RoundedCornerShape(2.dp)))
+        Box(modifier = Modifier.width(60.dp).height(4.dp).background(Color(0xFF1FD7C4), RoundedCornerShape(2.dp)))
     }
 }
 
 @Composable
 fun AboutStatCard(icon: ImageVector, value: String, label: String, color: Color, modifier: Modifier) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(20.dp),
-        modifier = modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+        modifier = modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
@@ -281,7 +281,7 @@ fun AboutStatCard(icon: ImageVector, value: String, label: String, color: Color,
             Spacer(Modifier.height(16.dp))
             Text(value, color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.height(4.dp))
-            Text(label, color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+            Text(label, color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
         }
     }
 }
@@ -289,27 +289,27 @@ fun AboutStatCard(icon: ImageVector, value: String, label: String, color: Color,
 @Composable
 fun AboutFeatureCard(feature: AboutFeature) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Surface(
-                color = Color(0xFF1E293B).copy(alpha = 0.5f),
+                color = Color(0xFF142233).copy(alpha = 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.size(44.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(feature.icon, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
+                    Icon(feature.icon, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(24.dp))
                 }
             }
             Spacer(Modifier.height(20.dp))
             Text(feature.title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.height(8.dp))
-            Text(feature.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
+            Text(feature.desc, color = Color(0xFF94ACBA), fontSize = 15.sp, lineHeight = 22.sp)
         }
     }
 }
@@ -317,21 +317,21 @@ fun AboutFeatureCard(feature: AboutFeature) {
 @Composable
 fun AboutObjectiveCard(obj: AboutObjective) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Row(modifier = Modifier.padding(24.dp), verticalAlignment = Alignment.CenterVertically) {
-            Surface(color = Color(0xFF1E293B), shape = CircleShape, modifier = Modifier.size(40.dp)) {
+            Surface(color = Color(0xFF142233), shape = CircleShape, modifier = Modifier.size(40.dp)) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(obj.number, color = Color(0xFF60A5FA), fontWeight = FontWeight.ExtraBold)
+                    Text(obj.number, color = Color(0xFF5EEAD4), fontWeight = FontWeight.ExtraBold)
                 }
             }
             Spacer(Modifier.width(20.dp))
-            Text(obj.text, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
+            Text(obj.text, color = Color(0xFF94ACBA), fontSize = 15.sp, lineHeight = 22.sp)
         }
     }
 }
@@ -339,17 +339,17 @@ fun AboutObjectiveCard(obj: AboutObjective) {
 @Composable
 fun AboutFacultyCard(faculty: AboutFaculty) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             // Avatar
             Surface(
-                color = Color(0xFF2563EB),
+                color = Color(0xFF0D9488),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.size(56.dp)
             ) {
@@ -361,13 +361,13 @@ fun AboutFacultyCard(faculty: AboutFaculty) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(faculty.name, color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(Modifier.height(2.dp))
-                Text(faculty.role, color = Color(0xFF3B82F6), fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                Text("Dept. of Electrical & Electronics Engineering", color = Color(0xFF64748B), fontSize = 12.sp)
+                Text(faculty.role, color = Color(0xFF1FD7C4), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Dept. of Electrical & Electronics Engineering", color = Color(0xFF6E8699), fontSize = 12.sp)
                 Spacer(Modifier.height(10.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(13.dp))
+                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(13.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text(faculty.email, color = Color(0xFF60A5FA), fontSize = 13.sp)
+                    Text(faculty.email, color = Color(0xFF5EEAD4), fontSize = 13.sp)
                 }
             }
         }
@@ -377,47 +377,47 @@ fun AboutFacultyCard(faculty: AboutFaculty) {
 @Composable
 fun ContactCard() {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.8f),
+        color = Color(0xFF0A131F).copy(alpha = 0.8f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
     ) {
         Column(modifier = Modifier.padding(28.dp)) {
             // Badge
             Surface(
-                color = Color(0xFF3B82F6).copy(alpha = 0.1f),
+                color = Color(0xFF1FD7C4).copy(alpha = 0.1f),
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.border(1.dp, Color(0xFF3B82F6).copy(alpha = 0.2f), RoundedCornerShape(20.dp))
+                modifier = Modifier.border(1.dp, Color(0xFF1FD7C4).copy(alpha = 0.2f), RoundedCornerShape(20.dp))
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(13.dp))
+                    Icon(Icons.Default.Bolt, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(13.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("GET IN TOUCH", color = Color(0xFF3B82F6), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                    Text("GET IN TOUCH", color = Color(0xFF1FD7C4), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                 }
             }
 
             Spacer(Modifier.height(24.dp))
             Text("Department of Electrical and Electronics Engineering", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 28.sp)
             Spacer(Modifier.height(10.dp))
-            Text("SRM Institute of Science and Technology\nKattankulathur 603 203, Tamil Nadu", color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 24.sp)
+            Text("SRM Institute of Science and Technology\nKattankulathur 603 203, Tamil Nadu", color = Color(0xFF94ACBA), fontSize = 15.sp, lineHeight = 24.sp)
 
             Spacer(Modifier.height(28.dp))
 
             // Email row
             Surface(
-                color = Color(0xFF1E293B).copy(alpha = 0.5f),
+                color = Color(0xFF142233).copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF334155), RoundedCornerShape(12.dp))
+                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF24384C), RoundedCornerShape(12.dp))
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
-                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(12.dp))
-                    Text("eee@srm.edu.in", color = Color(0xFF60A5FA), fontSize = 15.sp)
+                    Text("eee@srm.edu.in", color = Color(0xFF5EEAD4), fontSize = 15.sp)
                 }
             }
 
@@ -425,14 +425,14 @@ fun ContactCard() {
 
             // Website row
             Surface(
-                color = Color(0xFF1E293B).copy(alpha = 0.5f),
+                color = Color(0xFF142233).copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF334155), RoundedCornerShape(12.dp))
+                modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF24384C), RoundedCornerShape(12.dp))
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
-                    Icon(Icons.Default.Launch, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Launch, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(12.dp))
-                    Text("www.srmist.edu.in", color = Color(0xFF60A5FA), fontSize = 15.sp)
+                    Text("www.srmist.edu.in", color = Color(0xFF5EEAD4), fontSize = 15.sp)
                 }
             }
         }

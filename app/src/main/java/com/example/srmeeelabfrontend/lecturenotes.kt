@@ -109,7 +109,7 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -135,9 +135,9 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFF64748B), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFF6E8699), fontSize = 14.sp)
                     }
                 }
 
@@ -150,7 +150,7 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     ) {
                         Text(
                             "Lecture Notes & Slides",
-                            color = Color(0xFFF472B6),
+                            color = Color(0xFFFF7AC6),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -158,7 +158,7 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Access unit-wise presentations, handwritten notes, and practice worksheets provided by the faculty.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -167,27 +167,27 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // Search Bar
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp))
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
+                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(20.dp))
                                 Spacer(Modifier.width(12.dp))
                                 BasicTextField(
                                     value = searchQuery,
                                     onValueChange = { searchQuery = it },
                                     textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
-                                    cursorBrush = SolidColor(Color(0xFF3B82F6)),
+                                    cursorBrush = SolidColor(Color(0xFF1FD7C4)),
                                     modifier = Modifier.weight(1f),
                                     decorationBox = { innerTextField ->
                                         if (searchQuery.isEmpty()) {
-                                            Text("Search subject or unit...", color = Color(0xFF475569), fontSize = 15.sp)
+                                            Text("Search subject or unit...", color = Color(0xFF3D5468), fontSize = 15.sp)
                                         }
                                         innerTextField()
                                     }
@@ -199,11 +199,11 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // User Info Card
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -213,7 +213,7 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                     }
                                     append(". You can read and download notes, but only admins can manage them.")
                                 },
-                                color = Color(0xFF64748B),
+                                color = Color(0xFF6E8699),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -228,13 +228,13 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 when {
                     isLoading -> item {
                         Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = Color(0xFFF472B6))
+                            CircularProgressIndicator(color = Color(0xFFFF7AC6))
                         }
                     }
                     errorMessage != null -> item {
                         Text(
                             errorMessage ?: "Something went wrong",
-                            color = Color(0xFFF87171),
+                            color = Color(0xFFFF6B6B),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -242,7 +242,7 @@ fun LectureNotesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     filteredUnits.isEmpty() -> item {
                         Text(
                             if (searchQuery.isBlank()) "No notes uploaded yet." else "No notes match \"$searchQuery\".",
-                            color = Color(0xFF64748B),
+                            color = Color(0xFF6E8699),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -295,14 +295,14 @@ fun UnitExpandableCard(unit: UnitData) {
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .border(
                 width = 1.dp,
-                color = if (expanded) Color(0xFFF472B6).copy(alpha = 0.5f) else Color(0xFF1E293B),
+                color = if (expanded) Color(0xFFFF7AC6).copy(alpha = 0.5f) else Color(0xFF142233),
                 shape = RoundedCornerShape(20.dp)
             )
             .clickable { expanded = !expanded }
@@ -310,12 +310,12 @@ fun UnitExpandableCard(unit: UnitData) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    color = Color(0xFFF472B6).copy(alpha = 0.15f),
+                    color = Color(0xFFFF7AC6).copy(alpha = 0.15f),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.size(48.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.Layers, contentDescription = null, tint = Color(0xFFF472B6), modifier = Modifier.size(24.dp))
+                        Icon(Icons.Default.Layers, contentDescription = null, tint = Color(0xFFFF7AC6), modifier = Modifier.size(24.dp))
                     }
                 }
                 Spacer(Modifier.width(16.dp))
@@ -328,7 +328,7 @@ fun UnitExpandableCard(unit: UnitData) {
                     )
                     Text(
                         unit.description,
-                        color = Color(0xFF94A3B8),
+                        color = Color(0xFF94ACBA),
                         fontSize = 14.sp,
                         maxLines = if (expanded) Int.MAX_VALUE else 2
                     )
@@ -336,7 +336,7 @@ fun UnitExpandableCard(unit: UnitData) {
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = Color(0xFF64748B),
+                    tint = Color(0xFF6E8699),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -357,18 +357,18 @@ fun UnitExpandableCard(unit: UnitData) {
 @Composable
 fun ResourceCard(resource: LectureResource) {
     Surface(
-        color = Color(0xFF1E293B).copy(alpha = 0.5f),
+        color = Color(0xFF142233).copy(alpha = 0.5f),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, Color(0xFF334155).copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+            .border(1.dp, Color(0xFF24384C).copy(alpha = 0.5f), RoundedCornerShape(16.dp))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.InsertDriveFile,
                     contentDescription = null,
-                    tint = Color(0xFF94A3B8),
+                    tint = Color(0xFF94ACBA),
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(Modifier.width(12.dp))
@@ -379,18 +379,18 @@ fun ResourceCard(resource: LectureResource) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     color = when (resource.type) {
-                        "NOTES" -> Color(0xFF3B82F6).copy(alpha = 0.2f)
-                        "SLIDES" -> Color(0xFFEC4899).copy(alpha = 0.2f)
-                        else -> Color(0xFF10B981).copy(alpha = 0.2f)
+                        "NOTES" -> Color(0xFF1FD7C4).copy(alpha = 0.2f)
+                        "SLIDES" -> Color(0xFFFF5DA8).copy(alpha = 0.2f)
+                        else -> Color(0xFF1FC98D).copy(alpha = 0.2f)
                     },
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
                         resource.type,
                         color = when (resource.type) {
-                            "NOTES" -> Color(0xFF60A5FA)
-                            "SLIDES" -> Color(0xFFF472B6)
-                            else -> Color(0xFF34D399)
+                            "NOTES" -> Color(0xFF5EEAD4)
+                            "SLIDES" -> Color(0xFFFF7AC6)
+                            else -> Color(0xFF3DE8B0)
                         },
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
@@ -398,9 +398,9 @@ fun ResourceCard(resource: LectureResource) {
                     )
                 }
                 Spacer(Modifier.width(12.dp))
-                Text("•  ${resource.fileSize}", color = Color(0xFF64748B), fontSize = 12.sp)
+                Text("•  ${resource.fileSize}", color = Color(0xFF6E8699), fontSize = 12.sp)
                 Spacer(Modifier.width(12.dp))
-                Text("•  Added ${resource.date}", color = Color(0xFF64748B), fontSize = 12.sp)
+                Text("•  Added ${resource.date}", color = Color(0xFF6E8699), fontSize = 12.sp)
             }
 
             Spacer(Modifier.height(16.dp))
@@ -408,7 +408,7 @@ fun ResourceCard(resource: LectureResource) {
             Button(
                 onClick = { if (resource.url.isNotBlank()) uriHandler.openUri(resource.url) },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F172A)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A131F)),
                 shape = RoundedCornerShape(10.dp),
                 contentPadding = PaddingValues(vertical = 10.dp)
             ) {

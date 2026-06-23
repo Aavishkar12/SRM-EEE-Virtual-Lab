@@ -59,8 +59,8 @@ val developerList = listOf(
         github = "https://github.com/krishnakeshab-banik",
         linkedin = "https://www.linkedin.com/in/krishna-keshab-banik-067819324",
         instagram = "https://www.instagram.com/krish.banik.1234",
-        gradientStart = Color(0xFF7C3AED),
-        gradientEnd = Color(0xFF2563EB),
+        gradientStart = Color(0xFF9D7CF7),
+        gradientEnd = Color(0xFF0D9488),
     ),
     DeveloperData(
         name = "Vooka Sai Siddharth",
@@ -72,8 +72,8 @@ val developerList = listOf(
         github = "https://github.com/siddharth-1118",
         linkedin = "https://www.linkedin.com/in/sai-siddharth-ba0a92369",
         instagram = "https://www.instagram.com/saisiddharth2007",
-        gradientStart = Color(0xFF0891B2),
-        gradientEnd = Color(0xFF059669),
+        gradientStart = Color(0xFF0E9BAE),
+        gradientEnd = Color(0xFF12A87D),
     ),
     DeveloperData(
         name = "Aavishkar Singh",
@@ -85,8 +85,8 @@ val developerList = listOf(
         github = "https://github.com/Aavishkar12",
         linkedin = "https://www.linkedin.com/in/aavishkar-singh-b2a2a5262",
         instagram = "https://www.instagram.com/aavishkar__23",
-        gradientStart = Color(0xFFEA580C),
-        gradientEnd = Color(0xFFDB2777),
+        gradientStart = Color(0xFFC2620E),
+        gradientEnd = Color(0xFFD6328E),
     ),
 )
 
@@ -110,7 +110,7 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(containerColor = Color.Transparent) { paddingValues ->
@@ -133,9 +133,9 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back", color = Color(0xFF64748B), fontSize = 14.sp)
+                        Text("Back", color = Color(0xFF6E8699), fontSize = 14.sp)
                     }
                 }
 
@@ -146,13 +146,13 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Surface(
-                            color = Color(0xFF7C3AED).copy(alpha = 0.15f),
+                            color = Color(0xFF9D7CF7).copy(alpha = 0.15f),
                             shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier.border(1.dp, Color(0xFF7C3AED).copy(alpha = 0.4f), RoundedCornerShape(20.dp))
+                            modifier = Modifier.border(1.dp, Color(0xFF9D7CF7).copy(alpha = 0.4f), RoundedCornerShape(20.dp))
                         ) {
                             Text(
                                 "MEET THE TEAM",
-                                color = Color(0xFFA78BFA),
+                                color = Color(0xFFC4A8FF),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 letterSpacing = 2.sp,
@@ -171,7 +171,7 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(12.dp))
                         Text(
                             "The minds behind the SRM EEE Virtual Lab — building tools that make learning electrical engineering accessible and interactive.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 15.sp,
                             lineHeight = 24.sp,
                             textAlign = TextAlign.Center
@@ -190,12 +190,12 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 // SRM Insider CTA
                 item {
                     Surface(
-                        color = Color(0xFF0F172A).copy(alpha = 0.9f),
+                        color = Color(0xFF0A131F).copy(alpha = 0.9f),
                         shape = RoundedCornerShape(24.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 8.dp)
-                            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+                            .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
                     ) {
                         Column(
                             modifier = Modifier.padding(32.dp),
@@ -203,7 +203,7 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         ) {
                             Text(
                                 "BUILT FOR THE STUDENTS, BY THE STUDENTS",
-                                color = Color(0xFF475569),
+                                color = Color(0xFF3D5468),
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 letterSpacing = 1.5.sp,
@@ -222,7 +222,7 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             // Gradient "INSIDER" text workaround
                             Text(
                                 "SRM INSIDER",
-                                color = Color(0xFFA78BFA),
+                                color = Color(0xFFC4A8FF),
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 textAlign = TextAlign.Center
@@ -230,7 +230,7 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             Spacer(Modifier.height(12.dp))
                             Text(
                                 "SRM Insider is a student-driven platform built to empower the SRM community — from resources and events to projects like this Virtual Lab.",
-                                color = Color(0xFF94A3B8),
+                                color = Color(0xFF94ACBA),
                                 fontSize = 14.sp,
                                 lineHeight = 22.sp,
                                 textAlign = TextAlign.Center
@@ -239,7 +239,7 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             Button(
                                 onClick = { uriHandler.openUri("https://srminsider.in/") },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF7C3AED)
+                                    containerColor = Color(0xFF9D7CF7)
                                 ),
                                 shape = RoundedCornerShape(14.dp),
                                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
@@ -284,12 +284,12 @@ fun DevelopersScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 @Composable
 fun DeveloperCard(dev: DeveloperData, onOpenLink: (String) -> Unit) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.9f),
+        color = Color(0xFF0A131F).copy(alpha = 0.9f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Column {
             // Accent bar at top
@@ -319,7 +319,7 @@ fun DeveloperCard(dev: DeveloperData, onOpenLink: (String) -> Unit) {
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
-                                listOf(Color.Transparent, Color(0xFF0F172A).copy(alpha = 0.7f))
+                                listOf(Color.Transparent, Color(0xFF0A131F).copy(alpha = 0.7f))
                             )
                         )
                 )
@@ -342,9 +342,9 @@ fun DeveloperCard(dev: DeveloperData, onOpenLink: (String) -> Unit) {
 
                 // Social links
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    SocialButton("GitHub", Color(0xFF1E293B), Color(0xFF94A3B8)) { onOpenLink(dev.github) }
-                    SocialButton("LinkedIn", Color(0xFF1E3A5F), Color(0xFF60A5FA)) { onOpenLink(dev.linkedin) }
-                    SocialButton("Instagram", Color(0xFF3B1E3A), Color(0xFFF472B6)) { onOpenLink(dev.instagram) }
+                    SocialButton("GitHub", Color(0xFF142233), Color(0xFF94ACBA)) { onOpenLink(dev.github) }
+                    SocialButton("LinkedIn", Color(0xFF153449), Color(0xFF5EEAD4)) { onOpenLink(dev.linkedin) }
+                    SocialButton("Instagram", Color(0xFF2A1A3D), Color(0xFFFF7AC6)) { onOpenLink(dev.instagram) }
                 }
             }
         }
@@ -354,11 +354,11 @@ fun DeveloperCard(dev: DeveloperData, onOpenLink: (String) -> Unit) {
 @Composable
 fun InfoRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
     Row(verticalAlignment = Alignment.Top) {
-        Icon(icon, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(16.dp).padding(top = 2.dp))
+        Icon(icon, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(16.dp).padding(top = 2.dp))
         Spacer(Modifier.width(10.dp))
         Column {
-            Text(label.uppercase(), color = Color(0xFF475569), fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-            Text(value, color = Color(0xFFE2E8F0), fontSize = 13.sp)
+            Text(label.uppercase(), color = Color(0xFF3D5468), fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+            Text(value, color = Color(0xFFE8F4F1), fontSize = 13.sp)
         }
     }
 }

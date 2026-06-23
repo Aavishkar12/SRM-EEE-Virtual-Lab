@@ -86,22 +86,22 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
     val liveInfo: List<ProfileInfo> = remember(userSession, completedCount) {
         if (userSession == null) return@remember emptyList()
         listOf(
-            ProfileInfo("FULL NAME", userSession.name.uppercase(), Icons.Default.Person, Color(0xFF60A5FA)),
-            ProfileInfo("SRM EMAIL ADDRESS", userSession.email, Icons.Default.Email, Color(0xFFA78BFA)),
-            ProfileInfo("REGISTRATION NUMBER", userSession.registrationNumber.ifBlank { "N/A" }, Icons.Default.Badge, Color(0xFF38BDF8)),
-            ProfileInfo("DEPARTMENT", userSession.department.ifBlank { "N/A" }, Icons.Default.School, Color(0xFFFB923C)),
-            ProfileInfo("BRANCH", userSession.branch.ifBlank { "N/A" }, Icons.Default.AccountTree, Color(0xFF4ADE80)),
-            ProfileInfo("YEAR / SEMESTER", "${userSession.year.ifBlank { "N/A" }} / ${userSession.semester.ifBlank { "N/A" }}", Icons.Default.CalendarMonth, Color(0xFFE879F9)),
-            ProfileInfo("SECTION", userSession.section.ifBlank { "N/A" }, Icons.Default.Groups, Color(0xFF818CF8)),
-            ProfileInfo("BATCH", userSession.batch.ifBlank { "N/A" }, Icons.Default.Tag, Color(0xFFF472B6)),
-            ProfileInfo("PROGRAM", userSession.program.ifBlank { "N/A" }, Icons.Default.MenuBook, Color(0xFFFACC15)),
-            ProfileInfo("MOBILE", userSession.mobile.ifBlank { "N/A" }, Icons.Default.Phone, Color(0xFF22D3EE)),
-            ProfileInfo("PORTAL ACCESS ROLE", userSession.role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color(0xFF34D399)),
-            ProfileInfo("COMPLETED EXPERIMENTS", "$completedCount experiment(s)", Icons.Default.Science, Color(0xFFFBBF24))
+            ProfileInfo("FULL NAME", userSession.name.uppercase(), Icons.Default.Person, Color(0xFF5EEAD4)),
+            ProfileInfo("SRM EMAIL ADDRESS", userSession.email, Icons.Default.Email, Color(0xFFC4A8FF)),
+            ProfileInfo("REGISTRATION NUMBER", userSession.registrationNumber.ifBlank { "N/A" }, Icons.Default.Badge, Color(0xFF3FE8DD)),
+            ProfileInfo("DEPARTMENT", userSession.department.ifBlank { "N/A" }, Icons.Default.School, Color(0xFFF0A868)),
+            ProfileInfo("BRANCH", userSession.branch.ifBlank { "N/A" }, Icons.Default.AccountTree, Color(0xFF5BEFA0)),
+            ProfileInfo("YEAR / SEMESTER", "${userSession.year.ifBlank { "N/A" }} / ${userSession.semester.ifBlank { "N/A" }}", Icons.Default.CalendarMonth, Color(0xFFF08CFF)),
+            ProfileInfo("SECTION", userSession.section.ifBlank { "N/A" }, Icons.Default.Groups, Color(0xFFA89BFF)),
+            ProfileInfo("BATCH", userSession.batch.ifBlank { "N/A" }, Icons.Default.Tag, Color(0xFFFF7AC6)),
+            ProfileInfo("PROGRAM", userSession.program.ifBlank { "N/A" }, Icons.Default.MenuBook, Color(0xFFE0A352)),
+            ProfileInfo("MOBILE", userSession.mobile.ifBlank { "N/A" }, Icons.Default.Phone, Color(0xFF53F1E0)),
+            ProfileInfo("PORTAL ACCESS ROLE", userSession.role.replaceFirstChar { it.uppercase() }, Icons.Default.Shield, Color(0xFF3DE8B0)),
+            ProfileInfo("COMPLETED EXPERIMENTS", "$completedCount experiment(s)", Icons.Default.Science, Color(0xFFE8954D))
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(containerColor = Color.Transparent) { paddingValues ->
@@ -125,11 +125,11 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Surface(
-                                color = Color(0xFF0F172A).copy(alpha = 0.8f),
+                                color = Color(0xFF0A131F).copy(alpha = 0.8f),
                                 shape = RoundedCornerShape(24.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+                                    .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
                             ) {
                                 Column(
                                     modifier = Modifier.padding(32.dp),
@@ -139,7 +139,7 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                         imageVector = Icons.Default.Lock,
                                         contentDescription = null,
                                         modifier = Modifier.size(64.dp),
-                                        tint = Color(0xFF3B82F6)
+                                        tint = Color(0xFF1FD7C4)
                                     )
                                     Spacer(Modifier.height(24.dp))
                                     Text(
@@ -152,7 +152,7 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     Spacer(Modifier.height(16.dp))
                                     Text(
                                         text = "Profile details are available only to signed-in SRM users.",
-                                        color = Color(0xFF94A3B8),
+                                        color = Color(0xFF94ACBA),
                                         fontSize = 15.sp,
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
@@ -161,12 +161,12 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     Text(
                                         text = buildAnnotatedString {
                                             append("Sign in with your ")
-                                            withStyle(SpanStyle(color = Color(0xFF60A5FA))) {
+                                            withStyle(SpanStyle(color = Color(0xFF5EEAD4))) {
                                                 append("@srmist.edu.in")
                                             }
                                             append(" email to continue.")
                                         },
-                                        color = Color(0xFF94A3B8),
+                                        color = Color(0xFF94ACBA),
                                         fontSize = 15.sp,
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
@@ -174,7 +174,7 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     Spacer(Modifier.height(32.dp))
                                     Button(
                                         onClick = { onNavigate("login") },
-                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9488)),
                                         shape = RoundedCornerShape(12.dp),
                                         modifier = Modifier.fillMaxWidth().height(50.dp)
                                     ) {
@@ -202,7 +202,7 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                             Spacer(Modifier.height(12.dp))
                             Text(
                                 "Your Academia-linked student profile with course, department, and portal access details.",
-                                color = Color(0xFF94A3B8),
+                                color = Color(0xFF94ACBA),
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp
                             )
@@ -216,23 +216,23 @@ fun ProfileScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                 modifier = Modifier.fillMaxWidth().height(120.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator(color = Color(0xFF3B82F6))
+                                CircularProgressIndicator(color = Color(0xFF1FD7C4))
                             }
                         }
                     } else {
                         if (loadError != null) {
                             item {
                                 Surface(
-                                    color = Color(0xFF1C1917).copy(alpha = 0.6f),
+                                    color = Color(0xFF13181D).copy(alpha = 0.6f),
                                     shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 24.dp)
-                                        .border(1.dp, Color(0xFF78716C), RoundedCornerShape(12.dp))
+                                        .border(1.dp, Color(0xFF7E8A8A), RoundedCornerShape(12.dp))
                                 ) {
                                     Text(
                                         text = loadError!!,
-                                        color = Color(0xFFFBBF24),
+                                        color = Color(0xFFE8954D),
                                         fontSize = 13.sp,
                                         modifier = Modifier.padding(14.dp),
                                         textAlign = TextAlign.Center
@@ -317,7 +317,7 @@ fun ProfileInfoCard(info: ProfileInfo) {
     )
 
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -326,9 +326,9 @@ fun ProfileInfoCard(info: ProfileInfo) {
                 width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF1E293B),
+                        Color(0xFF142233),
                         info.color.copy(alpha = glowAlpha),
-                        Color(0xFF1E293B)
+                        Color(0xFF142233)
                     )
                 ),
                 shape = RoundedCornerShape(16.dp)
@@ -339,7 +339,7 @@ fun ProfileInfoCard(info: ProfileInfo) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
-                color = Color(0xFF1E293B),
+                color = Color(0xFF142233),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.size(48.dp)
             ) {
@@ -356,7 +356,7 @@ fun ProfileInfoCard(info: ProfileInfo) {
             Column {
                 Text(
                     text = info.label,
-                    color = Color(0xFF64748B),
+                    color = Color(0xFF6E8699),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
