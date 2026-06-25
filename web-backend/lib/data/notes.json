@@ -1,0 +1,14 @@
+[
+  { "id": 1, "unit": "Unit 1: DC Circuits", "title": "Introduction to Basic Electrical Variables", "type": "Slides", "size": "2.4 MB", "date": "Aug 10", "url": "/docs/notes/unit1-intro.pdf" },
+  { "id": 2, "unit": "Unit 1: DC Circuits", "title": "KCL & KVL Complete Guide", "type": "Notes", "size": "1.1 MB", "date": "Aug 15", "url": "/docs/notes/unit1-kcl-kvl.pdf" },
+  { "id": 3, "unit": "Unit 1: DC Circuits", "title": "Mesh & Nodal Analysis Problems", "type": "Worksheet", "size": "800 KB", "date": "Aug 20", "url": "/docs/notes/unit1-mesh-nodal.pdf" },
+  { "id": 4, "unit": "Unit 2: AC Circuits", "title": "Phasor Representation & Complex Impedance", "type": "Slides", "size": "3.2 MB", "date": "Sep 02", "url": "/docs/notes/unit2-phasors.pdf" },
+  { "id": 5, "unit": "Unit 2: AC Circuits", "title": "Real, Reactive, and Apparent Power", "type": "Notes", "size": "1.5 MB", "date": "Sep 10", "url": "/docs/notes/unit2-power.pdf" },
+  { "id": 6, "unit": "Unit 2: AC Circuits", "title": "Resonance in RLC Circuits", "type": "Slides", "size": "2.1 MB", "date": "Sep 18", "url": "/docs/notes/unit2-resonance.pdf" },
+  { "id": 7, "unit": "Unit 3: Electrical Machines", "title": "Magnetic Circuits & Transformers", "type": "Slides", "size": "4.5 MB", "date": "Oct 05", "url": "/docs/notes/unit3-transformers.pdf" },
+  { "id": 8, "unit": "Unit 3: Electrical Machines", "title": "DC Motors: Construction & Working", "type": "Notes", "size": "2.2 MB", "date": "Oct 12", "url": "/docs/notes/unit3-dc-motors.pdf" },
+  { "id": 9, "unit": "Unit 4: Semiconductor Devices", "title": "Diode Characteristics & Rectifiers", "type": "Slides", "size": "3.8 MB", "date": "Nov 01", "url": "/docs/notes/unit4-diodes.pdf" },
+  { "id": 10, "unit": "Unit 4: Semiconductor Devices", "title": "BJT Configurations (CB, CE, CC)", "type": "Notes", "size": "1.9 MB", "date": "Nov 15", "url": "/docs/notes/unit4-bjts.pdf" },
+  { "id": 11, "unit": "Unit 5: Digital Electronics", "title": "Logic Gates & Truth Tables", "type": "Slides", "size": "2.5 MB", "date": "Nov 25", "url": "/docs/notes/unit5-logic-gates.pdf" },
+  { "id": 12, "unit": "Unit 5: Digital Electronics", "title": "Adders & Subtractors Design", "type": "Notes", "size": "1.4 MB", "date": "Dec 02", "url": "/docs/notes/unit5-adders.pdf" }
+]

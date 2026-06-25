@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "title": "EEE PYQs",
+    "description": "Previous year question papers with solutions for all semesters. Filter by year, unit, and topic.",
+    "icon": "FileText",
+    "href": "/study-room/pyqs",
+    "color": "bg-blue-500/8 border-blue-500/20 hover:bg-blue-500/15 hover:border-blue-500/40",
+    "tag": "View Papers"
+  },
+  {
+    "id": 2,
+    "title": "CT Schedules",
+    "description": "Cycle Test dates, syllabus coverage, and important exam deadlines for 26EEE1001T.",
+    "icon": "Calendar",
+    "href": "/study-room/schedules",
+    "color": "bg-emerald-500/8 border-emerald-500/20 hover:bg-emerald-500/15 hover:border-emerald-500/40",
+    "tag": "View Schedule"
+  },
+  {
+    "id": 3,
+    "title": "Formula Cheat Sheet",
+    "description": "Quick-reference formulas for KVL, KCL, Thevenin, diode equations, logic gates, and more.",
+    "icon": "Calculator",
+    "href": "/study-room/formula-sheet",
+    "color": "bg-yellow-500/8 border-yellow-500/20 hover:bg-yellow-500/15 hover:border-yellow-500/40",
+    "tag": "View Formulas"
+  },
+  {
+    "id": 4,
+    "title": "Reference Books",
+    "description": "Digital library of recommended textbooks and reference materials for 26EEE1001T.",
+    "icon": "Library",
+    "href": "/study-room/books",
+    "color": "bg-amber-500/8 border-amber-500/20 hover:bg-amber-500/15 hover:border-amber-500/40",
+    "tag": "Browse Library"
+  },
+  {
+    "id": 5,
+    "title": "Lecture Notes & Slides",
+    "description": "Unit-wise lecture notes, slides, and study materials. Download PDFs for offline study.",
+    "icon": "BookOpen",
+    "href": "/study-room/notes",
+    "color": "bg-pink-500/8 border-pink-500/20 hover:bg-pink-500/15 hover:border-pink-500/40",
+    "tag": "View Notes"
+  },
+  {
+    "id": 6,
+    "title": "Video Tutorials",
+    "description": "Curated YouTube playlists for every experiment — from theory to practical demonstration.",
+    "icon": "Video",
+    "href": "/study-room/videos",
+    "color": "bg-red-500/8 border-red-500/20 hover:bg-red-500/15 hover:border-red-500/40",
+    "tag": "Watch Videos"
+  },
+  {
+    "id": 7,
+    "title": "Lab Manual",
+    "description": "Complete digital version of the SRM EEE Virtual Lab Manual with all procedures, apparatus, and circuits.",
+    "icon": "BookMarked",
+    "href": "/study-room/manual",
+    "color": "bg-indigo-500/8 border-indigo-500/20 hover:bg-indigo-500/15 hover:border-indigo-500/40",
+    "tag": "Read Manual"
+  },
+  {
+    "id": 8,
+    "title": "Component Guide",
+    "description": "Learn about every component used in the lab — resistors, diodes, op-amps, logic ICs, and more.",
+    "icon": "Lightbulb",
+    "href": "/study-room/components",
+    "color": "bg-orange-500/8 border-orange-500/20 hover:bg-orange-500/15 hover:border-orange-500/40",
+    "tag": "Interactive"
+  }
+]

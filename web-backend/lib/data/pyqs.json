@@ -1,0 +1,8 @@
+[
+  { "id": 1, "year": "2023", "semester": "Odd", "type": "Cycle Test 1", "subject": "Basic Electrical Engineering", "unit": "Unit 1 & 2", "size": "1.2 MB", "date": "Aug 2023" },
+  { "id": 2, "year": "2023", "semester": "Odd", "type": "Cycle Test 2", "subject": "Basic Electrical Engineering", "unit": "Unit 3 & 4", "size": "1.5 MB", "date": "Oct 2023" },
+  { "id": 3, "year": "2023", "semester": "Odd", "type": "End Semester", "subject": "Basic Electrical Engineering", "unit": "All Units", "size": "2.8 MB", "date": "Dec 2023" },
+  { "id": 4, "year": "2022", "semester": "Odd", "type": "Cycle Test 1", "subject": "Basic Electrical Engineering", "unit": "Unit 1 & 2", "size": "1.1 MB", "date": "Aug 2022" },
+  { "id": 5, "year": "2022", "semester": "Odd", "type": "Cycle Test 2", "subject": "Basic Electrical Engineering", "unit": "Unit 3 & 4", "size": "1.4 MB", "date": "Oct 2022" },
+  { "id": 6, "year": "2022", "semester": "Odd", "type": "End Semester", "subject": "Basic Electrical Engineering", "unit": "All Units", "size": "3.1 MB", "date": "Dec 2022" }
+]

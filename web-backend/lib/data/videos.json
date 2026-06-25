@@ -1,0 +1,10 @@
+[
+  { "id": 1, "expNumber": "Exp 1", "title": "Verification of KCL and KVL", "duration": "12:45", "views": "1.2k", "thumbnail": "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=500&q=80", "url": "https://www.youtube.com/watch?v=example1" },
+  { "id": 2, "expNumber": "Exp 2", "title": "Verification of Thevenin's Theorem", "duration": "15:20", "views": "950", "thumbnail": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500&q=80", "url": "https://www.youtube.com/watch?v=example2" },
+  { "id": 3, "expNumber": "Exp 3", "title": "Verification of Norton's Theorem", "duration": "14:10", "views": "840", "thumbnail": "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&q=80", "url": "https://www.youtube.com/watch?v=example3" },
+  { "id": 4, "expNumber": "Exp 4", "title": "V-I Characteristics of PN Junction Diode", "duration": "18:30", "views": "2.1k", "thumbnail": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&q=80", "url": "https://www.youtube.com/watch?v=example4" },
+  { "id": 5, "expNumber": "Exp 5", "title": "V-I Characteristics of Zener Diode", "duration": "16:15", "views": "1.5k", "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80", "url": "https://www.youtube.com/watch?v=example5" },
+  { "id": 6, "expNumber": "Exp 6", "title": "Half Wave and Full Wave Rectifiers", "duration": "22:05", "views": "3.4k", "thumbnail": "https://images.unsplash.com/photo-1504610926078-a1611febcad3?w=500&q=80", "url": "https://www.youtube.com/watch?v=example6" },
+  { "id": 7, "expNumber": "Exp 7", "title": "Verification of Logic Gates", "duration": "10:50", "views": "4.2k", "thumbnail": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&q=80", "url": "https://www.youtube.com/watch?v=example7" },
+  { "id": 8, "expNumber": "Exp 8", "title": "Implementation of Half/Full Adder", "duration": "19:40", "views": "2.8k", "thumbnail": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=80", "url": "https://www.youtube.com/watch?v=example8" }
+]

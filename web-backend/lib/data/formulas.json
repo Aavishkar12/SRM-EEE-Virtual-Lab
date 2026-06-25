@@ -1,0 +1,14 @@
+[
+  { "id": 1, "category": "DC Circuits", "name": "Ohm's Law", "formula": "V = I \u00d7 R", "description": "Voltage equals current multiplied by resistance." },
+  { "id": 2, "category": "DC Circuits", "name": "Power Equation", "formula": "P = V \u00d7 I = I\u00b2R = V\u00b2/R", "description": "Electrical power consumed by a resistor." },
+  { "id": 3, "category": "DC Circuits", "name": "Kirchhoff's Current Law (KCL)", "formula": "\u03a3 I_in = \u03a3 I_out", "description": "The sum of currents entering a node equals the sum leaving." },
+  { "id": 4, "category": "DC Circuits", "name": "Kirchhoff's Voltage Law (KVL)", "formula": "\u03a3 V_drop = \u03a3 V_rise", "description": "The directed sum of potential differences around any closed loop is zero." },
+  { "id": 5, "category": "AC Circuits", "name": "RMS Voltage", "formula": "V_rms = V_peak / \u221a2", "description": "Root mean square voltage for a pure sine wave." },
+  { "id": 6, "category": "AC Circuits", "name": "Impedance (RLC Series)", "formula": "Z = \u221a(R\u00b2 + (X_L - X_C)\u00b2)", "description": "Total opposition to alternating current." },
+  { "id": 7, "category": "AC Circuits", "name": "Resonant Frequency", "formula": "f_r = 1 / (2\u03c0\u221a(LC))", "description": "Frequency at which inductive reactance equals capacitive reactance." },
+  { "id": 8, "category": "AC Circuits", "name": "Power Factor", "formula": "PF = cos(\u03b8) = R / Z", "description": "Ratio of real power to apparent power." },
+  { "id": 9, "category": "Digital Electronics", "name": "De Morgan's First Theorem", "formula": "not(A + B) = not(A) \u00b7 not(B)", "description": "The NOR of two variables is equal to the AND of their inverses." },
+  { "id": 10, "category": "Digital Electronics", "name": "De Morgan's Second Theorem", "formula": "not(A \u00b7 B) = not(A) + not(B)", "description": "The NAND of two variables is equal to the OR of their inverses." },
+  { "id": 11, "category": "Digital Electronics", "name": "Boolean Identity (OR)", "formula": "A + 1 = 1, A + 0 = A", "description": "Basic OR logic identities." },
+  { "id": 12, "category": "Digital Electronics", "name": "Boolean Identity (AND)", "formula": "A \u00b7 1 = A, A \u00b7 0 = 0", "description": "Basic AND logic identities." }
+]

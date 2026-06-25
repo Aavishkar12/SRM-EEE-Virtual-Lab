@@ -1,0 +1,7 @@
+[
+  { "id": 1, "title": "Cycle Test 1", "date": "August 24, 2024", "time": "10:00 AM - 11:30 AM", "syllabus": "Unit 1 & 2 (DC Circuits & AC Circuits)", "status": "Completed", "type": "Exam" },
+  { "id": 2, "title": "Assignment 1 Deadline", "date": "September 15, 2024", "time": "11:59 PM", "syllabus": "Unit 1 & 2 Problems", "status": "Completed", "type": "Submission" },
+  { "id": 3, "title": "Cycle Test 2", "date": "October 20, 2024", "time": "10:00 AM - 11:30 AM", "syllabus": "Unit 3 & 4 (Machines & Semiconductors)", "status": "Upcoming", "type": "Exam" },
+  { "id": 4, "title": "Model Lab Exam", "date": "November 05, 2024", "time": "09:00 AM - 12:00 PM", "syllabus": "All 12 Lab Experiments", "status": "Upcoming", "type": "Lab" },
+  { "id": 5, "title": "End Semester Exam", "date": "December 12, 2024", "time": "09:30 AM - 12:30 PM", "syllabus": "Complete Syllabus (Units 1-5)", "status": "Upcoming", "type": "Exam" }
+]

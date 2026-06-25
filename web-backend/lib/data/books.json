@@ -1,0 +1,8 @@
+[
+  { "id": 1, "title": "Fundamentals of Electric Circuits", "author": "Charles K. Alexander, Matthew N.O. Sadiku", "edition": "6th Edition", "type": "Primary Textbook", "size": "15.4 MB", "color": "from-blue-600 to-indigo-800", "url": "/docs/books/alexander-sadiku.pdf" },
+  { "id": 2, "title": "Electronic Devices and Circuit Theory", "author": "Robert L. Boylestad, Louis Nashelsky", "edition": "11th Edition", "type": "Primary Textbook", "size": "22.1 MB", "color": "from-emerald-600 to-teal-800", "url": "/docs/books/boylestad.pdf" },
+  { "id": 3, "title": "Digital Design: With an Introduction to the Verilog HDL", "author": "M. Morris Mano, Michael D. Ciletti", "edition": "5th Edition", "type": "Reference Book", "size": "18.3 MB", "color": "from-purple-600 to-fuchsia-800", "url": "/docs/books/morris-mano.pdf" },
+  { "id": 4, "title": "Electrical Machinery", "author": "P.S. Bimbhra", "edition": "7th Edition", "type": "Reference Book", "size": "12.8 MB", "color": "from-orange-600 to-red-800", "url": "/docs/books/bimbhra.pdf" },
+  { "id": 5, "title": "Basic Electrical Engineering", "author": "V.K. Mehta, Rohit Mehta", "edition": "Revised Edition", "type": "Reference Book", "size": "20.5 MB", "color": "from-cyan-600 to-blue-800", "url": "/docs/books/vk-mehta.pdf" },
+  { "id": 6, "title": "Op-Amps and Linear Integrated Circuits", "author": "Ramakant A. Gayakwad", "edition": "4th Edition", "type": "Reference Book", "size": "14.2 MB", "color": "from-rose-600 to-pink-800", "url": "/docs/books/gayakwad.pdf" }
+]
