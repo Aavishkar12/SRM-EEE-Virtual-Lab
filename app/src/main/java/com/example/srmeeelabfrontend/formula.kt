@@ -81,7 +81,7 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
     val orderedCategories = preferredOrder.filter { groupedFormulas.containsKey(it) } +
             groupedFormulas.keys.filter { it !in preferredOrder }.sorted()
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -105,9 +105,9 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFFFBBF24), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFFE8954D), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFFFBBF24), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFFE8954D), fontSize = 14.sp)
                     }
                 }
 
@@ -119,7 +119,7 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
                     ) {
                         Text(
                             "Formula Cheat Sheet",
-                            color = Color(0xFFFBBF24),
+                            color = Color(0xFFE8954D),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -127,7 +127,7 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "A quick-reference guide for all essential Electrical and Electronics Engineering equations.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -136,24 +136,24 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
 
                         Button(
                             onClick = { },
-                            modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFFFBBF24).copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
+                            modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFFE8954D).copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             shape = RoundedCornerShape(12.dp),
                             contentPadding = PaddingValues(vertical = 14.dp)
                         ) {
-                            Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFFFBBF24))
+                            Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFFE8954D))
                             Spacer(Modifier.width(12.dp))
-                            Text("Download Full PDF", color = Color(0xFFFBBF24), fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                            Text("Download Full PDF", color = Color(0xFFE8954D), fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         }
 
                         Spacer(Modifier.height(32.dp))
 
                         Surface(
-                            color = Color(0xFF1E1B1E).copy(alpha = 0.5f),
+                            color = Color(0xFF151B22).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF2E2E2E).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF1F2B36).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -167,7 +167,7 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
                                         append("You are currently viewing formulas as Guest. Sign in to sync your progress.")
                                     }
                                 },
-                                color = Color(0xFF737373),
+                                color = Color(0xFF7A8C99),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -181,7 +181,7 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
                 if (isLoading) {
                     item {
                         CircularProgressIndicator(
-                            color = Color(0xFFFBBF24),
+                            color = Color(0xFFE8954D),
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -189,7 +189,7 @@ fun FormulaScreen(userSession: com.example.srmeeelabfrontend.network.UserSession
                     item {
                         Text(
                             "No formulas found.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             modifier = Modifier.padding(24.dp)
                         )
@@ -270,24 +270,24 @@ private fun categoryIcon(category: String): ImageVector = when (category) {
 }
 
 private fun categoryColor(category: String): Color = when (category) {
-    "DC Circuits" -> Color(0xFFFBBF24)
-    "AC Circuits" -> Color(0xFF22D3EE)
-    "Digital Electronics" -> Color(0xFF4ADE80)
-    else -> Color(0xFF94A3B8)
+    "DC Circuits" -> Color(0xFFE8954D)
+    "AC Circuits" -> Color(0xFF53F1E0)
+    "Digital Electronics" -> Color(0xFF5BEFA0)
+    else -> Color(0xFF94ACBA)
 }
 
 @Composable
 fun FormulaCard(formula: FormulaData) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            Text(formula.title, color = Color(0xFF64748B), fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
+            Text(formula.title, color = Color(0xFF6E8699), fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
             Spacer(Modifier.height(20.dp))
 
             Surface(
@@ -306,7 +306,7 @@ fun FormulaCard(formula: FormulaData) {
             }
 
             Spacer(Modifier.height(20.dp))
-            Text(formula.description, color = Color(0xFF475569), fontSize = 14.sp, lineHeight = 20.sp)
+            Text(formula.description, color = Color(0xFF3D5468), fontSize = 14.sp, lineHeight = 20.sp)
         }
     }
 }

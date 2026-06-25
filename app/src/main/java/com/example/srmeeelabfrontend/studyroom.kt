@@ -37,10 +37,10 @@ import java.util.*
 fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
     var currentTime by remember { mutableStateOf(SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())) }
     var isMenuOpen by remember { mutableStateOf(false) }
-    
+
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.97f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
@@ -53,7 +53,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -78,25 +78,25 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                             .padding(horizontal = 24.dp, vertical = 16.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Home", color = Color(0xFF64748B), fontSize = 14.sp, modifier = Modifier.clickable { onNavigate("home") })
-                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                            Text("Home", color = Color(0xFF6E8699), fontSize = 14.sp, modifier = Modifier.clickable { onNavigate("home") })
+                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
                             Text("Study Room", color = Color.White, fontSize = 14.sp)
                         }
 
                         Spacer(Modifier.height(24.dp))
 
                         Surface(
-                            color = Color(0xFF581C87).copy(alpha = 0.15f),
+                            color = Color(0xFF4A1E73).copy(alpha = 0.15f),
                             shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier.border(1.dp, Color(0xFF7E22CE).copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+                            modifier = Modifier.border(1.dp, Color(0xFF8B3FD8).copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                             ) {
-                                Icon(Icons.Default.LibraryBooks, contentDescription = null, tint = Color(0xFFA78BFA), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.LibraryBooks, contentDescription = null, tint = Color(0xFFC4A8FF), modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(10.dp))
-                                Text("26EEE1001T — ACADEMIC RESOURCES", color = Color(0xFFA78BFA), fontSize = 11.sp, fontWeight = FontWeight.Black, letterSpacing = 0.5.sp)
+                                Text("26EEE1001T — ACADEMIC RESOURCES", color = Color(0xFFC4A8FF), fontSize = 11.sp, fontWeight = FontWeight.Black, letterSpacing = 0.5.sp)
                             }
                         }
                     }
@@ -119,7 +119,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(12.dp))
                         Text(
                             "Everything you need to ace your EEE lab — AI assistance, virtual experiments, quizzes, notes, and more.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -128,7 +128,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                 // Featured Tools
                 item {
-                    SectionHeader(Icons.Default.Star, "FEATURED TOOLS", Color(0xFFFBBF24))
+                    SectionHeader(Icons.Default.Star, "FEATURED TOOLS", Color(0xFFE8954D))
                 }
 
                 item {
@@ -136,7 +136,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         icon = Icons.Default.SmartToy,
                         title = "MyAI Lab Assistant",
                         desc = "Ask any EEE concept — get instant explanations, solve circuit problems, and get step-by-step help.",
-                        accentColor = Color(0xFF818CF8),
+                        accentColor = Color(0xFFA89BFF),
                         badgeText = "AI POWERED",
                         onClick = { onNavigate("ai_assistant") }
                     )
@@ -147,7 +147,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
                         icon = Icons.Default.Science,
                         title = "Virtual Lab Experiments",
                         desc = "Perform all 12 interactive lab experiments virtually with real-time simulations and circuit builders.",
-                        accentColor = Color(0xFF22D3EE),
+                        accentColor = Color(0xFF53F1E0),
                         badgeText = "12 LABS",
                         onClick = { onNavigate("experiments") }
                     )
@@ -155,7 +155,7 @@ fun StudyRoomScreen(isLoggedIn: Boolean, onNavigate: (String) -> Unit) {
 
                 // Academic Resources
                 item {
-                    SectionHeader(Icons.Default.TrendingUp, "ACADEMIC RESOURCES", Color(0xFF3B82F6))
+                    SectionHeader(Icons.Default.TrendingUp, "ACADEMIC RESOURCES", Color(0xFF1FD7C4))
                 }
 
                 items(academicResourcesList) { res ->
@@ -217,10 +217,10 @@ fun PremiumFeaturedCard(icon: ImageVector, title: String, desc: String, accentCo
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(28.dp))
-            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .background(Color(0xFF0A131F).copy(alpha = 0.7f))
             .border(
                 width = 1.dp,
-                brush = Brush.linearGradient(listOf(Color(0xFF1E293B), accentColor.copy(alpha = 0.4f), Color(0xFF1E293B))),
+                brush = Brush.linearGradient(listOf(Color(0xFF142233), accentColor.copy(alpha = 0.4f), Color(0xFF142233))),
                 shape = RoundedCornerShape(28.dp)
             )
             .clickable { onClick() }
@@ -248,7 +248,7 @@ fun PremiumFeaturedCard(icon: ImageVector, title: String, desc: String, accentCo
             Spacer(Modifier.height(24.dp))
             Text(title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.height(12.dp))
-            Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 22.sp)
+            Text(desc, color = Color(0xFF94ACBA), fontSize = 15.sp, lineHeight = 22.sp)
             Spacer(Modifier.height(24.dp))
             Text("Open Tool →", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Black)
         }
@@ -262,10 +262,10 @@ fun PremiumResourceCard(res: ResourceData, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .background(Color(0xFF0A131F).copy(alpha = 0.7f))
             .border(
                 width = 1.dp,
-                brush = Brush.linearGradient(listOf(Color(0xFF1E293B), res.color.copy(alpha = 0.3f), Color(0xFF1E293B))),
+                brush = Brush.linearGradient(listOf(Color(0xFF142233), res.color.copy(alpha = 0.3f), Color(0xFF142233))),
                 shape = RoundedCornerShape(24.dp)
             )
             .clickable { onClick() }
@@ -282,12 +282,12 @@ fun PremiumResourceCard(res: ResourceData, onClick: () -> Unit) {
                     }
                 }
                 Spacer(Modifier.weight(1f))
-                Text(res.actionText, color = Color(0xFF475569), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                Text(res.actionText, color = Color(0xFF3D5468), fontSize = 11.sp, fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(16.dp))
             Text(res.title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.height(8.dp))
-            Text(res.desc, color = Color(0xFF94A3B8), fontSize = 14.sp, lineHeight = 20.sp)
+            Text(res.desc, color = Color(0xFF94ACBA), fontSize = 14.sp, lineHeight = 20.sp)
             Spacer(Modifier.height(16.dp))
             Text("Explore →", color = res.color, fontSize = 14.sp, fontWeight = FontWeight.Black)
         }
@@ -314,28 +314,28 @@ fun FooterSimple(onNavigate: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF475569), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text("SRM EEE Virtual Lab · 26EEE1001T", color = Color(0xFF3D5468), fontSize = 14.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(32.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text("Home", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("home") })
-            Text("Quizzes", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("quizzes") })
-            Text("Team", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("team") })
-            Text("Developers", color = Color(0xFF64748B), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("developers") })
+            Text("Home", color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("home") })
+            Text("Quizzes", color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("quizzes") })
+            Text("Team", color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("team") })
+            Text("Developers", color = Color(0xFF6E8699), fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { onNavigate("developers") })
         }
         Spacer(Modifier.height(48.dp))
-        Text("© 2026 SRM Institute of Science and Technology. All rights reserved.", color = Color(0xFF334155), fontSize = 11.sp, textAlign = TextAlign.Center)
+        Text("© 2026 SRM Institute of Science and Technology. All rights reserved.", color = Color(0xFF24384C), fontSize = 11.sp, textAlign = TextAlign.Center)
     }
 }
 
 data class ResourceData(val title: String, val desc: String, val icon: ImageVector, val color: Color, val actionText: String)
 
 val academicResourcesList = listOf(
-    ResourceData("EEE PYQs", "Previous year question papers with solutions for all semesters. Filter by year, unit, and topic.", Icons.Outlined.Article, Color(0xFF60A5FA), "VIEW PAPERS"),
-    ResourceData("CT Schedules", "Cycle Test dates, syllabus coverage, and important exam deadlines for 26EEE1001T.", Icons.Outlined.CalendarToday, Color(0xFF4ADE80), "VIEW SCHEDULE"),
-    ResourceData("Formula Cheat Sheet", "Quick-reference formulas for KVL, KCL, Thevenin, diode equations, and more.", Icons.Outlined.Calculate, Color(0xFFFBBF24), "VIEW FORMULAS"),
-    ResourceData("Reference Books", "Digital library of recommended textbooks and reference materials.", Icons.Outlined.LibraryBooks, Color(0xFFF97316), "BROWSE LIBRARY"),
-    ResourceData("Lecture Notes & Slides", "Unit-wise lecture notes, slides, and study materials. Download PDFs.", Icons.Outlined.MenuBook, Color(0xFFF472B6), "VIEW NOTES"),
-    ResourceData("Video Tutorials", "Curated YouTube playlists for every experiment — from theory to practical.", Icons.Outlined.VideoLibrary, Color(0xFFEF4444), "WATCH VIDEOS"),
-    ResourceData("Lab Manual", "Complete digital version of the SRM EEE Virtual Lab Manual with all procedures.", Icons.Outlined.Book, Color(0xFF818CF8), "READ MANUAL"),
-    ResourceData("Component Guide", "Learn about every component used in the lab — resistors, diodes, and more.", Icons.Outlined.Lightbulb, Color(0xFFFB923C), "INTERACTIVE")
+    ResourceData("EEE PYQs", "Previous year question papers with solutions for all semesters. Filter by year, unit, and topic.", Icons.Outlined.Article, Color(0xFF5EEAD4), "VIEW PAPERS"),
+    ResourceData("CT Schedules", "Cycle Test dates, syllabus coverage, and important exam deadlines for 26EEE1001T.", Icons.Outlined.CalendarToday, Color(0xFF5BEFA0), "VIEW SCHEDULE"),
+    ResourceData("Formula Cheat Sheet", "Quick-reference formulas for KVL, KCL, Thevenin, diode equations, and more.", Icons.Outlined.Calculate, Color(0xFFE8954D), "VIEW FORMULAS"),
+    ResourceData("Reference Books", "Digital library of recommended textbooks and reference materials.", Icons.Outlined.LibraryBooks, Color(0xFFE07A2C), "BROWSE LIBRARY"),
+    ResourceData("Lecture Notes & Slides", "Unit-wise lecture notes, slides, and study materials. Download PDFs.", Icons.Outlined.MenuBook, Color(0xFFFF7AC6), "VIEW NOTES"),
+    ResourceData("Video Tutorials", "Curated YouTube playlists for every experiment — from theory to practical.", Icons.Outlined.VideoLibrary, Color(0xFFFF4757), "WATCH VIDEOS"),
+    ResourceData("Lab Manual", "Complete digital version of the SRM EEE Virtual Lab Manual with all procedures.", Icons.Outlined.Book, Color(0xFFA89BFF), "READ MANUAL"),
+    ResourceData("Component Guide", "Learn about every component used in the lab — resistors, diodes, and more.", Icons.Outlined.Lightbulb, Color(0xFFF0A868), "INTERACTIVE")
 )

@@ -79,7 +79,7 @@ fun AiAssistantScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -153,27 +153,27 @@ fun AiAssistantScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         modifier = Modifier.clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Study Room", color = Color(0xFF64748B), fontSize = 14.sp)
+                        Text("Study Room", color = Color(0xFF6E8699), fontSize = 14.sp)
                     }
 
                     IconButton(
                         onClick = { isMenuOpen = !isMenuOpen },
                         modifier = Modifier
                             .size(40.dp)
-                            .background(Color(0xFF1E293B).copy(alpha = 0.6f), CircleShape)
-                            .border(1.dp, Color(0xFF334155), CircleShape)
+                            .background(Color(0xFF142233).copy(alpha = 0.6f), CircleShape)
+                            .border(1.dp, Color(0xFF24384C), CircleShape)
                     ) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White, modifier = Modifier.size(20.dp))
                     }
 
                     Surface(
-                        color = Color(0xFF0F172A),
+                        color = Color(0xFF0A131F),
                         shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+                        modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(10.dp))
                     ) {
-                        Text(text = currentTime, color = Color(0xFF60A5FA), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                        Text(text = currentTime, color = Color(0xFF5EEAD4), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
 
@@ -194,14 +194,14 @@ fun AiAssistantScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                 Spacer(Modifier.height(24.dp))
 
                                 Surface(
-                                    color = Color(0xFF1E293B).copy(alpha = 0.4f),
+                                    color = Color(0xFF142233).copy(alpha = 0.4f),
                                     shape = RoundedCornerShape(20.dp),
                                     modifier = Modifier
                                         .size(80.dp)
-                                        .border(1.dp, Color(0xFF334155).copy(alpha = 0.5f), RoundedCornerShape(20.dp))
+                                        .border(1.dp, Color(0xFF24384C).copy(alpha = 0.5f), RoundedCornerShape(20.dp))
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(Icons.Default.SmartToy, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(40.dp))
+                                        Icon(Icons.Default.SmartToy, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(40.dp))
                                     }
                                 }
 
@@ -218,7 +218,7 @@ fun AiAssistantScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                                 Text(
                                     "Ask me anything about your 26EEE1001T experiments,\ncircuits, and theory",
-                                    color = Color(0xFF94A3B8),
+                                    color = Color(0xFF94ACBA),
                                     fontSize = 15.sp,
                                     textAlign = TextAlign.Center,
                                     lineHeight = 22.sp,
@@ -310,13 +310,13 @@ fun ChatBubbleItem(message: UiChatMessage) {
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF1E3A5F)),
+                    .background(Color(0xFF153449)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.SmartToy,
                     contentDescription = null,
-                    tint = Color(0xFF3B82F6),
+                    tint = Color(0xFF1FD7C4),
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -325,7 +325,7 @@ fun ChatBubbleItem(message: UiChatMessage) {
 
         // Bubble
         Surface(
-            color = if (message.isUser) Color(0xFF1D4ED8) else Color(0xFF1E293B),
+            color = if (message.isUser) Color(0xFF0F766E) else Color(0xFF142233),
             shape = RoundedCornerShape(
                 topStart = 18.dp,
                 topEnd = 18.dp,
@@ -336,7 +336,7 @@ fun ChatBubbleItem(message: UiChatMessage) {
         ) {
             Text(
                 text = message.text,
-                color = if (message.isUser) Color.White else Color(0xFFE2E8F0),
+                color = if (message.isUser) Color.White else Color(0xFFE8F4F1),
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
@@ -350,7 +350,7 @@ fun ChatBubbleItem(message: UiChatMessage) {
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF1D4ED8)),
+                    .background(Color(0xFF0F766E)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -394,16 +394,16 @@ fun TypingIndicator() {
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)
-                .background(Color(0xFF1E3A5F)),
+                .background(Color(0xFF153449)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Default.SmartToy, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(18.dp))
+            Icon(Icons.Default.SmartToy, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(18.dp))
         }
 
         Spacer(Modifier.width(8.dp))
 
         Surface(
-            color = Color(0xFF1E293B),
+            color = Color(0xFF142233),
             shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp, bottomStart = 4.dp, bottomEnd = 18.dp)
         ) {
             Row(
@@ -411,9 +411,9 @@ fun TypingIndicator() {
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(Color(0xFF3B82F6).copy(alpha = dot1Alpha)))
-                Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(Color(0xFF3B82F6).copy(alpha = dot2Alpha)))
-                Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(Color(0xFF3B82F6).copy(alpha = dot3Alpha)))
+                Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(Color(0xFF1FD7C4).copy(alpha = dot1Alpha)))
+                Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(Color(0xFF1FD7C4).copy(alpha = dot2Alpha)))
+                Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(Color(0xFF1FD7C4).copy(alpha = dot3Alpha)))
             }
         }
     }
@@ -422,20 +422,20 @@ fun TypingIndicator() {
 @Composable
 fun SuggestionChip(text: String, onClick: () -> Unit) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
             .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+            Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(12.dp))
-            Text(text, color = Color(0xFF94A3B8), fontSize = 14.sp, fontWeight = FontWeight.Medium)
+            Text(text, color = Color(0xFF94ACBA), fontSize = 14.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -443,17 +443,17 @@ fun SuggestionChip(text: String, onClick: () -> Unit) {
 @Composable
 fun AiInputField(value: String, onValueChange: (String) -> Unit, onSend: () -> Unit) {
     Surface(
-        color = Color(0xFF020617),
+        color = Color(0xFF05080D),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column {
             Surface(
-                color = Color(0xFF0F172A).copy(alpha = 0.8f),
+                color = Color(0xFF0A131F).copy(alpha = 0.8f),
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+                    .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -463,11 +463,11 @@ fun AiInputField(value: String, onValueChange: (String) -> Unit, onSend: () -> U
                         value = value,
                         onValueChange = onValueChange,
                         textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
-                        cursorBrush = SolidColor(Color(0xFF3B82F6)),
+                        cursorBrush = SolidColor(Color(0xFF1FD7C4)),
                         modifier = Modifier.weight(1f),
                         decorationBox = { innerTextField ->
                             if (value.isEmpty()) {
-                                Text("Ask about KVL, rectifiers, op-amps, wiring...", color = Color(0xFF475569), fontSize = 15.sp)
+                                Text("Ask about KVL, rectifiers, op-amps, wiring...", color = Color(0xFF3D5468), fontSize = 15.sp)
                             }
                             innerTextField()
                         }
@@ -478,12 +478,12 @@ fun AiInputField(value: String, onValueChange: (String) -> Unit, onSend: () -> U
                         enabled = value.isNotEmpty(),
                         modifier = Modifier
                             .size(36.dp)
-                            .background(if (value.isNotEmpty()) Color(0xFF1E293B) else Color.Transparent, CircleShape)
+                            .background(if (value.isNotEmpty()) Color(0xFF142233) else Color.Transparent, CircleShape)
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.Send,
                             contentDescription = "Send",
-                            tint = if (value.isNotEmpty()) Color(0xFF60A5FA) else Color(0xFF334155),
+                            tint = if (value.isNotEmpty()) Color(0xFF5EEAD4) else Color(0xFF24384C),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -491,7 +491,7 @@ fun AiInputField(value: String, onValueChange: (String) -> Unit, onSend: () -> U
             }
             Text(
                 "Shift+Enter for new line · Enter to send",
-                color = Color(0xFF334155),
+                color = Color(0xFF24384C),
                 fontSize = 11.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)

@@ -102,7 +102,7 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -128,9 +128,9 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFFEAB308).copy(alpha = 0.7f), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFFC97A1F).copy(alpha = 0.7f), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFFEAB308).copy(alpha = 0.7f), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFFC97A1F).copy(alpha = 0.7f), fontSize = 14.sp)
                     }
                 }
 
@@ -143,7 +143,7 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     ) {
                         Text(
                             "Digital Library",
-                            color = Color(0xFFF59E0B),
+                            color = Color(0xFFD9842E),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -151,7 +151,7 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Access recommended textbooks and reference materials for your coursework. Read online or download for offline studying.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -160,27 +160,27 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // Search Bar
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp))
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
+                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(20.dp))
                                 Spacer(Modifier.width(12.dp))
                                 BasicTextField(
                                     value = searchQuery,
                                     onValueChange = { searchQuery = it },
                                     textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
-                                    cursorBrush = SolidColor(Color(0xFFEAB308)),
+                                    cursorBrush = SolidColor(Color(0xFFC97A1F)),
                                     modifier = Modifier.weight(1f),
                                     decorationBox = { innerTextField ->
                                         if (searchQuery.isEmpty()) {
-                                            Text("Search title or author...", color = Color(0xFF475569), fontSize = 15.sp)
+                                            Text("Search title or author...", color = Color(0xFF3D5468), fontSize = 15.sp)
                                         }
                                         innerTextField()
                                     }
@@ -192,11 +192,11 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // User Info Card
                         Surface(
-                            color = Color(0xFF171717).copy(alpha = 0.5f),
+                            color = Color(0xFF0D1318).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF262626).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF1A2533).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -206,7 +206,7 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                     }
                                     append(". You can read and download reference materials, but only admins can manage them.")
                                 },
-                                color = Color(0xFF737373),
+                                color = Color(0xFF7A8C99),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -221,13 +221,13 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 when {
                     isLoading -> item {
                         Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = Color(0xFFEAB308))
+                            CircularProgressIndicator(color = Color(0xFFC97A1F))
                         }
                     }
                     errorMessage != null -> item {
                         Text(
                             errorMessage ?: "Something went wrong",
-                            color = Color(0xFFF87171),
+                            color = Color(0xFFFF6B6B),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -235,7 +235,7 @@ fun ReferencesScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     filteredBooks.isEmpty() -> item {
                         Text(
                             if (searchQuery.isBlank()) "No reference books added yet." else "No books match \"$searchQuery\".",
-                            color = Color(0xFF64748B),
+                            color = Color(0xFF6E8699),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -288,12 +288,12 @@ fun BookCard(book: BookData) {
     val uriHandler = LocalUriHandler.current
 
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
     ) {
         Column {
             // Book Thumbnail area
@@ -304,7 +304,7 @@ fun BookCard(book: BookData) {
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color(0xFFEA580C), Color(0xFF7C2D12))
+                            colors = listOf(Color(0xFFC2620E), Color(0xFF54200D))
                         )
                     ),
                 contentAlignment = Alignment.Center
@@ -325,28 +325,28 @@ fun BookCard(book: BookData) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
-                        color = Color(0xFFEAB308).copy(alpha = 0.1f),
+                        color = Color(0xFFC97A1F).copy(alpha = 0.1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text(book.type, color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                        Text(book.type, color = Color(0xFFC97A1F), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                     }
                     Spacer(Modifier.weight(1f))
-                    Text(book.size, color = Color(0xFF475569), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(book.size, color = Color(0xFF3D5468), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
 
                 Spacer(Modifier.height(16.dp))
                 Text(book.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                Text("By ${book.author}", color = Color(0xFF94A3B8), fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp))
-                Text(book.edition, color = Color(0xFF64748B), fontSize = 14.sp, modifier = Modifier.padding(top = 4.dp))
+                Text("By ${book.author}", color = Color(0xFF94ACBA), fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp))
+                Text(book.edition, color = Color(0xFF6E8699), fontSize = 14.sp, modifier = Modifier.padding(top = 4.dp))
 
                 Spacer(Modifier.height(24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Button(
                         onClick = { if (book.url.isNotBlank()) uriHandler.openUri(book.url) },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF171717)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1318)),
                         shape = RoundedCornerShape(12.dp),
-                        border = borderStroke(1.dp, Color(0xFF262626))
+                        border = borderStroke(1.dp, Color(0xFF1A2533))
                     ) {
                         Icon(Icons.Default.Visibility, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
@@ -355,12 +355,12 @@ fun BookCard(book: BookData) {
                     Button(
                         onClick = { if (book.url.isNotBlank()) uriHandler.openUri(book.url) },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF78350F)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3D2412)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFFFDE047), modifier = Modifier.size(16.dp))
+                        Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFFF6C28B), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("PDF", color = Color(0xFFFDE047), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text("PDF", color = Color(0xFFF6C28B), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

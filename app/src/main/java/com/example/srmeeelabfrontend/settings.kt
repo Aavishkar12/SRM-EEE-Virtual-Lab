@@ -94,7 +94,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(containerColor = Color.Transparent) { paddingValues ->
@@ -118,11 +118,11 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Surface(
-                                color = Color(0xFF0F172A).copy(alpha = 0.8f),
+                                color = Color(0xFF0A131F).copy(alpha = 0.8f),
                                 shape = RoundedCornerShape(24.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+                                    .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
                             ) {
                                 Column(
                                     modifier = Modifier.padding(32.dp),
@@ -132,7 +132,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                         imageVector = Icons.Default.Lock,
                                         contentDescription = null,
                                         modifier = Modifier.size(64.dp),
-                                        tint = Color(0xFF3B82F6)
+                                        tint = Color(0xFF1FD7C4)
                                     )
                                     Spacer(Modifier.height(24.dp))
                                     Text(
@@ -145,7 +145,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     Spacer(Modifier.height(16.dp))
                                     Text(
                                         text = "Settings are available only to signed-in SRM users.",
-                                        color = Color(0xFF94A3B8),
+                                        color = Color(0xFF94ACBA),
                                         fontSize = 15.sp,
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
@@ -154,12 +154,12 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     Text(
                                         text = buildAnnotatedString {
                                             append("Sign in with your ")
-                                            withStyle(SpanStyle(color = Color(0xFF60A5FA))) {
+                                            withStyle(SpanStyle(color = Color(0xFF5EEAD4))) {
                                                 append("@srmist.edu.in")
                                             }
                                             append(" email to continue.")
                                         },
-                                        color = Color(0xFF94A3B8),
+                                        color = Color(0xFF94ACBA),
                                         fontSize = 15.sp,
                                         textAlign = TextAlign.Center,
                                         lineHeight = 22.sp
@@ -167,7 +167,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     Spacer(Modifier.height(32.dp))
                                     Button(
                                         onClick = { onNavigate("login") },
-                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9488)),
                                         shape = RoundedCornerShape(12.dp),
                                         modifier = Modifier.fillMaxWidth().height(50.dp)
                                     ) {
@@ -187,7 +187,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                         ) {
                             Text(
                                 "PREFERENCES",
-                                color = Color(0xFF3B82F6),
+                                color = Color(0xFF1FD7C4),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 2.sp
@@ -203,7 +203,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                             Spacer(Modifier.height(12.dp))
                             Text(
                                 "Manage your account, appearance, notifications, and administrative access.",
-                                color = Color(0xFF94A3B8),
+                                color = Color(0xFF94ACBA),
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp
                             )
@@ -213,12 +213,12 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                     // User Summary Card — live data
                     item {
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.6f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.6f),
                             shape = RoundedCornerShape(20.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 24.dp)
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(20.dp))
+                                .border(1.dp, Color(0xFF142233), RoundedCornerShape(20.dp))
                         ) {
                             if (isLoadingUser) {
                                 Box(
@@ -226,7 +226,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     contentAlignment = Alignment.Center
                                 ) {
                                     CircularProgressIndicator(
-                                        color = Color(0xFF3B82F6),
+                                        color = Color(0xFF1FD7C4),
                                         modifier = Modifier.size(24.dp),
                                         strokeWidth = 2.dp
                                     )
@@ -241,7 +241,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                     )
                                     Text(
                                         userSession?.email ?: "",
-                                        color = Color(0xFF64748B),
+                                        color = Color(0xFF6E8699),
                                         fontSize = 14.sp
                                     )
                                 }
@@ -254,16 +254,16 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                     if (loadError != null) {
                         item {
                             Surface(
-                                color = Color(0xFF1C1917).copy(alpha = 0.6f),
+                                color = Color(0xFF13181D).copy(alpha = 0.6f),
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 24.dp)
-                                    .border(1.dp, Color(0xFF78716C), RoundedCornerShape(12.dp))
+                                    .border(1.dp, Color(0xFF7E8A8A), RoundedCornerShape(12.dp))
                             ) {
                                 Text(
                                     text = loadError!!,
-                                    color = Color(0xFFFBBF24),
+                                    color = Color(0xFFE8954D),
                                     fontSize = 13.sp,
                                     modifier = Modifier.padding(14.dp),
                                     textAlign = TextAlign.Center
@@ -279,8 +279,8 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 24.dp)
-                                .background(Color(0xFF0F172A).copy(alpha = 0.6f), RoundedCornerShape(12.dp))
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp)),
+                                .background(Color(0xFF0A131F).copy(alpha = 0.6f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp)),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
@@ -296,14 +296,14 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                         .weight(1f)
                                         .padding(4.dp)
                                         .background(
-                                            if (selectedTab == index) Color(0xFF1E293B) else Color.Transparent,
+                                            if (selectedTab == index) Color(0xFF142233) else Color.Transparent,
                                             RoundedCornerShape(8.dp)
                                         )
                                 ) {
                                     Icon(
                                         imageVector = icon,
                                         contentDescription = null,
-                                        tint = if (selectedTab == index) Color(0xFF60A5FA) else Color(0xFF94A3B8)
+                                        tint = if (selectedTab == index) Color(0xFF5EEAD4) else Color(0xFF94ACBA)
                                     )
                                 }
                             }
@@ -323,7 +323,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                 Spacer(Modifier.height(8.dp))
                                 Text(
                                     "These details are synced from your SRM Academia account.",
-                                    color = Color(0xFF64748B),
+                                    color = Color(0xFF6E8699),
                                     fontSize = 14.sp
                                 )
                                 Spacer(Modifier.height(24.dp))
@@ -363,15 +363,15 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                 Spacer(Modifier.height(12.dp))
                                 // Email is read-only — shown as plain text
                                 Surface(
-                                    color = Color(0xFF1E293B).copy(alpha = 0.3f),
+                                    color = Color(0xFF142233).copy(alpha = 0.3f),
                                     shape = RoundedCornerShape(10.dp),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+                                        .border(1.dp, Color(0xFF142233), RoundedCornerShape(10.dp))
                                 ) {
                                     Text(
                                         text = userSession?.email ?: "",
-                                        color = Color(0xFF64748B),
+                                        color = Color(0xFF6E8699),
                                         fontSize = 15.sp,
                                         modifier = Modifier.padding(16.dp)
                                     )
@@ -381,15 +381,15 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                 if (saveSuccess) {
                                     Spacer(Modifier.height(16.dp))
                                     Surface(
-                                        color = Color(0xFF052E16).copy(alpha = 0.7f),
+                                        color = Color(0xFF072A20).copy(alpha = 0.7f),
                                         shape = RoundedCornerShape(10.dp),
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .border(1.dp, Color(0xFF166534), RoundedCornerShape(10.dp))
+                                            .border(1.dp, Color(0xFF1B5A42), RoundedCornerShape(10.dp))
                                     ) {
                                         Text(
                                             "Settings saved successfully.",
-                                            color = Color(0xFF86EFAC),
+                                            color = Color(0xFFA0F7C4),
                                             fontSize = 13.sp,
                                             modifier = Modifier.padding(12.dp),
                                             textAlign = TextAlign.Center
@@ -409,7 +409,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                         saveSuccess = true
                                     },
                                     modifier = Modifier.align(Alignment.End),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9488)),
                                     shape = RoundedCornerShape(10.dp),
                                     enabled = !isSaving
                                 ) {
@@ -460,7 +460,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                 Button(
                                     onClick = { saveSuccess = true },
                                     modifier = Modifier.align(Alignment.End),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9488)),
                                     shape = RoundedCornerShape(10.dp)
                                 ) {
                                     Text("Save Settings", fontWeight = FontWeight.Bold)
@@ -475,7 +475,7 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
                                 modifier = Modifier.fillMaxWidth().height(200.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text("Section under development", color = Color(0xFF64748B))
+                                Text("Section under development", color = Color(0xFF6E8699))
                             }
                         }
                     }
@@ -522,12 +522,12 @@ fun SettingsScreen(userSession: UserSession?, onNavigate: (String) -> Unit) {
 @Composable
 fun SettingsInfoCard(info: ProfileInfo) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.6f),
+        color = Color(0xFF0A131F).copy(alpha = 0.6f),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(16.dp))
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -536,14 +536,14 @@ fun SettingsInfoCard(info: ProfileInfo) {
             Icon(
                 imageVector = info.icon,
                 contentDescription = null,
-                tint = Color(0xFF64748B),
+                tint = Color(0xFF6E8699),
                 modifier = Modifier.size(18.dp)
             )
             Spacer(Modifier.width(16.dp))
             Column {
                 Text(
                     text = info.label,
-                    color = Color(0xFF64748B),
+                    color = Color(0xFF6E8699),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -568,11 +568,11 @@ fun CustomTextField(
 ) {
     var text by remember(value) { mutableStateOf(value) }
     Surface(
-        color = Color(0xFF1E293B).copy(alpha = 0.5f),
+        color = Color(0xFF142233).copy(alpha = 0.5f),
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, Color(0xFF334155), RoundedCornerShape(10.dp))
+            .border(1.dp, Color(0xFF24384C), RoundedCornerShape(10.dp))
     ) {
         BasicTextField(
             value = text,
@@ -581,7 +581,7 @@ fun CustomTextField(
                 onValueChange(it)
             },
             textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
-            cursorBrush = SolidColor(Color(0xFF3B82F6)),
+            cursorBrush = SolidColor(Color(0xFF1FD7C4)),
             modifier = Modifier.padding(16.dp),
             singleLine = singleLine
         )
@@ -598,16 +598,16 @@ fun PrivacySwitchRow(title: String, desc: String, initialValue: Boolean) {
         Column(modifier = Modifier.weight(1f)) {
             Text(title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(4.dp))
-            Text(desc, color = Color(0xFF64748B), fontSize = 13.sp)
+            Text(desc, color = Color(0xFF6E8699), fontSize = 13.sp)
         }
         Switch(
             checked = checked,
             onCheckedChange = { checked = it },
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
-                checkedTrackColor = Color(0xFF2563EB),
-                uncheckedThumbColor = Color(0xFF94A3B8),
-                uncheckedTrackColor = Color(0xFF1E293B)
+                checkedTrackColor = Color(0xFF0D9488),
+                uncheckedThumbColor = Color(0xFF94ACBA),
+                uncheckedTrackColor = Color(0xFF142233)
             )
         )
     }

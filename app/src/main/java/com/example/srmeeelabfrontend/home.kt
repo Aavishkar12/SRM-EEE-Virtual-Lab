@@ -42,7 +42,7 @@ fun HomeScreen(isLoggedIn: Boolean, onExploreExperiments: () -> Unit, onNavigate
 
     val contentAlpha = remember { Animatable(0f) }
     val contentScale = remember { Animatable(0.95f) }
-    
+
     LaunchedEffect(Unit) {
         launch { contentAlpha.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
         launch { contentScale.animateTo(1f, animationSpec = tween(1200, easing = FastOutSlowInEasing)) }
@@ -55,7 +55,7 @@ fun HomeScreen(isLoggedIn: Boolean, onExploreExperiments: () -> Unit, onNavigate
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -119,42 +119,42 @@ fun HeroSection(onExploreClick: () -> Unit, onNavigate: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
-            color = Color(0xFF1E293B).copy(alpha = 0.5f),
+            color = Color(0xFF142233).copy(alpha = 0.5f),
             shape = RoundedCornerShape(24.dp),
-            modifier = Modifier.border(1.dp, Color(0xFF334155), RoundedCornerShape(24.dp))
+            modifier = Modifier.border(1.dp, Color(0xFF24384C), RoundedCornerShape(24.dp))
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-                Box(modifier = Modifier.size(8.dp).background(Color(0xFF6366F1), CircleShape))
+                Box(modifier = Modifier.size(8.dp).background(Color(0xFF8B7CF6), CircleShape))
                 Spacer(Modifier.width(10.dp))
-                Text("26EEE1001T · Virtual Lab", color = Color(0xFF94A3B8), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                Text("26EEE1001T · Virtual Lab", color = Color(0xFF94ACBA), fontSize = 13.sp, fontWeight = FontWeight.Medium)
             }
         }
         Spacer(Modifier.height(32.dp))
         Text(text = "Learn EEE", color = Color.White, fontSize = 52.sp, fontWeight = FontWeight.Black, letterSpacing = (-1.5).sp)
-        Text(text = "Interactively", style = TextStyle(brush = Brush.horizontalGradient(listOf(Color(0xFF60A5FA), Color(0xFFA78BFA))), fontSize = 52.sp, fontWeight = FontWeight.Black, letterSpacing = (-1.5).sp))
+        Text(text = "Interactively", style = TextStyle(brush = Brush.horizontalGradient(listOf(Color(0xFF5EEAD4), Color(0xFFC4A8FF))), fontSize = 52.sp, fontWeight = FontWeight.Black, letterSpacing = (-1.5).sp))
         Spacer(Modifier.height(28.dp))
-        Text(text = "A student-built virtual laboratory for SRM's 26EEE1001T course. Perform experiments, take quizzes, and master electrical engineering concepts — all from your browser.", color = Color(0xFF94A3B8), fontSize = 16.sp, textAlign = TextAlign.Center, lineHeight = 26.sp, modifier = Modifier.padding(horizontal = 12.dp))
+        Text(text = "A student-built virtual laboratory for SRM's 26EEE1001T course. Perform experiments, take quizzes, and master electrical engineering concepts — all from your browser.", color = Color(0xFF94ACBA), fontSize = 16.sp, textAlign = TextAlign.Center, lineHeight = 26.sp, modifier = Modifier.padding(horizontal = 12.dp))
         Spacer(Modifier.height(48.dp))
-        
+
         // Premium Gradient Button
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
                 .clip(RoundedCornerShape(32.dp))
-                .background(Brush.linearGradient(listOf(Color(0xFF2563EB), Color(0xFF7C3AED))))
+                .background(Brush.linearGradient(listOf(Color(0xFF0D9488), Color(0xFF9D7CF7))))
                 .clickable { onExploreClick() },
             contentAlignment = Alignment.Center
         ) {
             Text("Explore Experiments →", fontSize = 18.sp, fontWeight = FontWeight.Black, color = Color.White)
         }
-        
+
         Spacer(Modifier.height(24.dp))
         TextButton(onClick = { onNavigate("quizzes") }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Quiz, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(20.dp))
+                Icon(Icons.Default.Quiz, contentDescription = null, tint = Color(0xFF5EEAD4), modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(10.dp))
-                Text("Take a Quiz", color = Color(0xFF60A5FA), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Take a Quiz", color = Color(0xFF5EEAD4), fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -163,17 +163,17 @@ fun HeroSection(onExploreClick: () -> Unit, onNavigate: (String) -> Unit) {
 @Composable
 fun FeaturesSection() {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Surface(color = Color(0xFF1E1B4B).copy(alpha = 0.8f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF312E81), RoundedCornerShape(20.dp))) {
-            Text("Why SRM EEE Virtual Lab?", color = Color(0xFF818CF8), fontSize = 13.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp), letterSpacing = 1.sp)
+        Surface(color = Color(0xFF1A1638).copy(alpha = 0.8f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF2B2557), RoundedCornerShape(20.dp))) {
+            Text("Why SRM EEE Virtual Lab?", color = Color(0xFFA89BFF), fontSize = 13.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp), letterSpacing = 1.sp)
         }
         Spacer(Modifier.height(24.dp))
         Text("Built for Engineering Students", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center, lineHeight = 44.sp, letterSpacing = (-0.5).sp)
         Spacer(Modifier.height(40.dp))
-        FeatureCard(Icons.Default.Science, "12 Lab Experiments", "Covering all units of 26EEE1001T — from DC circuits to power generation", Color(0xFF60A5FA))
+        FeatureCard(Icons.Default.Science, "12 Lab Experiments", "Covering all units of 26EEE1001T — from DC circuits to power generation", Color(0xFF5EEAD4))
         Spacer(Modifier.height(20.dp))
-        FeatureCard(Icons.Default.Bolt, "Interactive Simulations", "Tinkercad-powered circuit simulations with real-time component interaction", Color(0xFFFBBF24))
+        FeatureCard(Icons.Default.Bolt, "Interactive Simulations", "Tinkercad-powered circuit simulations with real-time component interaction", Color(0xFFE8954D))
         Spacer(Modifier.height(20.dp))
-        FeatureCard(Icons.Default.Psychology, "Knowledge Quizzes", "Post-experiment MCQ quizzes to reinforce learning and test understanding", Color(0xFFA78BFA))
+        FeatureCard(Icons.Default.Psychology, "Knowledge Quizzes", "Post-experiment MCQ quizzes to reinforce learning and test understanding", Color(0xFFC4A8FF))
     }
 }
 
@@ -183,23 +183,23 @@ fun FeatureCard(icon: ImageVector, title: String, desc: String, iconTint: Color)
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
-            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .background(Color(0xFF0A131F).copy(alpha = 0.7f))
             .border(
                 width = 1.dp,
-                brush = Brush.linearGradient(listOf(Color(0xFF1E293B), iconTint.copy(alpha = 0.4f), Color(0xFF1E293B))),
+                brush = Brush.linearGradient(listOf(Color(0xFF142233), iconTint.copy(alpha = 0.4f), Color(0xFF142233))),
                 shape = RoundedCornerShape(28.dp)
             )
     ) {
         Column(modifier = Modifier.padding(28.dp)) {
             Surface(color = iconTint.copy(alpha = 0.1f), shape = RoundedCornerShape(14.dp), modifier = Modifier.size(56.dp)) {
-                Box(contentAlignment = Alignment.Center) { 
-                    Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(28.dp)) 
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(28.dp))
                 }
             }
             Spacer(Modifier.height(24.dp))
             Text(title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.height(10.dp))
-            Text(desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
+            Text(desc, color = Color(0xFF94ACBA), fontSize = 15.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -208,22 +208,22 @@ fun FeatureCard(icon: ImageVector, title: String, desc: String, iconTint: Color)
 fun ExperimentsHeader(onViewAllClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 56.dp)) {
         Surface(
-            color = Color(0xFF60A5FA).copy(alpha = 0.1f), 
-            shape = RoundedCornerShape(10.dp), 
-            modifier = Modifier.border(1.dp, Color(0xFF60A5FA).copy(alpha = 0.2f), RoundedCornerShape(10.dp))
+            color = Color(0xFF5EEAD4).copy(alpha = 0.1f),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.border(1.dp, Color(0xFF5EEAD4).copy(alpha = 0.2f), RoundedCornerShape(10.dp))
         ) {
-            Text("INTERACTIVE LEARNING", color = Color(0xFF60A5FA), fontSize = 12.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp), letterSpacing = 1.5.sp)
+            Text("INTERACTIVE LEARNING", color = Color(0xFF5EEAD4), fontSize = 12.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp), letterSpacing = 1.5.sp)
         }
         Spacer(Modifier.height(24.dp))
         Text("Hands-on Experiments", color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.Black, letterSpacing = (-0.5).sp)
         Spacer(Modifier.height(16.dp))
-        Text("Six core experiments from your lab manual — with theory, interactive simulations, and quizzes.", color = Color(0xFF94A3B8), fontSize = 16.sp, lineHeight = 26.sp, fontWeight = FontWeight.Medium)
+        Text("Six core experiments from your lab manual — with theory, interactive simulations, and quizzes.", color = Color(0xFF94ACBA), fontSize = 16.sp, lineHeight = 26.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(32.dp))
         TextButton(onClick = onViewAllClick, contentPadding = PaddingValues(0.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("View all 12 experiments", color = Color(0xFF3B82F6), fontSize = 18.sp, fontWeight = FontWeight.Black)
+                Text("View all 12 experiments", color = Color(0xFF1FD7C4), fontSize = 18.sp, fontWeight = FontWeight.Black)
                 Spacer(Modifier.width(10.dp))
-                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
+                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(24.dp))
             }
         }
     }
@@ -236,43 +236,43 @@ fun ExperimentCardHome(exp: ExperimentHome, onClick: () -> Unit) {
             .padding(horizontal = 24.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
-            .background(Color(0xFF0F172A).copy(alpha = 0.7f))
+            .background(Color(0xFF0A131F).copy(alpha = 0.7f))
             .border(
                 width = 1.dp,
-                brush = Brush.linearGradient(listOf(Color(0xFF1E293B), Color(0xFF3B82F6).copy(alpha = 0.3f), Color(0xFF1E293B))),
+                brush = Brush.linearGradient(listOf(Color(0xFF142233), Color(0xFF1FD7C4).copy(alpha = 0.3f), Color(0xFF142233))),
                 shape = RoundedCornerShape(28.dp)
             )
             .clickable { onClick() }
     ) {
         Column(modifier = Modifier.padding(28.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(color = Color(0xFF1E293B), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(44.dp)) {
-                    Box(contentAlignment = Alignment.Center) { 
-                        Text(exp.id.toString(), color = Color(0xFF60A5FA), fontWeight = FontWeight.Black, fontSize = 20.sp) 
+                Surface(color = Color(0xFF142233), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(44.dp)) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(exp.id.toString().padStart(2, '0'), color = Color(0xFF5EEAD4), fontWeight = FontWeight.Black, fontSize = 20.sp, fontFamily = com.example.srmeeelabfrontend.ui.theme.LabFonts.Mono)
                     }
                 }
                 Spacer(Modifier.width(16.dp))
-                Surface(color = Color(0xFFFBBF24).copy(alpha = 0.1f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFFFBBF24).copy(alpha = 0.2f), RoundedCornerShape(20.dp))) {
-                    Text(exp.category, color = Color(0xFFFBBF24), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+                Surface(color = Color(0xFFE8954D).copy(alpha = 0.1f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFFE8954D).copy(alpha = 0.2f), RoundedCornerShape(20.dp))) {
+                    Text(exp.category.uppercase(), color = Color(0xFFE8954D), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp, fontFamily = com.example.srmeeelabfrontend.ui.theme.LabFonts.Mono, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
                 }
                 Spacer(Modifier.weight(1f))
-                Surface(color = Color(0xFF34D399).copy(alpha = 0.1f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF34D399).copy(alpha = 0.2f), RoundedCornerShape(20.dp))) {
-                    Text(exp.difficulty, color = Color(0xFF34D399), fontSize = 11.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+                Surface(color = Color(0xFF3DE8B0).copy(alpha = 0.1f), shape = RoundedCornerShape(20.dp), modifier = Modifier.border(1.dp, Color(0xFF3DE8B0).copy(alpha = 0.2f), RoundedCornerShape(20.dp))) {
+                    Text(exp.difficulty, color = Color(0xFF3DE8B0), fontSize = 11.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
                 }
             }
             Spacer(Modifier.height(24.dp))
             Text(exp.title, color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Black)
             Spacer(Modifier.height(12.dp))
-            Text(exp.desc, color = Color(0xFF94A3B8), fontSize = 15.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
+            Text(exp.desc, color = Color(0xFF94ACBA), fontSize = 15.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium)
             Spacer(Modifier.height(32.dp))
-            HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
+            HorizontalDivider(color = Color(0xFF142233), thickness = 1.dp)
             Spacer(Modifier.height(24.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
+                Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(8.dp))
-                Text(exp.duration, color = Color(0xFF64748B), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text(exp.duration, color = Color(0xFF6E8699), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.weight(1f))
-                Text("Start Lab →", color = Color(0xFF3B82F6), fontWeight = FontWeight.Black, fontSize = 16.sp)
+                Text("Start Lab →", color = Color(0xFF1FD7C4), fontWeight = FontWeight.Black, fontSize = 16.sp)
             }
         }
     }

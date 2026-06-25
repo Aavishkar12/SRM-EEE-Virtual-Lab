@@ -82,7 +82,7 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 paper.unit.contains(searchQuery, ignoreCase = true)
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -108,9 +108,9 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFF64748B), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFF6E8699), fontSize = 14.sp)
                     }
                 }
 
@@ -123,7 +123,7 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     ) {
                         Text(
                             "Previous Year\nQuestion Papers",
-                            color = Color(0xFF60A5FA),
+                            color = Color(0xFF5EEAD4),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -131,7 +131,7 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Access a comprehensive archive of cycle test and end-semester question papers to prepare effectively for your exams.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -140,27 +140,27 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // Search Bar
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp))
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
+                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(20.dp))
                                 Spacer(Modifier.width(12.dp))
                                 BasicTextField(
                                     value = searchQuery,
                                     onValueChange = { searchQuery = it },
                                     textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
-                                    cursorBrush = SolidColor(Color(0xFF3B82F6)),
+                                    cursorBrush = SolidColor(Color(0xFF1FD7C4)),
                                     modifier = Modifier.weight(1f),
                                     decorationBox = { innerTextField ->
                                         if (searchQuery.isEmpty()) {
-                                            Text("Search subject or unit...", color = Color(0xFF475569), fontSize = 15.sp)
+                                            Text("Search subject or unit...", color = Color(0xFF3D5468), fontSize = 15.sp)
                                         }
                                         innerTextField()
                                     }
@@ -180,11 +180,11 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // User Info Card
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -194,7 +194,7 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                     }
                                     append(". You can read and download PYQs, but only admins can manage them.")
                                 },
-                                color = Color(0xFF64748B),
+                                color = Color(0xFF6E8699),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -209,7 +209,7 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 if (isLoading) {
                     item {
                         CircularProgressIndicator(
-                            color = Color(0xFF3B82F6),
+                            color = Color(0xFF1FD7C4),
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -268,9 +268,9 @@ fun PyqScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 @Composable
 fun FilterDropdown(text: String) {
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.5f),
+        color = Color(0xFF0A131F).copy(alpha = 0.5f),
         shape = RoundedCornerShape(10.dp),
-        modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+        modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(10.dp))
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -278,7 +278,7 @@ fun FilterDropdown(text: String) {
         ) {
             Text(text, color = Color.White, fontSize = 14.sp)
             Spacer(Modifier.width(8.dp))
-            Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+            Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, tint = Color(0xFF6E8699), modifier = Modifier.size(16.dp))
         }
     }
 }
@@ -297,7 +297,7 @@ fun PyqCard(paper: PyqData) {
     )
 
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -306,9 +306,9 @@ fun PyqCard(paper: PyqData) {
                 width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF1E293B),
-                        Color(0xFF3B82F6).copy(alpha = glowAlpha),
-                        Color(0xFF1E293B)
+                        Color(0xFF142233),
+                        Color(0xFF1FD7C4).copy(alpha = glowAlpha),
+                        Color(0xFF142233)
                     )
                 ),
                 shape = RoundedCornerShape(20.dp)
@@ -317,56 +317,56 @@ fun PyqCard(paper: PyqData) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    color = Color(0xFF3B82F6).copy(alpha = 0.15f),
+                    color = Color(0xFF1FD7C4).copy(alpha = 0.15f),
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.size(44.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.AutoMirrored.Outlined.InsertDriveFile, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(22.dp))
+                        Icon(Icons.AutoMirrored.Outlined.InsertDriveFile, contentDescription = null, tint = Color(0xFF1FD7C4), modifier = Modifier.size(22.dp))
                     }
                 }
                 Spacer(Modifier.weight(1f))
                 Surface(
-                    color = Color(0xFF1E293B),
+                    color = Color(0xFF142233),
                     shape = RoundedCornerShape(20.dp)
                 ) {
-                    Text(paper.year, color = Color(0xFF94A3B8), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+                    Text(paper.year, color = Color(0xFF94ACBA), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
                 }
             }
 
             Spacer(Modifier.height(20.dp))
             Text(paper.examType, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-            Text(paper.subject, color = Color(0xFF64748B), fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp))
+            Text(paper.subject, color = Color(0xFF6E8699), fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp))
 
             Spacer(Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(16.dp))
+                Icon(Icons.Default.MenuBook, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(8.dp))
-                Text(paper.units, color = Color(0xFF64748B), fontSize = 14.sp)
+                Text(paper.units, color = Color(0xFF6E8699), fontSize = 14.sp)
             }
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(16.dp))
+                Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(8.dp))
-                Text(paper.date, color = Color(0xFF64748B), fontSize = 14.sp)
+                Text(paper.date, color = Color(0xFF6E8699), fontSize = 14.sp)
             }
 
             Spacer(Modifier.height(24.dp))
-            HorizontalDivider(color = Color(0xFF1E293B), thickness = 1.dp)
+            HorizontalDivider(color = Color(0xFF142233), thickness = 1.dp)
             Spacer(Modifier.height(20.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(paper.size, color = Color(0xFF475569), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                Text(paper.size, color = Color(0xFF3D5468), fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 Spacer(Modifier.weight(1f))
                 Button(
                     onClick = { },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF142233)),
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                 ) {
-                    Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFF60A5FA), modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.FileDownload, contentDescription = null, tint = Color(0xFF5EEAD4), modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Download PDF", color = Color(0xFF60A5FA), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    Text("Download PDF", color = Color(0xFF5EEAD4), fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

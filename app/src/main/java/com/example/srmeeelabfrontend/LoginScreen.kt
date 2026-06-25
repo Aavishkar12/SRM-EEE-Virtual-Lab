@@ -113,7 +113,7 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -143,7 +143,7 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                                 .size(40.dp)
                                 .border(
                                     width = 1.dp,
-                                    brush = Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFFA855F7))),
+                                    brush = Brush.linearGradient(listOf(Color(0xFF8B7CF6), Color(0xFFB57AFA))),
                                     shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
@@ -161,13 +161,13 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                     }
 
                     Surface(
-                        color = Color(0xFF0F172A),
+                        color = Color(0xFF0A131F),
                         shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(10.dp))
+                        modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(10.dp))
                     ) {
                         Text(
                             text = currentTime,
-                            color = Color(0xFF60A5FA),
+                            color = Color(0xFF5EEAD4),
                             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -184,8 +184,8 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                         .fillMaxWidth()
                         .scale(0.9f + (contentVisible.value * 0.1f))
                         .alpha(contentVisible.value)
-                        .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
-                        .background(Color(0xFF080C14).copy(alpha = 0.9f), RoundedCornerShape(24.dp))
+                        .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
+                        .background(Color(0xFF030608).copy(alpha = 0.9f), RoundedCornerShape(24.dp))
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -196,7 +196,7 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                             .border(
                                 width = 2.dp,
                                 brush = Brush.linearGradient(
-                                    colors = listOf(Color(0xFF6366F1), Color(0xFFA855F7))
+                                    colors = listOf(Color(0xFF8B7CF6), Color(0xFFB57AFA))
                                 ),
                                 shape = CircleShape
                             ),
@@ -227,7 +227,7 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Use your SRM Academia credentials to continue",
-                        color = Color(0xFF94A3B8),
+                        color = Color(0xFF94ACBA),
                         fontSize = 15.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Medium,
@@ -244,14 +244,14 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                             value = email,
                             onValueChange = { email = it; errorMessage = null },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("yourname@srmist.edu.in", color = Color(0xFF475569)) },
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF6366F1)) },
+                            placeholder = { Text("yourname@srmist.edu.in", color = Color(0xFF3D5468)) },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF8B7CF6)) },
                             shape = RoundedCornerShape(14.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF3B82F6),
-                                unfocusedBorderColor = Color(0xFF1E293B),
-                                focusedContainerColor = Color(0xFF0F172A),
-                                unfocusedContainerColor = Color(0xFF0F172A),
+                                focusedBorderColor = Color(0xFF1FD7C4),
+                                unfocusedBorderColor = Color(0xFF142233),
+                                focusedContainerColor = Color(0xFF0A131F),
+                                unfocusedContainerColor = Color(0xFF0A131F),
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White
                             ),
@@ -270,16 +270,16 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                             value = password,
                             onValueChange = { password = it; errorMessage = null },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("••••••••", color = Color(0xFF475569)) },
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF6366F1)) },
+                            placeholder = { Text("••••••••", color = Color(0xFF3D5468)) },
+                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF8B7CF6)) },
                             shape = RoundedCornerShape(14.dp),
                             visualTransformation = PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF3B82F6),
-                                unfocusedBorderColor = Color(0xFF1E293B),
-                                focusedContainerColor = Color(0xFF0F172A),
-                                unfocusedContainerColor = Color(0xFF0F172A),
+                                focusedBorderColor = Color(0xFF1FD7C4),
+                                unfocusedBorderColor = Color(0xFF142233),
+                                focusedContainerColor = Color(0xFF0A131F),
+                                unfocusedContainerColor = Color(0xFF0A131F),
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White
                             ),
@@ -288,7 +288,7 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                         )
                         Text(
                             text = "Same password as your SRM Academia portal",
-                            color = Color(0xFF475569),
+                            color = Color(0xFF3D5468),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.align(Alignment.End).padding(top = 6.dp)
@@ -299,15 +299,15 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                     if (errorMessage != null) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Surface(
-                            color = Color(0xFF450A0A).copy(alpha = 0.6f),
+                            color = Color(0xFF2E1212).copy(alpha = 0.6f),
                             shape = RoundedCornerShape(10.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF991B1B), RoundedCornerShape(10.dp))
+                                .border(1.dp, Color(0xFF8E2A2A), RoundedCornerShape(10.dp))
                         ) {
                             Text(
                                 text = errorMessage!!,
-                                color = Color(0xFFFCA5A5),
+                                color = Color(0xFFFFA3A3),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(12.dp),
                                 textAlign = TextAlign.Center
@@ -325,11 +325,11 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
                             .height(56.dp)
                             .border(
                                 width = 1.dp,
-                                brush = Brush.linearGradient(listOf(Color(0xFF3B82F6), Color(0xFF8B5CF6))),
+                                brush = Brush.linearGradient(listOf(Color(0xFF1FD7C4), Color(0xFF9D7CF7))),
                                 shape = RoundedCornerShape(28.dp)
                             ),
                         shape = RoundedCornerShape(28.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9488)),
                         enabled = !isLoading
                     ) {
                         if (isLoading) {
@@ -347,13 +347,13 @@ fun LoginScreen(onLoginSuccess: (UserSession) -> Unit) {
 
                     // Footer Notice
                     Surface(
-                        color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                        color = Color(0xFF0A131F).copy(alpha = 0.5f),
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.border(1.dp, Color(0xFF1E293B), RoundedCornerShape(16.dp))
+                        modifier = Modifier.border(1.dp, Color(0xFF142233), RoundedCornerShape(16.dp))
                     ) {
                         Text(
                             text = "Your credentials are used only to authenticate with SRM Academia. They are not stored on this platform.",
-                            color = Color(0xFF64748B),
+                            color = Color(0xFF6E8699),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(18.dp),

@@ -11,6 +11,7 @@ object RetrofitClient {
     // Your deployed website (handles both the website AND the API the app talks to)
     private const val BASE_URL = "https://srm-eee-vlab.onrender.com/"
 
+
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }

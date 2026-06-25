@@ -94,7 +94,7 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
         videos.filter { it.title.contains(searchQuery, ignoreCase = true) }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF020617))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF05080D))) {
         AnimatedBackground()
 
         Scaffold(
@@ -120,9 +120,9 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                             .clickable { onBack() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFFF87171).copy(alpha = 0.7f), modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color(0xFFFF6B6B).copy(alpha = 0.7f), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Back to Study Room", color = Color(0xFFF87171).copy(alpha = 0.7f), fontSize = 14.sp)
+                        Text("Back to Study Room", color = Color(0xFFFF6B6B).copy(alpha = 0.7f), fontSize = 14.sp)
                     }
                 }
 
@@ -135,7 +135,7 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     ) {
                         Text(
                             "Video Tutorials",
-                            color = Color(0xFFF87171),
+                            color = Color(0xFFFF6B6B),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.ExtraBold,
                             lineHeight = 44.sp
@@ -143,7 +143,7 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             "Visual learning made easy. Watch complete breakdowns, circuit building, and calculations for every lab experiment.",
-                            color = Color(0xFF94A3B8),
+                            color = Color(0xFF94ACBA),
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         )
@@ -152,27 +152,27 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // Search Bar
                         Surface(
-                            color = Color(0xFF0F172A).copy(alpha = 0.5f),
+                            color = Color(0xFF0A131F).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF142233), RoundedCornerShape(12.dp))
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
+                                Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF3D5468), modifier = Modifier.size(20.dp))
                                 Spacer(Modifier.width(12.dp))
                                 BasicTextField(
                                     value = searchQuery,
                                     onValueChange = { searchQuery = it },
                                     textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
-                                    cursorBrush = SolidColor(Color(0xFFF87171)),
+                                    cursorBrush = SolidColor(Color(0xFFFF6B6B)),
                                     modifier = Modifier.weight(1f),
                                     decorationBox = { innerTextField ->
                                         if (searchQuery.isEmpty()) {
-                                            Text("Search videos...", color = Color(0xFF475569), fontSize = 15.sp)
+                                            Text("Search videos...", color = Color(0xFF3D5468), fontSize = 15.sp)
                                         }
                                         innerTextField()
                                     }
@@ -184,11 +184,11 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
 
                         // User Info Card
                         Surface(
-                            color = Color(0xFF171717).copy(alpha = 0.5f),
+                            color = Color(0xFF0D1318).copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, Color(0xFF262626).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFF1A2533).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         ) {
                             Text(
                                 text = buildAnnotatedString {
@@ -198,7 +198,7 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                                     }
                                     append(". You can watch tutorials, but only admins can manage the video archive.")
                                 },
-                                color = Color(0xFF737373),
+                                color = Color(0xFF7A8C99),
                                 fontSize = 13.sp,
                                 modifier = Modifier.padding(16.dp),
                                 lineHeight = 20.sp
@@ -213,13 +213,13 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                 when {
                     isLoading -> item {
                         Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = Color(0xFFF87171))
+                            CircularProgressIndicator(color = Color(0xFFFF6B6B))
                         }
                     }
                     errorMessage != null -> item {
                         Text(
                             errorMessage ?: "Something went wrong",
-                            color = Color(0xFFF87171),
+                            color = Color(0xFFFF6B6B),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -227,7 +227,7 @@ fun TutorialsScreen(onBack: () -> Unit, onNavigate: (String) -> Unit) {
                     filteredVideos.isEmpty() -> item {
                         Text(
                             if (searchQuery.isBlank()) "No video tutorials uploaded yet." else "No videos match \"$searchQuery\".",
-                            color = Color(0xFF64748B),
+                            color = Color(0xFF6E8699),
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
                         )
@@ -280,12 +280,12 @@ fun VideoCard(video: VideoData) {
     val uriHandler = LocalUriHandler.current
 
     Surface(
-        color = Color(0xFF0F172A).copy(alpha = 0.85f),
+        color = Color(0xFF0A131F).copy(alpha = 0.85f),
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .border(1.dp, Color(0xFF1E293B), RoundedCornerShape(24.dp))
+            .border(1.dp, Color(0xFF142233), RoundedCornerShape(24.dp))
             .clickable { if (video.url.isNotBlank()) uriHandler.openUri(video.url) }
     ) {
         Column {
@@ -295,7 +295,7 @@ fun VideoCard(video: VideoData) {
                     .fillMaxWidth()
                     .height(200.dp)
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                    .background(Color(0xFF1E293B))
+                    .background(Color(0xFF142233))
             ) {
                 // Placeholder image look
                 Box(
@@ -327,13 +327,13 @@ fun VideoCard(video: VideoData) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
-                        color = Color(0xFFF87171).copy(alpha = 0.1f),
+                        color = Color(0xFFFF6B6B).copy(alpha = 0.1f),
                         shape = RoundedCornerShape(6.dp)
                     ) {
-                        Text(video.expId, color = Color(0xFFF87171), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                        Text(video.expId, color = Color(0xFFFF6B6B), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                     }
                     Spacer(Modifier.width(12.dp))
-                    Text("${video.views} views", color = Color(0xFF64748B), fontSize = 12.sp)
+                    Text("${video.views} views", color = Color(0xFF6E8699), fontSize = 12.sp)
                 }
                 Spacer(Modifier.height(12.dp))
                 Text(video.title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
