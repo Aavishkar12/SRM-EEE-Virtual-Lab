@@ -9,6 +9,7 @@ import { authenticateWithAcademia } from "@/lib/academia-auth"
 export const runtime = "nodejs"
 
 export const { handlers: { GET, POST }, auth } = NextAuth({
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -41,6 +42,8 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
           role: await getUserRole(authenticatedUser.email),
           registrationNumber: authenticatedUser.registrationNumber,
           department: authenticatedUser.department,
+          branch: authenticatedUser.branch,
+          year: authenticatedUser.year,
           semester: authenticatedUser.semester,
           section: authenticatedUser.section,
           batch: authenticatedUser.batch,
@@ -70,6 +73,8 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
         token.role = user.role
         token.registrationNumber = user.registrationNumber
         token.department = user.department
+        token.branch = user.branch
+        token.year = user.year
         token.semester = user.semester
         token.section = user.section
         token.batch = user.batch
@@ -83,6 +88,8 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
         session.user.role = token.role
         session.user.registrationNumber = token.registrationNumber
         session.user.department = token.department
+        session.user.branch = token.branch
+        session.user.year = token.year
         session.user.semester = token.semester
         session.user.section = token.section
         session.user.batch = token.batch

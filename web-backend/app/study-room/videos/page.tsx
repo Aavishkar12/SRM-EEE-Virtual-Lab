@@ -1,14 +1,15 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, PlayCircle, BookOpen, Video, Clock, Search, User, Pencil, Trash2, Upload } from "lucide-react"
-import { FloatingDock } from "@/components/ui/floating-dock"
 import { Home, Users, Info, Settings, LogIn, FileQuestion, Library } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { SrmAccessGate } from "@/components/srm-access-gate"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { apiUrl } from "@/lib/api"
 
 const DEFAULT_THUMBNAILS = [
   "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=500&q=80",
@@ -39,7 +40,7 @@ export default function VideosPage() {
 
   const fetchVideos = async () => {
     try {
-      const res = await fetch("/api/study-room/videos")
+      const res = await fetch(apiUrl("/api/study-room/videos"))
       if (res.ok) {
         const data = await res.json()
         setVideos(data)
@@ -103,13 +104,13 @@ export default function VideosPage() {
     try {
       let res
       if (editingId) {
-        res = await fetch("/api/study-room/videos", {
+        res = await fetch(apiUrl("/api/study-room/videos"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingId, ...updatedForm }),
         })
       } else {
-        res = await fetch("/api/study-room/videos", {
+        res = await fetch(apiUrl("/api/study-room/videos"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedForm),
@@ -133,7 +134,7 @@ export default function VideosPage() {
     if (!confirm("Are you sure you want to delete this video?")) return
 
     try {
-      const res = await fetch(`/api/study-room/videos?id=${id}`, {
+      const res = await fetch(apiUrl(`/api/study-room/videos?id=${id}`), {
         method: "DELETE",
       })
 
@@ -151,24 +152,14 @@ export default function VideosPage() {
     }
   }
 
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" },
-    { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
 
   return (
     <SrmAccessGate
       title="SRM academic resource access"
       description="Video tutorials are visible only to signed-in SRM users. Admins can upload, edit, and delete video links dynamically."
     >
-    <div className="text-white selection:bg-red-500/30">
+    <div className="min-h-screen bg-[#050508] text-white selection:bg-red-500/30">
+      <NavDock />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 pb-32">
         {/* Header */}
         <div className="mb-12">
@@ -341,7 +332,6 @@ export default function VideosPage() {
       </div>
 
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
       </div>
     </div>
     </SrmAccessGate>

@@ -1,14 +1,15 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, Calculator, BookOpen, Zap, Activity, Cpu, Download, User, Pencil, Trash2, Upload } from "lucide-react"
-import { FloatingDock } from "@/components/ui/floating-dock"
 import { Home, Users, Info, Settings, LogIn, FileQuestion, Library } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { SrmAccessGate } from "@/components/srm-access-gate"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { apiUrl } from "@/lib/api"
 
 const CATEGORIES = ["DC Circuits", "AC Circuits", "Digital Electronics"]
 
@@ -29,7 +30,7 @@ export default function FormulaSheetPage() {
 
   const fetchFormulas = async () => {
     try {
-      const res = await fetch("/api/study-room/formulas")
+      const res = await fetch(apiUrl("/api/study-room/formulas"))
       if (res.ok) {
         const data = await res.json()
         setFormulas(data)
@@ -89,13 +90,13 @@ export default function FormulaSheetPage() {
     try {
       let res
       if (editingId) {
-        res = await fetch("/api/study-room/formulas", {
+        res = await fetch(apiUrl("/api/study-room/formulas"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingId, ...formData }),
         })
       } else {
-        res = await fetch("/api/study-room/formulas", {
+        res = await fetch(apiUrl("/api/study-room/formulas"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
@@ -119,7 +120,7 @@ export default function FormulaSheetPage() {
     if (!confirm("Are you sure you want to delete this formula?")) return
 
     try {
-      const res = await fetch(`/api/study-room/formulas?id=${id}`, {
+      const res = await fetch(apiUrl(`/api/study-room/formulas?id=${id}`), {
         method: "DELETE",
       })
 
@@ -166,24 +167,14 @@ export default function FormulaSheetPage() {
     }
   }
 
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" },
-    { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
 
   return (
     <SrmAccessGate
       title="SRM academic resource access"
       description="Formula sheets are restricted to signed-in SRM users. Admins can upload, edit, and delete formula cards dynamically."
     >
-    <div className="text-white selection:bg-yellow-500/30">
+    <div className="min-h-screen bg-[#050508] text-white selection:bg-yellow-500/30">
+      <NavDock />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 pb-32">
         {/* Header */}
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -329,7 +320,6 @@ export default function FormulaSheetPage() {
       </div>
 
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
       </div>
     </div>
     </SrmAccessGate>

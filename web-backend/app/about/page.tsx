@@ -1,423 +1,392 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 
-import { useRef, useState, useEffect } from "react"
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+import { useState } from "react"
+import { motion } from "framer-motion"
 import { DigitalClock } from "@/components/digital-clock"
-import { DynamicSidebar } from "@/components/dynamic-sidebar"
 import Link from "next/link"
-import { Mail, ExternalLink, Home, BookOpen, Settings, LogIn, FileQuestion, Users, Info, ChevronRight, Lightbulb, Microscope, BookOpenCheck, Users2, Sparkles, Library, User } from "lucide-react"
-import { FloatingDock } from "@/components/ui/floating-dock"
-import { AuroraBackground } from "@/components/aurora-background"
+import {
+  Mail,
+  ExternalLink,
+  Home,
+  BookOpen,
+  Settings,
+  LogIn,
+  FileQuestion,
+  Users,
+  Info,
+  ChevronRight,
+  Lightbulb,
+  Microscope,
+  BookOpenCheck,
+  Users2,
+  Sparkles,
+  Library,
+  User,
+  FlaskConical,
+  GraduationCap,
+  Clock,
+  Zap,
+  CircuitBoard,
+  BookMarked,
+} from "lucide-react"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
-import { GoogleGeminiEffect } from "@/components/ui/google-gemini-effect"
 import { cn } from "@/lib/utils"
 
+const stats = [
+  { label: "Experiments", value: "12+", icon: FlaskConical, color: "blue" },
+  { label: "Quiz Questions", value: "50+", icon: BookMarked, color: "purple" },
+  { label: "Study Resources", value: "30+", icon: GraduationCap, color: "indigo" },
+  { label: "24 / 7 Access", value: "∞", icon: Clock, color: "cyan" },
+]
+
+const features = [
+  {
+    title: "Interactive Simulations",
+    description:
+      "Run circuit simulations and observe real-time behavior of electrical systems without physical hardware.",
+    Icon: CircuitBoard,
+  },
+  {
+    title: "Hands-On Learning",
+    description:
+      "Step-by-step guided experiments reinforce theoretical knowledge and develop essential technical skills.",
+    Icon: Microscope,
+  },
+  {
+    title: "Comprehensive Coverage",
+    description:
+      "Covers the full 26EEE1001T Basic Electrical Engineering curriculum — from DC circuits to AC theory.",
+    Icon: BookOpenCheck,
+  },
+  {
+    title: "Expert Guidance",
+    description:
+      "Content designed and reviewed by faculty from the Department of EEE, SRM IST Kattankulathur.",
+    Icon: Users2,
+  },
+  {
+    title: "Modern Stack",
+    description:
+      "Built with Next.js, real-time data, and interactive UI so the learning experience stays current and accessible.",
+    Icon: Sparkles,
+  },
+  {
+    title: "Self-Paced Quizzes",
+    description:
+      "Test your understanding with quizzes mapped to each experiment, with instant feedback and scoring.",
+    Icon: Lightbulb,
+  },
+]
+
+const faculty = [
+  {
+    name: "Dr. S. Vidyasagar",
+    position: "Assistant Professor",
+    email: "vidyasagar@srm.edu.in",
+  },
+  {
+    name: "Dr. K. Saravanan",
+    position: "Associate Professor",
+    email: "saravanan@srm.edu.in",
+  },
+  {
+    name: "Dr. D. Sattianandan",
+    position: "Associate Professor",
+    email: "sattianandan@srm.edu.in",
+  },
+  {
+    name: "Dr. V. Kalyanasundaram",
+    position: "Assistant Professor",
+    email: "kalyanasundaram@srm.edu.in",
+  },
+]
+
+const objectives = [
+  "Provide hands-on experience with fundamental electrical and electronics experiments in a safe virtual environment.",
+  "Strengthen theoretical knowledge through interactive simulations and practical applications.",
+  "Cultivate critical thinking, data analysis, and problem-solving skills essential for an engineer.",
+  "Establish a strong foundation for advanced studies in power systems, electronics, and control engineering.",
+]
+
 export default function AboutPage() {
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" }, { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
-
-  // For the scroll-triggered animations
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  })
-
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.3], [0.2, 1.2])
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.3], [0.15, 1.2])
-  const pathLengthThird = useTransform(scrollYProgress, [0, 0.3], [0.1, 1.2])
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.3], [0.05, 1.2])
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.3], [0, 1.2])
-
-  // For faculty card hover effect
   const [hoveredFaculty, setHoveredFaculty] = useState<number | null>(null)
 
-  // For feature cards animation
-  const featureIcons = [
-    <Lightbulb key="interactive" className="h-8 w-8 text-blue-400" />,
-    <Microscope key="hands-on" className="h-8 w-8 text-blue-400" />,
-    <BookOpenCheck key="comprehensive" className="h-8 w-8 text-blue-400" />,
-    <Users2 key="expert" className="h-8 w-8 text-blue-400" />,
-    <Sparkles key="modern" className="h-8 w-8 text-blue-400" />,
-  ]
-
-  // For animated counter
-  const [count, setCount] = useState({ students: 0, experiments: 0, years: 0, publications: 0 })
-  const targetCount = { students: 1200, experiments: 45, years: 15, publications: 78 }
-  
-  useEffect(() => {
-    const duration = 2000 // 2 seconds
-    const frameRate = 1000 / 60 // 60 fps
-    const totalFrames = duration / frameRate
-    
-    let frame = 0
-    const counter = setInterval(() => {
-      frame++
-      const progress = frame / totalFrames
-      
-      if (frame <= totalFrames) {
-        setCount({
-          students: Math.floor(progress * targetCount.students),
-          experiments: Math.floor(progress * targetCount.experiments),
-          years: Math.floor(progress * targetCount.years),
-          publications: Math.floor(progress * targetCount.publications)
-        })
-      } else {
-        clearInterval(counter)
-        setCount(targetCount)
-      }
-    }, frameRate)
-    
-    return () => clearInterval(counter)
-  }, [])
+  const colorMap: Record<string, string> = {
+    blue: "from-blue-900/40 to-blue-800/10 border-blue-800/30 text-blue-400",
+    purple: "from-purple-900/40 to-purple-800/10 border-purple-800/30 text-purple-400",
+    indigo: "from-indigo-900/40 to-indigo-800/10 border-indigo-800/30 text-indigo-400",
+    cyan: "from-cyan-900/40 to-cyan-800/10 border-cyan-800/30 text-cyan-400",
+  }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden" ref={containerRef}>
-      {/* Dynamic Sidebar */}
-      <DynamicSidebar />
-      
-      {/* Centered navigation at the top */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
-      </div>
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
 
-      <div className="absolute top-4 left-20 md:left-48 z-20">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center"
-        >
-          <div className="h-10 bg-white text-blue-800 font-bold px-3 py-1 rounded">SRM EEE Virtual Lab</div>
-        </motion.div>
-      </div>
 
       <DigitalClock />
 
-      {/* Hero Section with Aurora Background */}
-      <AuroraBackground className="h-[70vh] flex items-center justify-center mb-16">
-        <div className="text-center z-10 px-4">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
-          >
-            About SRM EEE Virtual Lab
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl md:text-2xl text-neutral-200 max-w-3xl mx-auto"
-          >
-            Empowering the next generation of electrical engineers through innovation and excellence
-          </motion.p>
-        </div>
-      </AuroraBackground>
-
-      <div className="w-full max-w-6xl mx-auto px-4 py-8">
-        {/* Gemini Effect Section */}
-        <div className="h-[50vh] mb-24 relative">
-          <GoogleGeminiEffect
-            pathLengths={[pathLengthFirst, pathLengthSecond, pathLengthThird, pathLengthFourth, pathLengthFifth]}
-            title="Excellence in Engineering Education"
-            description="Discover the future of electrical engineering at SRM University"
-          />
+      
+      <NavDock />
+{/* Hero */}
+      <div className="relative flex min-h-[55vh] flex-col items-center justify-center overflow-hidden px-4 pt-28 sm:pt-32 pb-16 text-center">
+        {/* Background glow */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[800px] rounded-full bg-blue-600/10 blur-[120px]" />
+          <div className="absolute left-1/4 top-1/3 h-[300px] w-[300px] rounded-full bg-purple-600/8 blur-[80px]" />
         </div>
 
-        {/* About Section */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          className="mb-24"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm text-blue-300"
         >
-          <div className="prose prose-invert max-w-none">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
+          <Zap className="h-3.5 w-3.5" />
+          SRM Institute of Science and Technology
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-6 max-w-4xl text-5xl font-bold tracking-tight md:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-200 to-blue-400"
+        >
+          EEE Virtual Lab
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-2xl text-lg text-neutral-400 md:text-xl"
+        >
+          An interactive virtual laboratory for the Department of Electrical &amp; Electronics Engineering —
+          empowering students with 24/7 access to experiments, simulations, and study resources.
+        </motion.p>
+      </div>
+
+      <div className="mx-auto w-full max-w-6xl px-4 py-8 space-y-24">
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-2 gap-5 md:grid-cols-4"
+        >
+          {stats.map(({ label, value, icon: Icon, color }) => (
+            <div
+              key={label}
+              className={cn(
+                "rounded-2xl border bg-gradient-to-br p-6 text-center backdrop-blur-sm",
+                colorMap[color],
+              )}
             >
-              <h2 className="text-3xl font-bold mb-8 text-white inline-block relative">
-                Our Mission
-                <span className="absolute -bottom-2 left-0 w-1/3 h-1 bg-blue-500"></span>
-              </h2>
-              <p className="text-xl text-neutral-300 mb-6 leading-relaxed">
-                The SRM EEE Virtual Lab is an integral resource of the Electrical and Electronics Engineering Department at SRM
-                Institute of Science and Technology, Kattankulathur. The lab is dedicated to offering engineering students
-                a comprehensive platform to explore, experiment, and develop a robust understanding of the fundamental
-                principles of electrical and electronics engineering.
-              </p>
-
-              <p className="text-xl text-neutral-300 mb-12 leading-relaxed">
-                We are committed to enriching the practical application of theoretical knowledge, empowering students to
-                enhance their problem-solving skills, technical expertise, and foster a passion for innovation within the
-                engineering domain.
-              </p>
-            </motion.div>
-
-            {/* Stats Counter Section */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24"
-            >
-              <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/10 backdrop-blur-sm border border-blue-800/30 rounded-xl p-6 text-center">
-                <h3 className="text-4xl font-bold text-blue-400 mb-2">{count.students}+</h3>
-                <p className="text-neutral-300">Students Trained</p>
-              </div>
-              <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/10 backdrop-blur-sm border border-purple-800/30 rounded-xl p-6 text-center">
-                <h3 className="text-4xl font-bold text-purple-400 mb-2">{count.experiments}</h3>
-                <p className="text-neutral-300">Experiments</p>
-              </div>
-              <div className="bg-gradient-to-br from-indigo-900/40 to-indigo-800/10 backdrop-blur-sm border border-indigo-800/30 rounded-xl p-6 text-center">
-                <h3 className="text-4xl font-bold text-indigo-400 mb-2">{count.years}</h3>
-                <p className="text-neutral-300">Years of Excellence</p>
-              </div>
-              <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-800/10 backdrop-blur-sm border border-cyan-800/30 rounded-xl p-6 text-center">
-                <h3 className="text-4xl font-bold text-cyan-400 mb-2">{count.publications}</h3>
-                <p className="text-neutral-300">Research Publications</p>
-              </div>
-            </motion.div>
-
-            {/* Faculty Team Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white inline-block relative">
-                Faculty Team
-                <span className="absolute -bottom-2 left-0 w-1/3 h-1 bg-blue-500"></span>
-              </h2>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
-              {[
-                {
-                  name: "Dr. K. Saravanan",
-                  position: "Associate Professor",
-                  email: "saravanan@srm.edu.in"
-                },
-                {
-                  name: "Dr. S. Vidyasagar",
-                  position: "Assistant Professor",
-                  email: "vidyasagar@srm.edu.in"
-                },
-                {
-                  name: "Dr. D. Sattianandan",
-                  position: "Associate Professor",
-                  email: "sattianandan@srm.edu.in"
-                },
-                {
-                  name: "Dr. V. Kalyanasundaram",
-                  position: "Assistant Professor",
-                  email: "kalyanasundaram@srm.edu.in"
-                }
-              ].map((faculty, index) => (
-                <motion.div 
-                  key={faculty.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative"
-                  onMouseEnter={() => setHoveredFaculty(index)}
-                  onMouseLeave={() => setHoveredFaculty(null)}
-                >
-                  <div className="relative h-full rounded-2xl border border-neutral-800 p-2 overflow-hidden">
-                    <GlowingEffect spread={40} glow={hoveredFaculty === index} disabled={false} proximity={64} inactiveZone={0.01} />
-                    <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-0.75 p-6 bg-neutral-900/80 backdrop-blur-sm shadow-md">
-                      <div className="relative flex flex-1 flex-col justify-between gap-3">
-                        <div className="space-y-3">
-                          <h3 className="text-xl font-bold text-white">{faculty.name}</h3>
-                          <p className="text-blue-400 mt-1">{faculty.position}</p>
-                          <p className="text-neutral-400 mt-1">Department of Electrical and Electronics Engineering</p>
-                          <p className="text-neutral-400">Kattankulathur 603 203</p>
-                          <Link
-                            href={`mailto:${faculty.email}`}
-                            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mt-4 group"
-                          >
-                            <Mail className="h-4 w-4" /> 
-                            <span>{faculty.email}</span>
-                            <ChevronRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+              <Icon className={cn("mx-auto mb-3 h-7 w-7", colorMap[color].split(" ").find(c => c.startsWith("text-")))} />
+              <h3 className="text-4xl font-bold mb-1">{value}</h3>
+              <p className="text-sm text-neutral-400">{label}</p>
             </div>
+          ))}
+        </motion.div>
 
-            {/* Objectives Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white inline-block relative">
-                Objectives of the Lab
-                <span className="absolute -bottom-2 left-0 w-1/3 h-1 bg-blue-500"></span>
-              </h2>
-            </motion.div>
+        {/* Mission */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="relative mb-8 inline-block text-3xl font-bold text-white">
+            Our Mission
+            <span className="absolute -bottom-2 left-0 h-1 w-1/3 rounded-full bg-blue-500" />
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            <p className="text-lg leading-relaxed text-neutral-300">
+              The SRM EEE Virtual Lab is a resource of the Electrical and Electronics Engineering Department
+              at SRM Institute of Science and Technology, Kattankulathur. The lab gives engineering students
+              a comprehensive platform to explore, experiment, and build a robust understanding of the core
+              principles of electrical and electronics engineering.
+            </p>
+            <p className="text-lg leading-relaxed text-neutral-300">
+              We are committed to bridging the gap between theory and practice — empowering students to
+              enhance their problem-solving skills, strengthen technical expertise, and foster a passion for
+              innovation in the engineering domain, anytime and from anywhere.
+            </p>
+          </div>
+        </motion.section>
 
-            <div className="mb-24">
-              {[
-                "To offer students hands-on experience with fundamental electrical and electronics experiments.",
-                "To strengthen theoretical knowledge through practical applications and simulations.",
-                "To cultivate critical thinking, teamwork, and effective problem-solving skills.",
-                "To establish a robust foundation for advanced studies in electrical and electronics engineering."
-              ].map((objective, index) => (
-                <motion.div 
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="flex items-start gap-4 mb-6"
-                >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-900/50 border border-blue-700/50 flex items-center justify-center">
-                    <span className="text-blue-400 font-bold">{index + 1}</span>
-                  </div>
-                  <p className="text-lg text-neutral-300 pt-1.5">{objective}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Key Features Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white inline-block relative">
-                Key Features
-                <span className="absolute -bottom-2 left-0 w-1/3 h-1 bg-blue-500"></span>
-              </h2>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
-              {[
-                {
-                  title: "Interactive Simulations",
-                  description: "Access a variety of simulations that bring complex concepts to life, allowing students to experiment and observe outcomes in a virtual environment."
-                },
-                {
-                  title: "Hands-On Learning",
-                  description: "Engage in practical experiments that reinforce theoretical knowledge and develop essential technical skills."
-                },
-                {
-                  title: "Comprehensive Learning Experience",
-                  description: "Benefit from a curriculum designed to provide a deep understanding of electrical and electronics engineering principles through a blend of theory and practice."
-                },
-                {
-                  title: "Expert Guidance",
-                  description: "Receive mentorship and support from experienced faculty members, ensuring clarity and fostering a comprehensive learning environment."
-                },
-                {
-                  title: "Modern Resources",
-                  description: "Utilize contemporary tools and equipment that align with current industry standards and technological advancements.",
-                  span: true
-                }
-              ].map((feature, index) => (
-                <motion.div 
+        {/* Features */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="relative mb-8 inline-block text-3xl font-bold text-white">
+            Key Features
+            <span className="absolute -bottom-2 left-0 h-1 w-1/3 rounded-full bg-blue-500" />
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => {
+              const { Icon } = feature
+              return (
+                <motion.div
                   key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.4, delay: index * 0.07 }}
                   viewport={{ once: true }}
-                  className={cn(
-                    "group relative overflow-hidden rounded-xl p-1",
-                    feature.span && "md:col-span-2"
-                  )}
+                  className="group rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-sm transition-colors hover:border-blue-800/50"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="bg-neutral-900/80 backdrop-blur-sm border border-neutral-800 rounded-lg p-6 h-full relative z-10 overflow-hidden group-hover:border-blue-800/50 transition-colors duration-300">
-                    <div className="absolute -right-6 -top-6 w-24 h-24 bg-blue-900/20 rounded-full blur-xl group-hover:bg-blue-800/30 transition-colors duration-300"></div>
+                  <div className="mb-4 inline-flex rounded-lg border border-blue-800/30 bg-blue-900/30 p-2.5">
+                    <Icon className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <h3 className="mb-2 text-base font-semibold text-white group-hover:text-blue-300 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-neutral-400">{feature.description}</p>
+                </motion.div>
+              )
+            })}
+          </div>
+        </motion.section>
+
+        {/* Objectives */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="relative mb-8 inline-block text-3xl font-bold text-white">
+            Objectives
+            <span className="absolute -bottom-2 left-0 h-1 w-1/3 rounded-full bg-blue-500" />
+          </h2>
+          <div className="space-y-4">
+            {objectives.map((objective, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                viewport={{ once: true }}
+                className="flex items-start gap-4 rounded-xl border border-neutral-800/60 bg-neutral-900/40 p-5"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-blue-700/50 bg-blue-900/50 text-sm font-bold text-blue-400">
+                  {index + 1}
+                </div>
+                <p className="pt-1.5 text-base text-neutral-300">{objective}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Faculty */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="relative mb-8 inline-block text-3xl font-bold text-white">
+            Faculty Team
+            <span className="absolute -bottom-2 left-0 h-1 w-1/3 rounded-full bg-blue-500" />
+          </h2>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {faculty.map((member, index) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                viewport={{ once: true }}
+                className="relative"
+                onMouseEnter={() => setHoveredFaculty(index)}
+                onMouseLeave={() => setHoveredFaculty(null)}
+              >
+                <div className="relative h-full rounded-2xl border border-neutral-800 p-2">
+                  <GlowingEffect
+                    spread={40}
+                    glow={hoveredFaculty === index}
+                    disabled={false}
+                    proximity={64}
+                    inactiveZone={0.01}
+                  />
+                  <div className="relative flex flex-col gap-3 rounded-xl border-0.75 bg-neutral-900/80 p-5 backdrop-blur-sm">
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 p-2 bg-blue-900/30 rounded-lg border border-blue-800/30 group-hover:bg-blue-800/40 transition-colors duration-300">
-                        {featureIcons[index]}
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 text-lg font-bold text-white">
+                        {member.name.split(" ").slice(-1)[0][0]}
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-blue-400 mb-3 group-hover:text-blue-300 transition-colors duration-300">{feature.title}</h3>
-                        <p className="text-neutral-300 group-hover:text-neutral-200 transition-colors duration-300">{feature.description}</p>
+                        <h3 className="font-bold text-white">{member.name}</h3>
+                        <p className="text-sm text-blue-400">{member.position}</p>
+                        <p className="text-xs text-neutral-500 mt-0.5">
+                          Dept. of Electrical &amp; Electronics Engineering
+                        </p>
                       </div>
                     </div>
+                    <Link
+                      href={`mailto:${member.email}`}
+                      className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 group/link"
+                    >
+                      <Mail className="h-3.5 w-3.5" />
+                      {member.email}
+                      <ChevronRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all group-hover/link:translate-x-0 group-hover/link:opacity-100" />
+                    </Link>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Contact Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white inline-block relative">
-                Contact Us
-                <span className="absolute -bottom-2 left-0 w-1/3 h-1 bg-blue-500"></span>
-              </h2>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              className="mb-24"
-            >
-              <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/10 backdrop-blur-sm border border-blue-900/30 rounded-xl p-8">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Department of Electrical and Electronics Engineering
-                </h3>
-                <p className="text-neutral-300 text-lg">SRM Institute of Science and Technology</p>
-                <p className="text-neutral-300 text-lg">Kattankulathur 603 203</p>
-
-                <div className="mt-8 flex flex-col sm:flex-row gap-6">
-                  <Link
-                    href="mailto:eee@srm.edu.in"
-                    className="flex items-center gap-3 text-blue-400 hover:text-blue-300 group bg-blue-900/20 hover:bg-blue-900/30 transition-colors duration-300 px-4 py-3 rounded-lg border border-blue-800/30"
-                  >
-                    <Mail className="h-5 w-5" /> 
-                    <span className="text-lg">eee@srm.edu.in</span>
-                    <ChevronRight className="h-5 w-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                  </Link>
-                  <Link
-                    href="https://www.srmist.edu.in"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-blue-400 hover:text-blue-300 group bg-blue-900/20 hover:bg-blue-900/30 transition-colors duration-300 px-4 py-3 rounded-lg border border-blue-800/30"
-                  >
-                    <ExternalLink className="h-5 w-5" /> 
-                    <span className="text-lg">www.srmist.edu.in</span>
-                    <ChevronRight className="h-5 w-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                  </Link>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
+        </motion.section>
+
+        {/* Contact */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="pb-16"
+        >
+          <h2 className="relative mb-8 inline-block text-3xl font-bold text-white">
+            Contact Us
+            <span className="absolute -bottom-2 left-0 h-1 w-1/3 rounded-full bg-blue-500" />
+          </h2>
+          <div className="rounded-2xl border border-blue-900/30 bg-gradient-to-br from-blue-900/20 to-purple-900/10 p-8 backdrop-blur-sm">
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-400">
+              <Zap className="h-3 w-3" />
+              Get in Touch
+            </div>
+            <h3 className="mt-4 text-2xl font-bold text-white">
+              Department of Electrical and Electronics Engineering
+            </h3>
+            <p className="mt-1 text-neutral-400">SRM Institute of Science and Technology</p>
+            <p className="text-neutral-400">Kattankulathur 603 203, Tamil Nadu</p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="mailto:eee@srm.edu.in"
+                className="group flex items-center gap-3 rounded-xl border border-blue-800/30 bg-blue-900/20 px-5 py-3 text-blue-400 transition-colors hover:bg-blue-900/30 hover:text-blue-300"
+              >
+                <Mail className="h-5 w-5" />
+                <span>eee@srm.edu.in</span>
+                <ChevronRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+              </Link>
+              <Link
+                href="https://www.srmist.edu.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 rounded-xl border border-blue-800/30 bg-blue-900/20 px-5 py-3 text-blue-400 transition-colors hover:bg-blue-900/30 hover:text-blue-300"
+              >
+                <ExternalLink className="h-5 w-5" />
+                <span>www.srmist.edu.in</span>
+                <ChevronRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+              </Link>
+            </div>
+          </div>
+        </motion.section>
       </div>
     </div>
   )
 }
-

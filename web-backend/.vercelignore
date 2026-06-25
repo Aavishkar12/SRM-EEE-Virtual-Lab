@@ -1,0 +1,29 @@
+# Environment files
+.env
+.env.local
+.env*.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+VERCEL_DEPLOYMENT.md
+
+# Dependencies and Build
+node_modules
+npm-debug.log
+.next
+.turbo
+
+# Test and Coverage
+coverage
+.nyc_output
+
+# OS
+.DS_Store

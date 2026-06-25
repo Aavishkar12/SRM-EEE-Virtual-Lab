@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import { AuthSessionProvider } from "@/components/auth-session-provider";
+import { AppChrome } from "@/components/app-chrome";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -16,6 +17,10 @@ export const metadata = {
     keywords: ["EEE", "virtual lab", "SRM", "electrical engineering", "electronics", "experiments", "KVL", "Thevenin", "circuits"],
     authors: [{ name: "SRM EEE Department" }],
     creator: "SRM Institute of Science and Technology",
+    icons: {
+        icon: "/images/srm-virtual-lab-logo-transparent.png",
+        apple: "/images/srm-virtual-lab-logo-transparent.png",
+    },
 };
 
 
@@ -41,7 +46,7 @@ export default function RootLayout({
                         defaultTheme="dark"
                         enableSystem={false}
                     >
-                        <div className="relative flex min-h-screen flex-col overflow-x-hidden">
+                        <AppChrome>
                             {children}
                             <Toaster
                                 position="top-right"
@@ -53,7 +58,7 @@ export default function RootLayout({
                                     },
                                 }}
                             />
-                        </div>
+                        </AppChrome>
                     </ThemeProvider>
                 </AuthSessionProvider>
             </body>

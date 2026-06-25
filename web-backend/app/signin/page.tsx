@@ -1,26 +1,24 @@
-"use client"
+﻿"use client"
 
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Lock, Mail } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"
-import { SidebarDemo } from "@/components/sidebar-demo"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { NavDock } from "@/components/nav-dock"
+import { BrandLogo } from "@/components/brand-logo"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { signIn } from "next-auth/react"
-import { isSrmEmail } from "@/lib/auth"
+import { isSrmEmail, getStudentDisplayName } from "@/lib/auth"
+import { apiUrl } from "@/lib/api"
+import { motion } from "framer-motion"
 
 export default function SigninPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
+  const [formData, setFormData] = useState({ email: "", password: "" })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
@@ -32,14 +30,8 @@ export default function SigninPage() {
     setIsLoading(true)
 
     try {
-      // Validate form data
-      if (!formData.email || !formData.password) {
-        throw new Error("All fields are required")
-      }
-
-      if (!isSrmEmail(formData.email)) {
-        throw new Error("Only @srmist.edu.in email accounts are allowed")
-      }
+      if (!formData.email || !formData.password) throw new Error("All fields are required")
+      if (!isSrmEmail(formData.email)) throw new Error("Only @srmist.edu.in email accounts are allowed")
 
       const result = await signIn("credentials", {
         email: formData.email,
@@ -47,31 +39,19 @@ export default function SigninPage() {
         redirect: false,
       })
 
-      if (result?.error) {
-        throw new Error("Unable to sign in with this SRM email")
-      }
+      if (result?.error) throw new Error("Invalid credentials — check your SRM Academia email and password")
 
-      // Fetch the session to retrieve the scraped student name
-      let displayName = formData.email.split("@")[0]
+      let displayName = getStudentDisplayName({ email: formData.email })
       try {
-        const sessionResponse = await fetch("/api/auth/session")
+        const sessionResponse = await fetch(apiUrl("/api/auth/session"))
         if (sessionResponse.ok) {
           const sessionData = await sessionResponse.json()
-          if (sessionData?.user?.name) {
-            displayName = sessionData.user.name
-          }
+          if (sessionData?.user) displayName = getStudentDisplayName(sessionData.user)
         }
-      } catch (err) {
-        console.error("Failed to fetch session name", err)
-      }
+      } catch (_) {}
 
-      // Success
-      toast.success(`Welcome, ${displayName}! Redirecting to home...`)
-
-      // Redirect to home page after successful signin
-      setTimeout(() => {
-        router.push("/")
-      }, 1500)
+      toast.success(`Welcome, ${displayName}! Redirecting…`)
+      setTimeout(() => router.push("/"), 1200)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to sign in")
     } finally {
@@ -80,91 +60,108 @@ export default function SigninPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-black text-white overflow-x-hidden">
-      {/* Sidebar */}
-      <div className="fixed left-0 top-0 z-40 h-screen">
-        <SidebarDemo />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#050508] text-white overflow-x-hidden">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-[120px]" />
       </div>
 
+      <NavDock />
       <DigitalClock />
 
-      <div className="relative z-10 flex w-full flex-1 items-center justify-center px-6 py-24 pl-0 md:pl-24">
-        <div className="w-full max-w-md">
-          <Link
-            href="/"
-            className="absolute top-4 left-4 text-blue-400 flex items-center gap-1 hover:text-blue-300 transition-colors pl-0 md:pl-16"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Home</span>
-          </Link>
+      <div className="relative z-10 w-full max-w-md px-4 py-28">
+        <Link
+          href="/"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Back to home
+        </Link>
 
-          <div className="shadow-input mx-auto w-full max-w-md rounded-none bg-black p-4 md:rounded-2xl md:p-8 dark:bg-black border border-neutral-800">
-            <h2 className="text-xl font-bold text-neutral-200">Welcome Back</h2>
-            <p className="mt-2 max-w-sm text-sm text-neutral-300">Sign in with your SRM Academia email and password to open academic resources and attempt quizzes.</p>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-2xl border border-neutral-800/80 bg-neutral-950/80 p-6 sm:p-8 shadow-2xl backdrop-blur-md"
+        >
+          <div className="mb-8 flex flex-col items-center gap-3 text-center">
+            <BrandLogo linked={false} size="lg" />
+            <div>
+              <h1 className="text-xl font-bold text-white">Sign in to SRM EEE VLab</h1>
+              <p className="mt-1 text-sm text-neutral-400">
+                Use your SRM Academia credentials to continue
+              </p>
+            </div>
+          </div>
 
-            <form className="my-8" onSubmit={handleSubmit}>
-              <LabelInputContainer className="mb-4">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-sm font-medium text-neutral-300">
+                SRM Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                <input
                   id="email"
-                  placeholder="yourname@srmist.edu.in"
                   type="email"
+                  placeholder="yourname@srmist.edu.in"
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  className={cn(
+                    "w-full rounded-lg border border-neutral-800 bg-neutral-900 py-2.5 pl-9 pr-4 text-sm text-white",
+                    "placeholder:text-neutral-600 focus:border-blue-500/60 focus:outline-none focus:ring-1 focus:ring-blue-500/40 transition"
+                  )}
                 />
-              </LabelInputContainer>
-              <LabelInputContainer className="mb-8">
-                <Label htmlFor="password">Password</Label>
-                <Input
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-neutral-300">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                <input
                   id="password"
-                  placeholder="••••••••"
                   type="password"
+                  placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  className={cn(
+                    "w-full rounded-lg border border-neutral-800 bg-neutral-900 py-2.5 pl-9 pr-4 text-sm text-white",
+                    "placeholder:text-neutral-600 focus:border-blue-500/60 focus:outline-none focus:ring-1 focus:ring-blue-500/40 transition"
+                  )}
                 />
-                <div className="flex justify-between items-center mt-1">
-                  <p className="text-xs text-neutral-500">Admin override: admin@srmist.edu.in / password123</p>
-                  <Link href="#" className="text-xs text-blue-400 hover:text-blue-300">
-                    Forgot password?
-                  </Link>
-                </div>
-              </LabelInputContainer>
+              </div>
+              <p className="text-right text-xs text-neutral-600">
+                Same password as your SRM Academia portal
+              </p>
+            </div>
 
-              <button
-                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-blue-600 to-blue-700 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-blue-700 dark:to-blue-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] disabled:opacity-70"
-                type="submit"
-                disabled={isLoading}
-              >
-                {isLoading ? "Signing in..." : "Sign in →"}
-                <BottomGradient />
-              </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={cn(
+                "w-full rounded-lg py-2.5 text-sm font-semibold text-white transition",
+                "bg-blue-600 hover:bg-blue-500 active:bg-blue-700",
+                "disabled:cursor-not-allowed disabled:opacity-60",
+                "shadow-lg shadow-blue-600/20"
+              )}
+            >
+              {isLoading ? "Signing in…" : "Sign in →"}
+            </button>
+          </form>
 
-
-            </form>
-          </div>
-        </div>
+          {/* Info note */}
+          <p className="mt-6 rounded-lg border border-neutral-800 bg-neutral-900/50 p-3 text-center text-xs text-neutral-500">
+            Your credentials are used only to authenticate with SRM Academia. They are not stored on this platform.
+          </p>
+        </motion.div>
       </div>
     </div>
   )
-}
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
-      <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
-    </>
-  )
-}
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode
-  className?: string
-}) => {
-  return <div className={cn("flex w-full flex-col space-y-2", className)}>{children}</div>
 }

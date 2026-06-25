@@ -14,7 +14,7 @@ export function FloatingDock() {
     { icon: <BookOpen className="h-6 w-6" />, label: "Experiments", href: "#experiments" },
     { icon: <User className="h-6 w-6" />, label: "About", href: "#about" },
     { icon: <Settings className="h-6 w-6" />, label: "Settings", href: "#settings" },
-    { icon: <LogIn className="h-6 w-6" />, label: "Sign In", href: "/signin" },
+    { icon: <LogIn className="h-6 w-6" />, label: "Sign Up", href: "/signup" },
   ]
 
   return (

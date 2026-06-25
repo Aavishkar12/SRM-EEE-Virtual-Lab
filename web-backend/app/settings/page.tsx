@@ -1,11 +1,11 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 
 import type React from "react"
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { DigitalClock } from "@/components/digital-clock"
-import { DynamicSidebar } from "@/components/dynamic-sidebar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -15,8 +15,19 @@ import { Slider } from "@/components/ui/slider"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
 import { Home, BookOpen, Settings, LogIn, FileQuestion, Users, Info, Library, User } from "lucide-react"
-import { FloatingDock } from "@/components/ui/floating-dock"
 import { SrmAccessGate } from "@/components/srm-access-gate"
+import { apiUrl } from "@/lib/api"
+import { getStudentDisplayName } from "@/lib/auth"
+import {
+  Bell,
+  Lock,
+  Palette,
+  Shield,
+  UserCircle,
+  Mail,
+  Building2,
+  Hash,
+} from "lucide-react"
 
 export default function SettingsPage() {
   const { data: session } = useSession()
@@ -33,7 +44,7 @@ export default function SettingsPage() {
     if (!isAdmin) return
     setLoadingAdmins(true)
     try {
-      const res = await fetch("/api/admins")
+      const res = await fetch(apiUrl("/api/admins"))
       if (res.ok) {
         const data = await res.json()
         setAdminEmails(data)
@@ -56,7 +67,7 @@ export default function SettingsPage() {
   const handleAddAdmin = async () => {
     if (!newAdminEmail) return
     try {
-      const res = await fetch("/api/admins", {
+      const res = await fetch(apiUrl("/api/admins"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: newAdminEmail }),
@@ -77,7 +88,7 @@ export default function SettingsPage() {
   const handleDeleteAdmin = async (email: string) => {
     if (!confirm(`Are you sure you want to revoke admin access for ${email}?`)) return
     try {
-      const res = await fetch(`/api/admins?email=${encodeURIComponent(email)}`, {
+      const res = await fetch(apiUrl(`/api/admins?email=${encodeURIComponent(email)}`), {
         method: "DELETE",
       })
       if (res.ok) {
@@ -92,26 +103,28 @@ export default function SettingsPage() {
     }
   }
   
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" },
-    { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
 
   // Account settings
+  const displayName = getStudentDisplayName(session?.user)
   const [accountSettings, setAccountSettings] = useState({
-    name: session?.user?.name || "SRM Student",
+    name: displayName,
     email: session?.user?.email || "",
-    bio: session?.user?.department
-      ? `${session.user.department}${session.user.section ? `, Section ${session.user.section}` : ""}`
+    bio: session?.user?.branch || session?.user?.department
+      ? `${session.user.branch ?? session.user.department}${session.user.section ? `, Section ${session.user.section}` : ""}`
       : "Electrical Engineering student at SRM University",
   })
+
+  useEffect(() => {
+    if (session?.user) {
+      setAccountSettings({
+        name: getStudentDisplayName(session.user),
+        email: session.user.email || "",
+        bio: session.user.branch || session.user.department
+          ? `${session.user.branch ?? session.user.department}${session.user.section ? `, Section ${session.user.section}` : ""}`
+          : "Electrical Engineering student at SRM University",
+      })
+    }
+  }, [session])
 
   // Appearance settings
   const [appearanceSettings, setAppearanceSettings] = useState({
@@ -179,104 +192,157 @@ export default function SettingsPage() {
       title="SRM settings access"
       description="Settings are available only to signed-in SRM users."
     >
-    <div className="text-white overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-[#050508] text-white">
       {/* Dynamic Sidebar */}
-      <DynamicSidebar />
       
       {/* Centered navigation at the top */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
-      </div>
 
-      <div className="absolute top-4 left-20 md:left-48 z-20">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center"
-        >
-          <div className="h-10 bg-white text-blue-800 font-bold px-3 py-1 rounded">SRM EEE</div>
-        </motion.div>
-      </div>
 
       <DigitalClock />
 
-      <div className="w-full max-w-6xl mx-auto px-4 py-8 pt-24">
+      
+      <NavDock />
+<div className="w-full max-w-6xl mx-auto px-4 py-8 pt-28 sm:pt-32">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="text-3xl font-bold mb-8">Settings</h1>
+          <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-blue-300/70">
+                Preferences
+              </p>
+              <h1 className="text-4xl font-bold tracking-tight text-white">Settings</h1>
+              <p className="mt-2 max-w-2xl text-neutral-400">
+                Manage your account, appearance, notifications, and administrative access.
+              </p>
+            </div>
 
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 px-5 py-4 backdrop-blur-xl">
+              <p className="text-sm font-semibold text-white">{displayName}</p>
+              <p className="text-xs text-neutral-500">{session?.user?.email}</p>
+            </div>
+          </div>
 
           <Tabs defaultValue={activeTab} className="w-full" onValueChange={setActiveTab}>
-            <TabsList className={`grid w-full ${isAdmin ? "grid-cols-5" : "grid-cols-4"} bg-neutral-900 border border-neutral-800`}>
-              <TabsTrigger value="account" className="data-[state=active]:bg-blue-900/30 text-white">
-                Account
+            <TabsList className={`grid w-full ${isAdmin ? "grid-cols-5" : "grid-cols-4"} rounded-2xl border border-neutral-800 bg-neutral-950/80 p-1`}>
+              <TabsTrigger value="account" className="gap-1.5 rounded-xl data-[state=active]:bg-blue-900/40 text-white">
+                <UserCircle className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">Account</span>
               </TabsTrigger>
-              <TabsTrigger value="appearance" className="data-[state=active]:bg-blue-900/30 text-white">
-                Appearance
+              <TabsTrigger value="appearance" className="gap-1.5 rounded-xl data-[state=active]:bg-blue-900/40 text-white">
+                <Palette className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">Appearance</span>
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="data-[state=active]:bg-blue-900/30 text-white">
-                Notifications
+              <TabsTrigger value="notifications" className="gap-1.5 rounded-xl data-[state=active]:bg-blue-900/40 text-white">
+                <Bell className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">Alerts</span>
               </TabsTrigger>
-              <TabsTrigger value="privacy" className="data-[state=active]:bg-blue-900/30 text-white">
-                Privacy
+              <TabsTrigger value="privacy" className="gap-1.5 rounded-xl data-[state=active]:bg-blue-900/40 text-white">
+                <Lock className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">Privacy</span>
               </TabsTrigger>
               {isAdmin && (
-                <TabsTrigger value="admins" className="data-[state=active]:bg-emerald-950/40 text-white">
-                  Manage Admins
+                <TabsTrigger value="admins" className="gap-1.5 rounded-xl data-[state=active]:bg-emerald-950/40 text-white">
+                  <Shield className="h-4 w-4 shrink-0" />
+                  <span className="hidden sm:inline">Admins</span>
                 </TabsTrigger>
               )}
             </TabsList>
 
             {/* Account Settings */}
             <TabsContent value="account" className="mt-6">
-              <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
-                <h2 className="text-xl font-semibold mb-6">Account Settings</h2>
+              <div className="space-y-6">
+                <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-xl">
+                  <h2 className="mb-2 text-xl font-semibold">Academia Profile</h2>
+                  <p className="mb-6 text-sm text-neutral-400">
+                    These details are synced from your SRM Academia account.
+                  </p>
 
-                <div className="space-y-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={accountSettings.name}
-                      onChange={handleAccountChange}
-                      className="bg-neutral-800 border-neutral-700"
-                    />
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <UserCircle className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Student Name</span>
+                      </div>
+                      <p className="font-medium text-white">{displayName}</p>
+                    </div>
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <Mail className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Email</span>
+                      </div>
+                      <p className="font-medium text-white">{session?.user?.email}</p>
+                    </div>
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <Hash className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Registration No.</span>
+                      </div>
+                      <p className="font-medium text-white">{session?.user?.registrationNumber || "—"}</p>
+                    </div>
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <Building2 className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Branch</span>
+                      </div>
+                      <p className="font-medium text-white">{session?.user?.branch ?? session?.user?.department ?? "—"}</p>
+                    </div>
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <Hash className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Year</span>
+                      </div>
+                      <p className="font-medium text-white">{session?.user?.year || "—"}</p>
+                    </div>
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <Hash className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Semester</span>
+                      </div>
+                      <p className="font-medium text-white">{session?.user?.semester || "—"}</p>
+                    </div>
+                    <div className="rounded-xl border border-neutral-800 bg-neutral-950/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-neutral-500">
+                        <Hash className="h-4 w-4" />
+                        <span className="text-xs uppercase tracking-[0.16em]">Batch</span>
+                      </div>
+                      <p className="font-medium text-white">{session?.user?.batch || "—"}</p>
+                    </div>
                   </div>
+                </div>
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={accountSettings.email}
-                      onChange={handleAccountChange}
-                      disabled
-                      className="bg-neutral-800 border-neutral-700"
-                    />
+                <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-xl">
+                  <h2 className="mb-6 text-xl font-semibold">Display Preferences</h2>
+
+                  <div className="space-y-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor="name">Display Name</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={accountSettings.name}
+                        onChange={handleAccountChange}
+                        className="border-neutral-700 bg-neutral-800"
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="bio">Bio</Label>
+                      <textarea
+                        id="bio"
+                        name="bio"
+                        value={accountSettings.bio}
+                        onChange={handleAccountChange}
+                        rows={4}
+                        className="resize-none rounded-md border border-neutral-700 bg-neutral-800 p-2 text-white"
+                      />
+                    </div>
                   </div>
-
-                  <div className="grid gap-2">
-                    <Label htmlFor="bio">Bio</Label>
-                    <textarea
-                      id="bio"
-                      name="bio"
-                      value={accountSettings.bio}
-                      onChange={handleAccountChange}
-                      rows={4}
-                      className="bg-neutral-800 border border-neutral-700 rounded-md p-2 text-white resize-none"
-                    />
-                  </div>
-
-
                 </div>
               </div>
             </TabsContent>
 
             {/* Appearance Settings */}
             <TabsContent value="appearance" className="mt-6">
-              <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+              <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-xl">
                 <h2 className="text-xl font-semibold mb-6">Appearance Settings</h2>
 
                 <div className="space-y-6">
@@ -345,7 +411,7 @@ export default function SettingsPage() {
 
             {/* Notification Settings */}
             <TabsContent value="notifications" className="mt-6">
-              <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+              <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-xl">
                 <h2 className="text-xl font-semibold mb-6">Notification Settings</h2>
 
                 <div className="space-y-6">
@@ -410,7 +476,7 @@ export default function SettingsPage() {
 
             {/* Privacy Settings */}
             <TabsContent value="privacy" className="mt-6">
-              <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+              <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-xl">
                 <h2 className="text-xl font-semibold mb-6">Privacy Settings</h2>
 
                 <div className="space-y-6">
@@ -464,7 +530,7 @@ export default function SettingsPage() {
             {/* Manage Admins Settings (Only for Admins) */}
             {isAdmin && (
               <TabsContent value="admins" className="mt-6">
-                <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+                <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 backdrop-blur-xl">
                   <h2 className="text-xl font-semibold mb-2">Manage Administrative Accounts</h2>
                   <p className="text-neutral-400 text-sm mb-6">
                     Add or remove accounts that have administrative permissions (creating, editing, and deleting academic resources).

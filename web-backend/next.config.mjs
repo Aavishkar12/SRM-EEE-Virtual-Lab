@@ -1,3 +1,6 @@
+import path from "path"
+import { fileURLToPath } from "url"
+
 let userConfig = undefined
 try {
   // try to import ESM first
@@ -13,6 +16,7 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: path.join(path.dirname(fileURLToPath(import.meta.url))),
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -28,6 +32,7 @@ const nextConfig = {
       },
     ],
   },
+  serverExternalPackages: ['puppeteer', 'mongodb', 'cheerio'],
   compress: true,
   experimental: {
     webpackBuildWorker: true,

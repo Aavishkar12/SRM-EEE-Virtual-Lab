@@ -25,3 +25,31 @@ export function getDisplayNameFromEmail(email?: string | null) {
     .map((part) => part[0].toUpperCase() + part.slice(1))
     .join(" ")
 }
+
+type StudentUser = {
+  name?: string | null
+  email?: string | null
+  registrationNumber?: string | null
+}
+
+export function getStudentDisplayName(user?: StudentUser | null): string {
+  if (!user?.email) return "SRM Student"
+
+  const name = user.name?.trim()
+  const localPart = normalizeEmail(user.email).split("@")[0]
+  const regNo = user.registrationNumber?.trim()
+
+  if (name) {
+    const isIdLike =
+      name.toLowerCase() === localPart ||
+      name === regNo ||
+      /^[a-z]{1,4}\d{3,10}$/i.test(name)
+
+    if (!isIdLike && (name.includes(" ") || name.length > 12)) {
+      return name
+    }
+  }
+
+  return getDisplayNameFromEmail(user.email)
+}
+

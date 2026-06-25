@@ -1,5 +1,5 @@
 "use client"
-
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect, useRef } from "react"
 import { notFound, useParams } from "next/navigation"
 import { SrmAccessGate } from "@/components/srm-access-gate"
@@ -7,7 +7,6 @@ import Link from "next/link"
 import { ArrowLeft, CheckCircle2, XCircle, Trophy, AlertCircle, Zap, Cpu, Lightbulb, Bolt, Radio, Wifi, ShieldAlert, Pencil } from "lucide-react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 import { DigitalClock } from "@/components/digital-clock"
-import { DynamicSidebar } from "@/components/dynamic-sidebar"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,6 +17,7 @@ import { AuroraBackground } from "@/components/aurora-background"
 import { cn } from "@/lib/utils"
 import confetti from 'canvas-confetti'
 import { useSession } from "next-auth/react"
+import { apiUrl } from "@/lib/api"
 
 // Animated circuit component for quiz page
 const CircuitDiagram = ({ quizId }: { quizId: number }) => {
@@ -1357,7 +1357,7 @@ export default function QuizPage() {
   useEffect(() => {
     const fetchQuizDetails = async () => {
       try {
-        const res = await fetch(`/api/quizzes?id=${quizId}`)
+        const res = await fetch(apiUrl(`/api/quizzes?id=${quizId}`))
         if (res.ok) {
           const data = await res.json()
           setCurrentQuiz(data)
@@ -1454,15 +1454,11 @@ export default function QuizPage() {
       title="Quiz attempt access"
       description="Only signed-in SRM users can attempt quizzes. Please sign in with your @srmist.edu.in email before starting the test."
     >
-    <div className="text-white overflow-x-hidden">
-      {/* Sidebar */}
-      <div className="fixed left-0 top-0 z-40 h-screen">
-        <DynamicSidebar />
-      </div>
-
+    <div className="min-h-screen bg-[#050508] text-white overflow-x-hidden">
+      <NavDock />
       <DigitalClock />
 
-      <div className="container mx-auto px-4 py-12 ml-16 md:ml-24 lg:ml-32">
+      <div className="container mx-auto px-4 py-12 pt-24">
         <div className="mb-8">
           <Link href="/quizzes" className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors">
             <ArrowLeft className="mr-2 h-4 w-4" />

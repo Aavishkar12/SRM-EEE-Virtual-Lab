@@ -42,7 +42,7 @@ export function Sidebar() {
     { icon: <Gauge className="h-5 w-5" />, label: "Measurements", id: "measurements", href: "#measurements" },
     { icon: <User className="h-5 w-5" />, label: "About", id: "about", href: "#about" },
     { icon: <Settings className="h-5 w-5" />, label: "Settings", id: "settings", href: "#settings" },
-    { icon: <LogIn className="h-5 w-5" />, label: "Sign In", id: "signin", href: "/signin" },
+    { icon: <LogIn className="h-5 w-5" />, label: "Sign Up", id: "signup", href: "/signup" },
   ]
 
   return (

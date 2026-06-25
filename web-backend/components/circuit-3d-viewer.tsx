@@ -61,17 +61,17 @@ export const Circuit3DViewer = ({ experimentId, title, embedId }: Circuit3DViewe
       ref={containerRef} 
       className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden"
     >
-      <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 p-4 border-b border-neutral-800 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
+      <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 p-3 sm:p-4 border-b border-neutral-800 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+        <div className="flex items-center space-x-2 min-w-0">
           {experimentId <= 2 ? (
-            <Zap className="h-5 w-5 text-yellow-400" />
+            <Zap className="h-5 w-5 text-yellow-400 shrink-0" />
           ) : (
-            <Lightbulb className="h-5 w-5 text-yellow-400" />
+            <Lightbulb className="h-5 w-5 text-yellow-400 shrink-0" />
           )}
-          <h3 className="text-xl font-bold text-white">{title} - 3D Circuit View</h3>
+          <h3 className="text-base sm:text-xl font-bold text-white truncate">{title} - 3D Circuit View</h3>
         </div>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 sm:space-x-2 self-end sm:self-auto">
           <button 
             onClick={handleZoomOut}
             className="p-2 rounded-full hover:bg-neutral-800 transition-colors"

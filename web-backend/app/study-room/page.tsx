@@ -1,8 +1,10 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { apiUrl } from "@/lib/api"
 import {
   BookOpen, Calendar, Bot, GraduationCap, Library, FileText,
   ArrowRight, Zap, FlaskConical, Calculator, Video, BookMarked,
@@ -11,7 +13,6 @@ import {
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { DigitalClock } from "@/components/digital-clock"
-import { DynamicSidebar } from "@/components/dynamic-sidebar"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -177,7 +178,7 @@ export default function StudyRoomPage() {
 
   const fetchResources = async () => {
     try {
-      const res = await fetch("/api/study-room/resources")
+      const res = await fetch(apiUrl("/api/study-room/resources"))
       if (res.ok) {
         const data = await res.json()
         setResources(data)
@@ -219,7 +220,7 @@ export default function StudyRoomPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this resource?")) return
     try {
-      const res = await fetch(`/api/study-room/resources?id=${id}`, {
+      const res = await fetch(apiUrl(`/api/study-room/resources?id=${id}`), {
         method: "DELETE",
       })
 
@@ -254,13 +255,13 @@ export default function StudyRoomPage() {
     try {
       let res
       if (editingId) {
-        res = await fetch("/api/study-room/resources", {
+        res = await fetch(apiUrl("/api/study-room/resources"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingId, ...payload }),
         })
       } else {
-        res = await fetch("/api/study-room/resources", {
+        res = await fetch(apiUrl("/api/study-room/resources"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -303,10 +304,10 @@ export default function StudyRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#050508] text-white selection:bg-blue-500/30 selection:text-blue-200">
-      <DynamicSidebar />
+      <NavDock />
       <DigitalClock />
 
-      <main className="pl-0 md:pl-16 pt-20 pb-20 min-h-screen">
+      <main className="pt-20 pb-20 min-h-screen">
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
 
           {/* Breadcrumb */}
@@ -335,6 +336,14 @@ export default function StudyRoomPage() {
                   Everything you need to ace your EEE lab — AI assistance, virtual experiments, quizzes, notes, and more.
                 </p>
               </div>
+              {isAdmin && (
+                <button
+                  onClick={openAddModal}
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all"
+                >
+                  <Plus className="h-4 w-4" /> Add Resource
+                </button>
+              )}
             </div>
           </motion.div>
 

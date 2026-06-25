@@ -1,93 +1,75 @@
 import { NextResponse } from "next/server"
-
-// Updated experiments with all Tinkercad embed IDs
-const experiments = [
-  {
-    id: 1,
-    title: "Kirchhoff's Voltage Law",
-    description: "Understand the relationship between voltages in a closed loop circuit",
-    embedId: "hNWAhAfShmV",
-    aim: "To verify Kirchhoff's Voltage Law in a closed loop circuit.",
-    completed: 0,
-    totalStudents: 0,
-  },
-  {
-    id: 2,
-    title: "Thevenin's Theorem",
-    description: "Learn about equivalent circuit simplification techniques",
-    embedId: "lAusQJ3m4bF",
-    aim: "To verify Thevenin's Theorem by constructing an equivalent circuit and comparing its behavior with the original circuit.",
-    completed: 0,
-    totalStudents: 0,
-  },
-  {
-    id: 3,
-    title: "House Wiring",
-    description: "Explore residential electrical wiring systems and safety",
-    embedId: "2rTQ63Z8SdD",
-    aim: "To understand and implement basic residential electrical wiring systems with proper safety measures.",
-    completed: 0,
-    totalStudents: 0,
-  },
-  {
-    id: 4,
-    title: "Fluorescent Lamp Wiring",
-    description: "Study the wiring and operation of fluorescent lighting systems",
-    embedId: "hnFoQc772H0",
-    aim: "To understand and implement the wiring of fluorescent lighting systems with different types of ballasts.",
-    completed: 0,
-    totalStudents: 0,
-  },
-  {
-    id: 5,
-    title: "Staircase Wiring",
-    description: "Understand multi-way switching for staircase lighting control",
-    embedId: "94YWeHFB9oN",
-    aim: "To implement and understand multi-way switching circuits for controlling lights from multiple locations.",
-    completed: 0,
-    totalStudents: 0,
-  },
-  {
-    id: 6,
-    title: "Full Wave Rectifier",
-    description: "Learn about AC to DC conversion using full wave rectification",
-    embedId: "jbRQbeSnAzj",
-    aim: "To construct and analyze the operation of a full wave bridge rectifier circuit with and without filtering.",
-    completed: 0,
-    totalStudents: 0,
-  },
-]
+import { auth } from "@/app/api/auth/[...nextauth]/route"
+import { connectToDatabase } from "@/lib/mongodb"
+import fs from "fs/promises"
+import path from "path"
 
 export async function GET() {
-  return NextResponse.json(experiments)
-}
-
-export async function POST(request: Request) {
   try {
-    const data = await request.json()
-
-    // Validate required fields
-    if (!data.title || !data.description) {
-      return NextResponse.json({ error: "Title and description are required" }, { status: 400 })
-    }
-
-    // Create a new experiment (in a real app, this would be saved to a database)
-    const newExperiment = {
-      id: experiments.length + 1,
-      title: data.title,
-      description: data.description,
-      embedId: data.embedId || "",
-      aim: data.aim || "",
-      completed: 0,
-      totalStudents: 0,
-    }
-
-    // Add to our mock database
-    experiments.push(newExperiment)
-
-    return NextResponse.json(newExperiment, { status: 201 })
+    const { db } = await connectToDatabase()
+    const experimentsCol = db.collection("experiments")
+    const data = await experimentsCol.find().sort({ id: 1 }).toArray()
+    return NextResponse.json(data)
   } catch (error) {
-    return NextResponse.json({ error: "Invalid request data" }, { status: 400 })
+    console.error("Failed to fetch experiments from MongoDB, trying fallback JSON:", error)
+    try {
+      const filePath = path.join(process.cwd(), "lib", "data", "experiments.json")
+      const content = await fs.readFile(filePath, "utf-8")
+      return NextResponse.json(JSON.parse(content))
+    } catch (fallbackError) {
+      return NextResponse.json({ error: "Failed to fetch experiments" }, { status: 500 })
+    }
   }
 }
 
+export async function POST(request: Request) {
+  const session = await auth()
+
+  if (!session || session.user?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 })
+  }
+
+  try {
+    const body = await request.json()
+
+    if (!body.title) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
+    }
+
+    let db
+    try {
+      const connection = await connectToDatabase()
+      db = connection.db
+    } catch (dbError) {
+      console.error("Database connection failed for POST experiments:", dbError)
+      return NextResponse.json({ error: "Database offline. Unable to save experiment." }, { status: 503 })
+    }
+
+    const experimentsCol = db.collection("experiments")
+    const maxIdItem = await experimentsCol.find().sort({ id: -1 }).limit(1).toArray()
+    const maxId = maxIdItem.length > 0 ? maxIdItem[0].id : 0
+    const newId = maxId + 1
+
+    const newExperiment = {
+      id: newId,
+      title: body.title || "",
+      description: body.description || "",
+      category: body.category || "Circuit Analysis",
+      difficulty: body.difficulty || "Beginner",
+      duration: body.duration || "60 min",
+      embedId: body.embedId || "",
+      aim: body.aim || "",
+      apparatus: body.apparatus || "",
+      theory: body.theory || "",
+      procedure: body.procedure || "",
+      references: body.references || "",
+      image: body.image || "/placeholder.svg?height=400&width=600",
+    }
+
+    await experimentsCol.insertOne(newExperiment)
+    return NextResponse.json(newExperiment, { status: 201 })
+  } catch (error) {
+    console.error("Failed to insert experiment in MongoDB:", error)
+    return NextResponse.json({ error: "Invalid request data" }, { status: 400 })
+  }
+}

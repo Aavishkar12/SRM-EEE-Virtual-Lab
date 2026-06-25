@@ -1,11 +1,10 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { Home, BookOpen, Settings, LogIn, FileQuestion, Users, Info, Zap, Cpu, Lightbulb, Bolt, Radio, Wifi, Activity, CircuitBoard, Library, User, Pencil, Trash2, Plus } from "lucide-react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 import { DigitalClock } from "@/components/digital-clock"
-import { SidebarDemo } from "@/components/sidebar-demo"
-import { FloatingDock } from "@/components/ui/floating-dock"
 import { CircuitAnimation } from "@/components/ui/circuit-animation"
 import { RotatingCircuit } from "@/components/ui/rotating-circuit"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
@@ -13,6 +12,7 @@ import { HeroGeometric } from "@/components/ui/shape-landing-hero"
 import { cn } from "@/lib/utils"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { apiUrl } from "@/lib/api"
 
 // Custom animated circuit component for the quiz page
 const ElectronFlow = () => {
@@ -279,7 +279,7 @@ export default function QuizzesPage() {
 
   const fetchQuizzes = async () => {
     try {
-      const res = await fetch("/api/quizzes")
+      const res = await fetch(apiUrl("/api/quizzes"))
       if (res.ok) {
         const data = await res.json()
         setQuizzes(data)
@@ -346,7 +346,7 @@ export default function QuizzesPage() {
     if (!confirm("Are you sure you want to delete this quiz?")) return
 
     try {
-      const res = await fetch(`/api/quizzes?id=${id}`, {
+      const res = await fetch(apiUrl(`/api/quizzes?id=${id}`), {
         method: "DELETE"
       })
       if (res.ok) {
@@ -422,13 +422,13 @@ export default function QuizzesPage() {
 
       let res
       if (editingId) {
-        res = await fetch("/api/quizzes", {
+        res = await fetch(apiUrl("/api/quizzes"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingId, ...payload })
         })
       } else {
-        res = await fetch("/api/quizzes", {
+        res = await fetch(apiUrl("/api/quizzes"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -449,33 +449,17 @@ export default function QuizzesPage() {
   }
 
   // Navigation items for the floating dock
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" }, 
-    { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ];
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {/* Sidebar */}
-      <div className="fixed left-0 top-0 z-40 h-screen">
-        <SidebarDemo />
-      </div>
       
       {/* Centered navigation at the top */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
-      </div>
 
       <DigitalClock />
       
-      {/* Rotating circuit animation */}
+      
+      <NavDock />
+{/* Rotating circuit animation */}
       <RotatingCircuit />
 
       {/* Hero Section */}
@@ -496,7 +480,7 @@ export default function QuizzesPage() {
         </HeroGeometric>
       </div>
 
-      <div className="container mx-auto px-4 pb-24 ml-16 md:ml-24 lg:ml-32 relative">
+      <div className="container mx-auto px-4 pb-24 relative">
         <CircuitAnimation />
         
         {/* Admin Dashboard Form */}
@@ -738,7 +722,7 @@ export default function QuizzesPage() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto relative z-10">
             {quizzes.map((quiz, index) => (
               <AnimatedQuizCard 
-                key={quiz.id} 
+                key={(quiz as any)._id?.toString() || `quiz-${quiz.id}-${index}`} 
                 quiz={quiz} 
                 index={index} 
                 isAuthenticated={isAuthenticated} 

@@ -1,13 +1,15 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, Search, Filter, Download, FileText, Calendar, BookOpen, Clock, Pencil, Trash2, Upload, User } from "lucide-react"
-import { FloatingDock } from "@/components/ui/floating-dock"
 import { Home, Users, Info, Settings, LogIn, FileQuestion, Library } from "lucide-react"
+import { DigitalClock } from "@/components/digital-clock"
 import { Input } from "@/components/ui/input"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { apiUrl } from "@/lib/api"
 import { SrmAccessGate } from "@/components/srm-access-gate"
 
 export default function PYQsPage() {
@@ -31,7 +33,7 @@ export default function PYQsPage() {
 
   const fetchPYQs = async () => {
     try {
-      const res = await fetch("/api/pyqs")
+      const res = await fetch(apiUrl("/api/pyqs"))
       if (res.ok) {
         const data = await res.json()
         setPyqs(data)
@@ -103,13 +105,13 @@ export default function PYQsPage() {
     try {
       let res
       if (editingId) {
-        res = await fetch("/api/pyqs", {
+        res = await fetch(apiUrl("/api/pyqs"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingId, ...formData }),
         })
       } else {
-        res = await fetch("/api/pyqs", {
+        res = await fetch(apiUrl("/api/pyqs"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
@@ -133,7 +135,7 @@ export default function PYQsPage() {
     if (!confirm("Are you sure you want to delete this question paper?")) return
 
     try {
-      const res = await fetch(`/api/pyqs?id=${id}`, {
+      const res = await fetch(apiUrl(`/api/pyqs?id=${id}`), {
         method: "DELETE",
       })
 
@@ -151,23 +153,15 @@ export default function PYQsPage() {
     }
   }
 
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" }, { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
 
   return (
     <SrmAccessGate
       title="SRM academic resource access"
       description="PYQs are available only to signed-in SRM users. Admins can upload, edit, and delete papers, while other SRM users can read and download them."
     >
-    <div className="text-white selection:bg-blue-500/30">
+    <div className="min-h-screen bg-[#050508] text-white selection:bg-blue-500/30">
+      <NavDock />
+      <DigitalClock />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 pb-32">
         {/* Header */}
         <div className="mb-10">
@@ -273,7 +267,7 @@ export default function PYQsPage() {
                         body.append("file", file)
                         
                         try {
-                          const res = await fetch("/api/upload", {
+                          const res = await fetch(apiUrl("/api/upload"), {
                             method: "POST",
                             body,
                           })
@@ -402,9 +396,6 @@ export default function PYQsPage() {
         )}
       </div>
 
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
-      </div>
     </div>
     </SrmAccessGate>
   )

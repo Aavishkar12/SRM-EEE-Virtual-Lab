@@ -18,8 +18,8 @@ const users = [
   },
 ]
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const id = params.id
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
 
   // Find the user by ID
   const user = users.find((user) => user.id === id)
@@ -39,9 +39,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
   })
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = params.id
+    const { id } = await params
     const data = await request.json()
 
     // Find the user by ID
@@ -74,8 +74,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = params.id
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
 
   // Find the user by ID
   const userIndex = users.findIndex((user) => user.id === id)

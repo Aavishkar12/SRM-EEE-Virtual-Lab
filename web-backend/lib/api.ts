@@ -3,9 +3,8 @@
  * Set NEXT_PUBLIC_API_URL to your Render backend origin (with or without /api suffix).
  */
 export function getApiBaseUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/$/, "") || ""
-  if (!raw) return ""
-  return raw.endsWith("/api") ? raw.slice(0, -4) : raw
+  // Always use relative paths for local development
+  return ""
 }
 
 export function apiUrl(path: string): string {
@@ -23,6 +22,6 @@ export function apiFetch(input: string, init?: RequestInit): Promise<Response> {
 }
 
 export function getAuthBasePath(): string | undefined {
-  const base = getApiBaseUrl()
-  return base ? `${base}/api/auth` : undefined
+  // Always use relative paths for auth to avoid ngrok redirects
+  return undefined
 }

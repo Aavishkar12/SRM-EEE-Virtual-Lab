@@ -1,14 +1,15 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, Calendar as CalendarIcon, Clock, BookOpen, AlertCircle, CheckCircle2, FileText, User, Pencil, Trash2, Upload } from "lucide-react"
-import { FloatingDock } from "@/components/ui/floating-dock"
 import { Home, Users, Info, Settings, LogIn, FileQuestion, Library } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { SrmAccessGate } from "@/components/srm-access-gate"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { apiUrl } from "@/lib/api"
 
 export default function SchedulesPage() {
   const { data: session } = useSession()
@@ -29,7 +30,7 @@ export default function SchedulesPage() {
 
   const fetchSchedules = async () => {
     try {
-      const res = await fetch("/api/study-room/schedules")
+      const res = await fetch(apiUrl("/api/study-room/schedules"))
       if (res.ok) {
         const data = await res.json()
         setSchedules(data)
@@ -83,13 +84,13 @@ export default function SchedulesPage() {
     try {
       let res
       if (editingId) {
-        res = await fetch("/api/study-room/schedules", {
+        res = await fetch(apiUrl("/api/study-room/schedules"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingId, ...formData }),
         })
       } else {
-        res = await fetch("/api/study-room/schedules", {
+        res = await fetch(apiUrl("/api/study-room/schedules"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
@@ -113,7 +114,7 @@ export default function SchedulesPage() {
     if (!confirm("Are you sure you want to delete this schedule entry?")) return
 
     try {
-      const res = await fetch(`/api/study-room/schedules?id=${id}`, {
+      const res = await fetch(apiUrl(`/api/study-room/schedules?id=${id}`), {
         method: "DELETE",
       })
 
@@ -155,24 +156,14 @@ export default function SchedulesPage() {
     }
   }
 
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" },
-    { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
 
   return (
     <SrmAccessGate
       title="SRM academic resource access"
       description="Schedules and exam timelines are visible only to signed-in SRM users. Admins can manage academic timelines dynamically."
     >
-    <div className="text-white selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#050508] text-white selection:bg-emerald-500/30">
+      <NavDock />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 pb-32">
         {/* Header */}
         <div className="mb-12">
@@ -327,7 +318,6 @@ export default function SchedulesPage() {
       </div>
 
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
       </div>
     </div>
     </SrmAccessGate>

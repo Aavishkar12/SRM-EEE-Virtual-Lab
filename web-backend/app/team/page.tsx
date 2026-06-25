@@ -1,8 +1,8 @@
 "use client"
+import { NavDock } from "@/components/nav-dock"
 
 import { motion, AnimatePresence } from "framer-motion"
 import { DigitalClock } from "@/components/digital-clock"
-import { DynamicSidebar } from "@/components/dynamic-sidebar"
 import Image from "next/image"
 import { GithubIcon, LinkedinIcon, MailIcon, Users, BookOpen, Settings, LogIn, FileQuestion, Info, Home, Award, GraduationCap, BookMarked, Library, User } from "lucide-react"
 import Link from "next/link"
@@ -11,33 +11,32 @@ import { MovingBorder } from "@/components/ui/moving-border"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { useState } from "react"
-import { FloatingDock } from "@/components/ui/floating-dock"
-import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect"
-
 // Team member data with actual photos
 const teamMembers = [
   {
     id: 1,
-    name: "Dr. K. Saravanan",
-    role: "Associate Professor",
-    department: "Department of Electrical Engineering",
-    bio: "Dr. K. Saravanan has over 15 years of experience in electrical engineering education and research. He specializes in power systems and renewable energy integration.",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=500&auto=format&fit=crop",
+    name: "Dr. S. Vidyasagar",
+    role: "Assistant Professor",
+    department: "Department of Electronics Engineering",
+    bio: "Dr. S. Vidyasagar specializes in power electronics and control systems. He has contributed to several research projects in renewable energy applications.",
+    image: "/images/faculty/vidyasagar.png",
+    imagePosition: "center 20%",
     social: {
-      email: "saravanan@srm.edu.in",
+      email: "vidyasagar@srm.edu.in",
       linkedin: "https://linkedin.com/in/example",
       github: "https://github.com/example",
     },
   },
   {
     id: 2,
-    name: "Dr. S. Vidyasagar",
-    role: "Assistant Professor",
-    department: "Department of Electronics Engineering",
-    bio: "Dr. S. Vidyasagar specializes in power electronics and control systems. He has contributed to several research projects in renewable energy applications.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=500&auto=format&fit=crop",
+    name: "Dr. K. Saravanan",
+    role: "Associate Professor",
+    department: "Department of Electrical Engineering",
+    bio: "Dr. K. Saravanan has over 15 years of experience in electrical engineering education and research. He specializes in power systems and renewable energy integration.",
+    image: "/images/faculty/saravanan.png",
+    imagePosition: "center 15%",
     social: {
-      email: "vidyasagar@srm.edu.in",
+      email: "saravanan@srm.edu.in",
       linkedin: "https://linkedin.com/in/example",
       github: "https://github.com/example",
     },
@@ -48,7 +47,8 @@ const teamMembers = [
     role: "Associate Professor",
     department: "Department of Electrical Engineering",
     bio: "Dr. D. Sattianandan is an expert in power systems and smart grid technologies. He has led multiple projects on grid integration and power quality improvement.",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=500&auto=format&fit=crop",
+    image: "/images/faculty/sattianandan.png",
+    imagePosition: "center 10%",
     social: {
       email: "sattianandan@srm.edu.in",
       linkedin: "https://linkedin.com/in/example",
@@ -61,7 +61,8 @@ const teamMembers = [
     role: "Assistant Professor",
     department: "Department of Electrical Engineering",
     bio: "Dr. V. Kalyanasundaram specializes in electrical machines and drives. His research focuses on efficiency improvement and fault diagnosis in electrical systems.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=500&auto=format&fit=crop",
+    image: "/images/faculty/kalyanasundaram.png",
+    imagePosition: "center 15%",
     social: {
       email: "kalyanasundaram@srm.edu.in",
       linkedin: "https://linkedin.com/in/example",
@@ -80,72 +81,37 @@ const teamCards = teamMembers.map((member) => ({
 export default function TeamPage() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const dockItems = [
-    { title: "Home", icon: <Home className="h-full w-full text-neutral-300" />, href: "/" },
-    { title: "Experiments", icon: <BookOpen className="h-full w-full text-neutral-300" />, href: "/experiments" },
-    { title: "Study Room", icon: <Library className="h-full w-full text-neutral-300" />, href: "/study-room" },
-    { title: "Quizzes", icon: <FileQuestion className="h-full w-full text-neutral-300" />, href: "/quizzes" },
-    { title: "Team", icon: <Users className="h-full w-full text-neutral-300" />, href: "/team" },
-    { title: "About", icon: <Info className="h-full w-full text-neutral-300" />, href: "/about" },
-    { title: "Profile", icon: <User className="h-full w-full text-neutral-300" />, href: "/profile" }, { title: "Settings", icon: <Settings className="h-full w-full text-neutral-300" />, href: "/settings" },
-    { title: "Sign In", icon: <LogIn className="h-full w-full text-neutral-300" />, href: "/signin" },
-  ]
-
-  const words = [
-    {
-      text: "Meet",
-    },
-    {
-      text: "Our",
-    },
-    {
-      text: "Expert",
-    },
-    {
-      text: "Faculty",
-    },
-    {
-      text: "Team",
-    },
-  ]
-
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Dynamic Sidebar */}
-      <DynamicSidebar />
       
       {/* Centered navigation at the top */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-        <FloatingDock items={dockItems} className="w-auto" mobileClassName="w-auto" />
-      </div>
 
-      <div className="absolute top-4 left-20 md:left-48 z-20">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center"
-        >
-          <div className="h-10 bg-white text-blue-800 font-bold px-3 py-1 rounded">SRM EEE</div>
-        </motion.div>
-      </div>
 
       <DigitalClock />
 
-      <div className="w-full max-w-6xl mx-auto px-4 py-8 pt-24">
+      <NavDock />
+
+      <div className="w-full max-w-6xl mx-auto px-4 py-8 pt-28 sm:pt-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
-          <div className="flex flex-col items-center justify-center mb-10">
-            <TypewriterEffectSmooth words={words} className="mb-8" />
-            <motion.p 
+          <div className="flex flex-col items-center justify-center mb-10 px-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+              Meet Our{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400">
+                Expert Faculty
+              </span>{" "}
+              Team
+            </h1>
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="mt-4 text-lg text-neutral-400 max-w-2xl"
+              className="mt-2 text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl leading-relaxed px-2"
             >
               Meet the dedicated faculty and staff behind the EEE Learning Platform. Our team brings decades of experience in electrical engineering education and research.
             </motion.p>
@@ -170,12 +136,14 @@ export default function TeamPage() {
                   <GlowingEffect disabled={false} blur={20} />
                 </div>
                 
-                {/* Profile Image Container - Fixed Height with Object Position */}
-                <div className="relative w-full h-[300px] overflow-hidden">
+                {/* Profile Image */}
+                <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] overflow-hidden bg-neutral-800">
                   <img
-                    src={member.image || "/placeholder.svg"}
+                    src={member.image}
                     alt={member.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    style={{ objectPosition: member.imagePosition ?? "center 20%" }}
                   />
                 </div>
                 
